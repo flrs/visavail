@@ -1,4 +1,4 @@
-Visavail.js - A Time Data Availability Visualization
+Visavail.js - A Time Data Availability Chart
 =============================
 This library visualizes the availability of time-dependent data with a chart on a website.
 
