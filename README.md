@@ -29,7 +29,8 @@ var dataset = [{
     "measure": "Annual Report", // name of the data series, will become y-axis label
     "interval_s": 365 * 24 * 60 * 60, // time period in seconds a single data point is expected to cover
     "data": [
-        ["2015-01-01", 0], // data as arrays of period start data string and bit determining if data is available for that period
+        ["2015-01-01", 0], // data as arrays of period start data string and bit determining 
+                           // if data is available for that period
         ["2016-01-01", 1],
         ["2017-01-01", 1],
         ["2018-01-01", 1]
