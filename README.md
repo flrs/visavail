@@ -1,4 +1,4 @@
-Visavail.js - A Time Data Availability Visualization Chart
+Visavail.js - A Time Data Availability Visualization
 =============================
 This library visualizes the availability of time-dependent data with a chart on a website.
 
@@ -13,6 +13,10 @@ An example use case is the visualization of a dataset that contains time-depende
 *"Do I have continuous stock market data in my database and if not, where are the gaps?"*
 
 The Visavail.js library takes single data points with dates and information about data availability as inputs, combines them into time blocks, and visualizes these blocks.
+
+Demo
+----
+A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in [example.htm](example.htm).
 
 Usage
 -----
