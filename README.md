@@ -4,13 +4,13 @@ This library visualizes the availability of time-dependent data with a chart on 
 
 Description
 -----------
-The Visavail.js visualization allows a quick insight into which periods of time a time-dependent dataset covers. It is built up similar to a Gantt chart and allows easy identification of missing pieces and gaps in large datasets. Missing periods of data are marked in red while blocks of complete periods of data are marked in green. The user can discover dates that define start and end of such periods by tooltips, such as shown in the below picture.
+The Visavail.js chart allows a quick insight into which periods of time a time-dependent dataset covers. It is visually similar to a Gantt chart and allows easy identification of missing pieces and gaps in large datasets. Missing periods of data are marked in red while blocks of complete periods of data are marked in green. The user discovers dates that define start and end of such periods by tooltips, as shown in the picture below.
 
 ![Preview of Visavail.js chart](preview.jpg "Visavail.js Sample Chart")
 
 An example use case is the visualization of a dataset that contains time-dependent stock market data. The question the Visavail.js chart tries to answer is
 
-*"Do I have continuous stock market data in my database and if not, where are the gaps?"*
+*"Do I have continuous stock market data in my dataset and if not, where are the gaps?"*
 
 The Visavail.js library takes single data points with dates and information about data availability as inputs, combines them into time blocks, and visualizes these blocks.
 
@@ -20,7 +20,7 @@ A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://b
 
 Usage
 -----
-Input data format, display style and implementation have to be considered for using the Visavail.js library successfully. An example is provided in the file [example.htm](example.htm). Code of this file is explained below.
+Input data format, display style and implementation have to be considered for using the Visavail.js library successfully. An example is provided in the file [example.htm](example.htm). The source code of this file is explained below.
 
 ### Input Data Format
 The input to the Visavail.js library is a JSON-like structure. The below code comments point out the elements that should be included in the input data.
