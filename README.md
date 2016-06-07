@@ -59,7 +59,7 @@ And the following lines to the `<body>` of the website:
 </script>
 <script src="./vendors/d3/d3.min.js" charset="utf-8"></script>
 <script type="text/javascript">
-    var dataset = ...// see example.htm
+    var dataset = ... // see example.htm
 </script>
 <script src="./resources/visavail.js"></script>
 
