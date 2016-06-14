@@ -77,11 +77,11 @@ Examples
 --------
 Three examples are provided with Visavail.js.
 
-1. **Basic Example** The [examples/example_basic.htm](basic example) gives you the quick "plug and play" experience.
+1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
 
-2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [examples/example_pagination_bootstrap.htm](This Bootstrap pagination example) has you covered.
+2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [This Bootstrap pagination example](examples/example_pagination_bootstrap.htm) has you covered.
 
-3. **Responsive Layout with Bootstrap** When optimizing for mobile, [examples/example_responsive_bootstrap.htm](this example with responsive layout) is a good starting point.
+3. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
 
 Download
 --------
