@@ -29,7 +29,7 @@ var dataset = [{
     "measure": "Annual Report", // name of the data series, will become y-axis label
     "interval_s": 365 * 24 * 60 * 60, // time period in seconds a single data point is expected to cover
     "data": [
-        ["2015-01-01", 0], // data as arrays of period start data string and bit determining 
+        ["2015-01-01", 0], // data as arrays of period start data string and bit determining
                            // if data is available for that period
         ["2016-01-01", 1],
         ["2017-01-01", 1],
@@ -44,7 +44,7 @@ The display style of the chart is defined by a CSS style. The names of the diffe
 ### Implementation
 To use the chart in your project, follow these steps:
 1. Copy the `vendors` folder to the *root folder* of your project.
-2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website: 
+2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website:
 ```html
 <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
 <link href="./vendors/css/visavail.css" rel="stylesheet" type="text/css">
@@ -76,8 +76,11 @@ To use the chart in your project, follow these steps:
 Examples
 --------
 Three examples are provided with Visavail.js.
+
 1. **Basic Example** The [examples/example_basic.htm](basic example) gives you the quick "plug and play" experience.
+
 2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [examples/example_pagination_bootstrap.htm](This Bootstrap pagination example) has you covered.
+
 3. **Responsive Layout with Bootstrap** When optimizing for mobile, [examples/example_responsive_bootstrap.htm](this example with responsive layout) is a good starting point.
 
 Download
