@@ -16,11 +16,11 @@ The Visavail.js library takes single data points with dates and information abou
 
 Demo
 ----
-A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in [example.htm](example.htm).
+A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in [examples/example_basic.htm](example_basic.htm).
 
 Usage
 -----
-Input data format, display style and implementation have to be considered for using the Visavail.js library successfully. An example is provided in the file [example.htm](example.htm). The source code of this file is explained below.
+Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
 ### Input Data Format
 The input to the Visavail.js library is a JSON-like structure. The below code comments point out the elements that should be included in the input data.
@@ -39,31 +39,31 @@ var dataset = [{
 ```
 
 ### Display Style
-The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [example file](example.htm) are self-explanatory.
+The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](vendors/visavail/css/visavail.css) are self-explanatory.
 
 ### Implementation
-To use the chart, the following lines should be added to the `<head>` of the website:
+To use the chart in your project, follow these steps:
+1. Copy the `vendors` folder to the *root folder* of your project.
+2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website: 
 ```html
-<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
-<style>
-    ... /* see example.htm */
-</style>
-<link rel="stylesheet" type="text/css" href="./vendors/fontello/css/fontello.css">
+<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
+<link href="./vendors/css/visavail.css" rel="stylesheet" type="text/css">
+<link href="./vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 ```
 
-And the following lines to the `<body>` of the website:
+3. And the following lines to the `<body>` of your website:
 ```html
 <script src="./vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
 <script>
-    moment.locale('en');
+    moment.locale("en");
 </script>
 <script src="./vendors/d3/d3.min.js" charset="utf-8"></script>
 <script type="text/javascript">
-    var dataset = ... // see example.htm
+    var dataset = ... // see examples/example_basic.htm
 </script>
-<script src="./resources/visavail.js"></script>
+<script src="./vendors/visavail/js/visavail.js"></script>
 
-<p id="example"><!-- chart will be inserted here --></p>
+<p id="example"><!-- Visavail.hs chart will be inserted here --></p>
 
 <script>
     var chart = visavailChart().width(800); // define width of chart in px
@@ -73,13 +73,23 @@ And the following lines to the `<body>` of the website:
 </script>
 ```
 
+Examples
+--------
+Three examples are provided with Visavail.js.
+1. **Basic Example** The [examples/example_basic.htm](basic example) gives you the quick "plug and play" experience.
+2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [examples/example_pagination_bootstrap.htm](This Bootstrap pagination example) has you covered.
+3. **Responsive Layout with Bootstrap** When optimizing for mobile, [examples/example_responsive_bootstrap.htm](this example with responsive layout) is a good starting point.
+
 Download
 --------
 An archive with the library can be downloaded from the [releases page](https://github.com/flrs/visavail/releases).
 
 Dependencies
 ------------
-Visavail.js depends on the [D3.js JavaScript library](https://d3js.org/) as a visualization framework and [Moment.js](http://momentjs.com/) for formatting dates in tooltips.
+Visavail.js depends on a couple of libraries:
+* [D3.js JavaScript library](https://d3js.org/) as a visualization framework,
+* [Moment.js](http://momentjs.com/) for formatting dates in tooltips and
+* [Font Awesome](http://fontawesome.io) for icons in the tooltips.
 
 Contribution
 ------------

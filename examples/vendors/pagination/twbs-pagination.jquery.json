@@ -1,0 +1,29 @@
+{
+    "name": "twbs-pagination",
+    "version": "1.3.1",
+    "title": "jQuery Bootstrap Pagination",
+    "author": {
+        "name": "Eugene Simakin",
+        "email": "mail@esimakin.com",
+        "url": "http://www.esimakin.com"
+    },
+    "licenses": [
+        {
+            "type": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    ],
+    "dependencies": {
+        "jquery": "> 1.7"
+    },
+    "description": "Twbs Pagination is a jQuery plugin that provides pagination for your web site or application. Check out the demo!",
+    "keywords": [
+        "bootstrap",
+        "twbs-pagination",
+        "pagination"
+    ],
+    "homepage": "https://github.com/esimakin/twbs-pagination",
+    "demo": "http://esimakin.github.io/twbs-pagination/",
+    "download": "https://github.com/esimakin/twbs-pagination/zipball/master",
+    "bugs": "https://github.com/esimakin/twbs-pagination/issues"
+}
