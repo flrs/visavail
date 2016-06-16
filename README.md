@@ -39,7 +39,7 @@ var dataset = [{
 ```
 
 ### Display Style
-The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](vendors/visavail/css/visavail.css) are self-explanatory.
+The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
 
 ### Implementation
 To use the chart in your project, follow these steps:
