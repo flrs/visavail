@@ -75,13 +75,26 @@ function visavailChart() {
       var noOfDatasets = endSet - startSet;
       var height = dataHeight * noOfDatasets + lineSpacing * noOfDatasets - 1;
 
+      // check how data is arranged
+      var definedBlocks = 0;
+      for (var i = 0; i < dataset.length; i++) {
+        if (dataset[i].data[0].length === 3) {
+          definedBlocks = 1;
+          break;
+        }
+      }
+
       // parse data text strings to JavaScript date stamps
       var parseDate = d3.time.format('%Y-%m-%d');
       dataset.forEach(function (d) {
         d.data.forEach(function (d1) {
           if (!(d1[0] instanceof Date)) {
             d1[0] = parseDate.parse(d1[0]);
-            d1[2] = d3.time.second.offset(d1[0], d.interval_s);
+            if (!definedBlocks) {
+              d1[2] = d3.time.second.offset(d1[0], d.interval_s);
+            } else {
+              d1[2] = parseDate.parse(d1[2]);
+            }
           }
         });
       });
@@ -94,12 +107,25 @@ function visavailChart() {
           if (i !== 0 && i < dataLength) {
             if (d[1] === tmpData[tmpData.length - 1][1]) {
               // the value has not changed since the last date
-              tmpData[tmpData.length - 1][2] = d[2];
-              tmpData[tmpData.length - 1][3] = 1;
+              if (definedBlocks) {
+                if (tmpData[tmpData.length - 1][2].getTime() === d[0].getTime()) {
+                  // end of old and start of new block are the same
+                  tmpData[tmpData.length - 1][2] = d[2];
+                  tmpData[tmpData.length - 1][3] = 1;
+                } else {
+                  tmpData.push(d);
+                }
+              } else {
+                tmpData[tmpData.length - 1][2] = d[2];
+                tmpData[tmpData.length - 1][3] = 1;
+              }
             } else {
               // the value has changed since the last date
-              tmpData[tmpData.length - 1][2] = d[0]; // extend last block until new block starts
               d[3] = 0;
+              if (!definedBlocks) {
+                // extend last block until new block starts
+                tmpData[tmpData.length - 1][2] = d[0];
+              }
               tmpData.push(d);
             }
           } else if (i === 0) {

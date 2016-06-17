@@ -23,17 +23,39 @@ Usage
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
 ### Input Data Format
-The input to the Visavail.js library is a JSON-like structure. The below code comments point out the elements that should be included in the input data.
+The input to the Visavail.js library is a JSON-like structure. There are two formats that Visavail.js accepts. Which format is right for you depends on your use case.
+
+#### Continuous Data
+You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that the availability of some data are valid until a next data point shows up.
+Thus, the library will plot a continuous bar from the first to the last data point. The last data point will be assumed valid for a period of `"interval_s"`.
+The below code comments point out the elements that should be included in the input data.
 ```javascript
 var dataset = [{
     "measure": "Annual Report", // name of the data series, will become y-axis label
     "interval_s": 365 * 24 * 60 * 60, // time period in seconds a single data point is expected to cover
     "data": [
         ["2015-01-01", 0], // data as arrays of period start data string and bit determining
-                           // if data is available for that period
+                           // if data are available for that period
         ["2016-01-01", 1],
         ["2017-01-01", 1],
         ["2018-01-01", 1]
+    ]
+}];
+```
+
+#### Data With Time Gaps
+You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start
+and an end date, as shown in the code below. In this case, no information about `"interval_s"` (as explained in the previous use case) is needed.
+```javascript
+var dataset = [{
+    "measure": "Annual Report", // name of the data series, will become y-axis label
+    "data": [
+        ["2015-01-01", 0, "2015-03-04"], // data as arrays of period start data string,
+                                         // bit determining if data are available for that
+                                         // period and period end data string
+        ["2016-01-01", 1, "2016-03-03"],
+        ["2017-01-01", 1, "2017-03-06"],
+        ["2018-01-01", 1, "2018-04-01"]
     ]
 }];
 ```
@@ -78,6 +100,8 @@ Examples
 Three examples are provided with Visavail.js.
 
 1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
+
+2. **Time Gap Example** Check out the [time gap example](examples/example_timegaps.htm) for getting to know how to define time gaps in your input dataset.
 
 2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [This Bootstrap pagination example](examples/example_pagination_bootstrap.htm) has you covered.
 
