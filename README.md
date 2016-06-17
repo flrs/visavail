@@ -97,7 +97,7 @@ To use the chart in your project, follow these steps:
 
 Examples
 --------
-Three examples are provided with Visavail.js.
+Four examples are provided with Visavail.js.
 
 1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
 
