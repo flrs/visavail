@@ -81,35 +81,36 @@ The display style of the chart is defined by a CSS style. The names of the diffe
 
 ### Implementation
 To use the chart in your project, follow these steps:
+
 1. Copy the `vendors` folder and the `visavail` folder to the *root folder* of your project.
+
 2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website:
-```html
-<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
-<link href="./visavail/css/visavail.css" rel="stylesheet" type="text/css">
-<link href="./vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-```
-
+    ```html
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
+    <link href="./visavail/css/visavail.css" rel="stylesheet" type="text/css">
+    <link href="./vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    ```
 3. And the following lines to the `<body>` of your website:
-```html
-<script src="./vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
-<script>
-    moment.locale("en");
-</script>
-<script src="./vendors/d3/d3.min.js" charset="utf-8"></script>
-<script type="text/javascript">
-    var dataset = ... // see examples/example_basic.htm
-</script>
-<script src="./visavail/js/visavail.js"></script>
-
-<p id="example"><!-- Visavail.js chart will be inserted here --></p>
-
-<script>
-    var chart = visavailChart().width(800); // define width of chart in px
-    d3.select("#example")
-            .datum(dataset)
-            .call(chart);
-</script>
-```
+    ```html
+    <script src="./vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
+    <script>
+        moment.locale("en");
+    </script>
+    <script src="./vendors/d3/d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var dataset = ... // see examples/example_basic.htm
+    </script>
+    <script src="./visavail/js/visavail.js"></script>
+    
+    <p id="example"><!-- Visavail.js chart will be inserted here --></p>
+    
+    <script>
+        var chart = visavailChart().width(800); // define width of chart in px
+        d3.select("#example")
+                .datum(dataset)
+                .call(chart);
+    </script>
+    ```
 
 Examples
 --------
