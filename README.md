@@ -124,7 +124,7 @@ Five examples are provided with Visavail.js.
 
 4. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
 
-5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows how you how.
+5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows you how.
 
 Download
 --------
