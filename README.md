@@ -23,7 +23,7 @@ Usage
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
 ### Input Data Format
-The input to the Visavail.js library is a JSON-like structure. There are two formats that Visavail.js accepts. Which format is right for you depends on your use case.
+The input to the Visavail.js library is a JSON-like structure. There are three formats that Visavail.js accepts. Which format is right for you depends on your use case.
 
 #### Continuous Data
 You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that the availability of some data are valid until a next data point shows up.
@@ -59,6 +59,22 @@ var dataset = [{
     ]
 }];
 ```
+
+#### Data With Dates and Times
+The library also supports the display of data in smaller units than days as in the previous examples. Visavail.js currently supports display of data in second intervals. The code below is based on the time gap data format outlined above.
+To display date and time data correctly, all data must be formatted in a 24-hour format.
+```javascript
+var dataset = [{
+    "measure": "Room Occupancy", // name of the data series, will become y-axis label
+    "data": [
+        ["2016-01-01 12:00:00", 1, "2016-01-01 13:00:00"], // 24-hour format
+        ["2016-01-01 14:22:51", 1, "2016-01-01 16:14:12"],
+        ["2016-01-01 19:20:05", 0, "2016-01-01 20:30:00"],
+        ["2016-01-01 20:30:00", 1, "2016-01-01 22:00:00"]
+    ]
+}];
+```
+
 
 ### Display Style
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
@@ -97,15 +113,17 @@ To use the chart in your project, follow these steps:
 
 Examples
 --------
-Four examples are provided with Visavail.js.
+Five examples are provided with Visavail.js.
 
 1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
 
 2. **Time Gap Example** Check out the [time gap example](examples/example_timegaps.htm) for getting to know how to define time gaps in your input dataset.
 
-2. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [This Bootstrap pagination example](examples/example_pagination_bootstrap.htm) has you covered.
+3. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [This Bootstrap pagination example](examples/example_pagination_bootstrap.htm) has you covered.
 
-3. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
+4. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
+
+5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows how you how.
 
 Download
 --------

@@ -81,19 +81,48 @@ function visavailChart() {
         if (dataset[i].data[0].length === 3) {
           definedBlocks = 1;
           break;
+        } else {
+          if (definedBlocks) {
+            throw new Error('Detected different data formats in input data. Format can either be ' +
+                'continuous data format or time gap data format but not both.');
+          }
         }
       }
 
       // parse data text strings to JavaScript date stamps
       var parseDate = d3.time.format('%Y-%m-%d');
+      var parseDateTime = d3.time.format('%Y-%m-%d %H:%M:%S');
+      var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
+      var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+      var isDateOnlyFormat = true;
       dataset.forEach(function (d) {
         d.data.forEach(function (d1) {
           if (!(d1[0] instanceof Date)) {
-            d1[0] = parseDate.parse(d1[0]);
+            if (parseDateRegEx.test(d1[0])) {
+              // d1[0] is date without time data
+              d1[0] = parseDate.parse(d1[0]);
+            } else if (parseDateTimeRegEx.test(d1[0])) {
+              // d1[0] is date with time data
+              d1[0] = parseDateTime.parse(d1[0]);
+              isDateOnlyFormat = false;
+            } else {
+              throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+                '\'YYYY-MM-DD HH:MM:SS\'.');
+            }
+
             if (!definedBlocks) {
               d1[2] = d3.time.second.offset(d1[0], d.interval_s);
             } else {
-              d1[2] = parseDate.parse(d1[2]);
+              if (parseDateRegEx.test(d1[2])) {
+                // d1[2] is date without time data
+                d1[2] = parseDate.parse(d1[2]);
+              } else if (parseDateTimeRegEx.test(d1[2])) {
+                // d1[2] is date with time data
+                d1[2] = parseDateTime.parse(d1[2]);
+              } else {
+                throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+                    '\'YYYY-MM-DD HH:MM:SS\'.');
+              }
             }
           }
         });
@@ -272,11 +301,22 @@ function visavailChart() {
               } else {
                 output = '<i class="fa fa-fw fa-times tooltip_has_no_data"></i>';
               }
-              if (d[2] > d3.time.second.offset(d[0], 86400)) {
-                return output + moment(parseDate(d[0])).format('l')
-                    + ' - ' + moment(parseDate(d[2])).format('l');
+              if (isDateOnlyFormat) {
+                if (d[2] > d3.time.second.offset(d[0], 86400)) {
+                  return output + moment(parseDate(d[0])).format('l')
+                      + ' - ' + moment(parseDate(d[2])).format('l');
+                }
+                return output + moment(parseDate(d[0])).format('l');
+              } else {
+                if (d[2] > d3.time.second.offset(d[0], 86400)) {
+                  return output + moment(parseDateTime(d[0])).format('l') + ' '
+                      + moment(parseDateTime(d[0])).format('LTS') + ' - '
+                      + moment(parseDateTime(d[2])).format('l') + ' '
+                      + moment(parseDateTime(d[2])).format('LTS');
+                }
+                return output + moment(parseDateTime(d[0])).format('LTS') + ' - '
+                    + moment(parseDateTime(d[2])).format('LTS');
               }
-              return output + moment(parseDate(d[0])).format('l');
             })
             .style('left', function () {
               return window.pageXOffset + matrix.e + 'px';
@@ -338,12 +378,22 @@ function visavailChart() {
       }
 
       // create subtitle
+      var subtitleText = '';
+      if (isDateOnlyFormat) {
+        subtitleText = 'from ' + moment(parseDate(startDate)).format('MMMM Y') + ' to '
+          + moment(parseDate(endDate)).format('MMMM Y');
+      } else {
+        subtitleText = 'from ' + moment(parseDateTime(startDate)).format('l') + ' '
+            + moment(parseDateTime(startDate)).format('LTS') + ' to '
+            + moment(parseDateTime(endDate)).format('l') + ' '
+            + moment(parseDateTime(endDate)).format('LTS');
+      }
+
       svg.select('#g_title')
           .append('text')
           .attr('x', paddingLeft)
           .attr('y', paddingTopHeading + 17)
-          .text('from ' + moment(parseDate(startDate)).format('MMMM Y') + ' to '
-              + moment(parseDate(endDate)).format('MMMM Y'))
+          .text(subtitleText)
           .attr('class', 'subheading');
 
       // create legend
