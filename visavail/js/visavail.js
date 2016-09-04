@@ -50,6 +50,8 @@ function visavailChart() {
       .attr('class', 'tooltip')
       .style('opacity', 0);
 
+  var definedBlocks = null;
+
   function chart(selection) {
     selection.each(function drawGraph(dataset) {
       // check which subset of datasets have to be displayed
@@ -76,15 +78,17 @@ function visavailChart() {
       var height = dataHeight * noOfDatasets + lineSpacing * noOfDatasets - 1;
 
       // check how data is arranged
-      var definedBlocks = 0;
-      for (var i = 0; i < dataset.length; i++) {
-        if (dataset[i].data[0].length === 3) {
-          definedBlocks = 1;
-          break;
-        } else {
-          if (definedBlocks) {
-            throw new Error('Detected different data formats in input data. Format can either be ' +
-                'continuous data format or time gap data format but not both.');
+      if (definedBlocks === null) {
+        definedBlocks = 0;
+        for (var i = 0; i < dataset.length; i++) {
+          if (dataset[i].data[0].length === 3) {
+            definedBlocks = 1;
+            break;
+          } else {
+            if (definedBlocks) {
+              throw new Error('Detected different data formats in input data. Format can either be ' +
+                  'continuous data format or time gap data format but not both.');
+            }
           }
         }
       }
