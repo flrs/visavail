@@ -182,7 +182,7 @@ function visavailChart() {
           endDate = series.disp_data[series.disp_data.length - 1][2];
         } else {
           if (series.disp_data[0][0] < startDate) {
-            startDate = series.data[0][0];
+            startDate = series.disp_data[0][0];
           }
           if (series.disp_data[series.disp_data.length - 1][2] > endDate) {
             endDate = series.disp_data[series.disp_data.length - 1][2];
