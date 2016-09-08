@@ -51,6 +51,7 @@ function visavailChart() {
       .style('opacity', 0);
 
   var definedBlocks = null;
+  var isDateOnlyFormat = null;
 
   function chart(selection) {
     selection.each(function drawGraph(dataset) {
@@ -98,7 +99,9 @@ function visavailChart() {
       var parseDateTime = d3.time.format('%Y-%m-%d %H:%M:%S');
       var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
       var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
-      var isDateOnlyFormat = true;
+      if (isDateOnlyFormat === null) {
+        isDateOnlyFormat = true;
+      }
       dataset.forEach(function (d) {
         d.data.forEach(function (d1) {
           if (!(d1[0] instanceof Date)) {
