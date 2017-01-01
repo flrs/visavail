@@ -26,7 +26,7 @@ Input data format, display style and dependencies have to be considered for usin
 The input to the Visavail.js library is a JSON-like structure. There are three formats that Visavail.js accepts. Which format is right for you depends on your use case.
 
 #### Continuous Data
-You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that the availability of some data are valid until a next data point shows up.
+You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that information about the availability of some data is valid until the next data point shows up.
 Thus, the library will plot a continuous bar from the first to the last data point. The last data point will be assumed valid for a period of `"interval_s"`.
 The below code comments point out the elements that should be included in the input data.
 ```javascript
