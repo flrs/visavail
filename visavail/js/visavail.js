@@ -293,6 +293,11 @@ function visavailChart() {
           })
           .attr('height', dataHeight)
           .attr('class', function (d) {
+            var series = dataset.find(function(series) { return series.disp_data.indexOf(d) >= 0; });
+            if (series && series.categories) {
+              d3.select(this).attr('fill', series.categories[d[1]].color);
+              return '';
+            }
             if (d[1] === 1) {
               return 'rect_has_data';
             }
