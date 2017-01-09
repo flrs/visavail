@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Visavail.js Example: Custom Categories</title>
+
+    <!-- Visavail.js style -->
+    <link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+    <link href='../visavail/css/visavail.css' rel='stylesheet' type='text/css'>
+
+    <!-- font-awesome -->
+    <script src="https://use.fontawesome.com/8321cacbf6.js"></script>
+    <!--
+    Note: This should be replaced by
+        <link href='./vendors/font-awesome/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+    when implemented in your project.
+    -->
+
+    <!-- body style for this example -->
+    <style>
+        body {
+            font-family: "Muli", "Helvetica", Arial, sans-serif;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>Visavail.js Custom Categories Example</h1>
+<p>This example demonstrates the use of <a href="http://www.github.com/flrs/visavail" target="_blank">Visavail.js</a>
+   for displaying custom categories.</p>
+
+<p id="example"><!-- Visavail.js chart will be placed here --></p>
+
+<!-- Visavail.js scripts -->
+<script src="../vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
+<script>
+    moment.locale('en');
+</script>
+<script src="../vendors/d3/d3.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    var dataset = [{
+        "measure": "Fat Bike",
+        "categories": {
+            "Kim": { "color": "#377eb8" },
+            "Bert": { "color": "#ff7f00" },
+            "Zoe": { "color": "purple" },
+        },
+        "data": [
+            ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
+            ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
+            ["2016-01-01 16:14:12", "Bert", "2016-01-01 17:14:12"],
+            ["2016-01-01 19:20:05", "Zoe", "2016-01-01 20:30:00"],
+            ["2016-01-01 20:30:00", "Kim", "2016-01-01 22:00:00"]
+        ]
+    }];
+</script>
+<script src="../visavail/js/visavail.js"></script>
+
+<script>
+    // draw Visavail.js chart
+    var chart = visavailChart().width(800);
+
+    d3.select("#example")
+            .datum(dataset)
+            .call(chart);
+</script>
+
+</body>
+
+</html>

@@ -75,6 +75,25 @@ var dataset = [{
 }];
 ```
 
+#### Data With Custom Categories
+If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in customer categories. See the code below for an example.
+```javascript
+var dataset = [{
+    "measure": "Fat Bike",
+    "categories": {
+        "Kim": { "color": "#377eb8" },
+        "Bert": { "color": "#ff7f00" },
+        "Zoe": { "color": "purple" },
+        },
+    "data": [
+        ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
+        ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
+        ["2016-01-01 16:14:12", "Bert", "2016-01-01 17:14:12"],
+        ["2016-01-01 19:20:05", "Zoe", "2016-01-01 20:30:00"],
+        ["2016-01-01 20:30:00", "Kim", "2016-01-01 22:00:00"]
+    ]
+}];
+```
 
 ### Display Style
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
@@ -125,6 +144,8 @@ Five examples are provided with Visavail.js.
 4. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
 
 5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows you how.
+
+6. **Custom Category Data** Categories other than "data available" and "no data available" can be used, as shown in [the custom category data example](examples/example_custom_categories.htm).
 
 Download
 --------
