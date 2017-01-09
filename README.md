@@ -76,11 +76,11 @@ var dataset = [{
 ```
 
 #### Data With Custom Categories
-If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in customer categories. See the code below for an example.
+If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in custom categories. In this case, you have to assign all of your categories a name and a color that is used for displaying the category in the chart. The chart legend will not appear on charts with data in custom categories. Instead, the category name will be shown in the tooltip that appears when you hover over the bars in the chart. See the code below for an example.
 ```javascript
 var dataset = [{
     "measure": "Fat Bike",
-    "categories": {
+    "categories": { // category names and their colors defined here
         "Kim": { "color": "#377eb8" },
         "Bert": { "color": "#ff7f00" },
         "Zoe": { "color": "purple" },
@@ -89,8 +89,7 @@ var dataset = [{
         ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
         ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
         ["2016-01-01 16:14:12", "Bert", "2016-01-01 17:14:12"],
-        ["2016-01-01 19:20:05", "Zoe", "2016-01-01 20:30:00"],
-        ["2016-01-01 20:30:00", "Kim", "2016-01-01 22:00:00"]
+        ["2016-01-01 19:20:05", "Zoe", "2016-01-01 20:30:00"]
     ]
 }];
 ```
