@@ -240,7 +240,19 @@ function visavailChart() {
           .attr('transform', function (d, i) {
             return 'translate(0,' + ((lineSpacing + dataHeight) * i) + ')';
           })
-          .attr('class', 'ytitle');
+          .attr('class', function(d) {
+            var returnCSSClass = 'ytitle';
+            if (d.measure_url != null) {
+              returnCSSClass = returnCSSClass + ' link';
+            }
+            return returnCSSClass;
+          })
+          .on('click', function(d) {
+            if (d.measure_url != null) {
+              return window.open(d.measure_url);
+            }
+            return null;
+          });
 
       // create vertical grid
       svg.select('#g_axis').selectAll('line.vert_grid').data(xScale.ticks())

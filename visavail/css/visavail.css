@@ -55,6 +55,12 @@ div.tooltip {
     font-size: 12px;
 }
 
+.ytitle.link {
+    /* y axis label with link */
+    cursor: pointer;
+    fill: #07C;
+}
+
 .axis path,
 .axis line {
     display: none;

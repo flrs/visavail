@@ -96,6 +96,22 @@ var dataset = [{
 }];
 ```
 
+#### Linking Category Names
+If you want to add a link to your category name, you can do so by adding an URL through the `measure_url` property in the `dataset`. Here is an example:
+```javascript
+var dataset = [{
+    "measure": "Annual Report",
+    "measure_url": "http://www.github.com/flrs/visavail" // link definition
+    "interval_s": 365 * 24 * 60 * 60,
+    "data": [
+        ["2015-01-01", 0], 
+        ["2016-01-01", 1],
+        ["2017-01-01", 1],
+        ["2018-01-01", 1]
+    ]
+}];
+```
+
 ### Display Style
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
 
@@ -147,6 +163,8 @@ Five examples are provided with Visavail.js.
 5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows you how.
 
 6. **Custom Category Data** Categories other than "data available" and "no data available" can be used, as shown in [the custom category data example](examples/example_custom_categories.htm).
+
+7. **Linked Category Names** For adding a link to the category names, [the linked categories example](examples/example_linked_categories.htm) shows how it is done.
 
 Download
 --------
