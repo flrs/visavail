@@ -96,8 +96,8 @@ var dataset = [{
 }];
 ```
 
-#### Linking Category Names
-If you want to add a link to your category name, you can do so by adding an URL through the `measure_url` property in the `dataset`. Here is an example:
+#### Linking Measure Labels
+If you want to add a link to your measure label, you can do so by adding an URL through the `measure_url` property in the `dataset`. Here is an example:
 ```javascript
 var dataset = [{
     "measure": "Annual Report",
@@ -111,6 +111,22 @@ var dataset = [{
     ]
 }];
 ```
+
+#### Measure Labels with HTML
+Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:
+```javascript
+var dataset = [{
+    "measure_html": "<span title='Price of security at end of day'>&#x1F6AA; Closing Price</span>", // HTML code
+    "interval_s": 365 * 24 * 60 * 60,
+    "data": [
+        ["2015-01-01", 0], 
+        ["2016-01-01", 1],
+        ["2017-01-01", 1],
+        ["2018-01-01", 1]
+    ]
+}];
+```
+
 
 ### Display Style
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
@@ -164,7 +180,9 @@ Five examples are provided with Visavail.js.
 
 6. **Custom Category Data** Categories other than "data available" and "no data available" can be used, as shown in [the custom category data example](examples/example_custom_categories.htm).
 
-7. **Linked Category Names** For adding a link to the category names, [the linked categories example](examples/example_linked_categories.htm) shows how it is done.
+7. **Linked Measure Labels** For adding a link to the measure labels, [the linked labels example](examples/example_linked_labels.htm) shows how it is done.
+
+8. **Measure Labels with HTML** If adding a link to the measure labels is not enough, you can make them full HTML, as explained in the [HTML labels example](examples/example_html_labels.htm).
 
 Download
 --------

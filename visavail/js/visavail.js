@@ -228,14 +228,18 @@ function visavailChart() {
       svg.append('g').attr('id', 'g_data');
 
       // create y axis labels
-      svg.select('#g_axis').selectAll('text')
+      var labels = svg.select('#g_axis').selectAll('text')
           .data(dataset.slice(startSet, endSet))
-          .enter()
-          .append('text')
+          .enter();
+
+      // text labels
+      labels.append('text')
           .attr('x', paddingLeft)
           .attr('y', lineSpacing + dataHeight / 2)
           .text(function (d) {
-            return d.measure;
+            if (!(d.measure_html != null)) {
+              return d.measure;
+            }
           })
           .attr('transform', function (d, i) {
             return 'translate(0,' + ((lineSpacing + dataHeight) * i) + ')';
@@ -252,6 +256,22 @@ function visavailChart() {
               return window.open(d.measure_url);
             }
             return null;
+          });
+
+      // HTML labels
+      labels.append('foreignObject')
+          .attr('x', paddingLeft)
+          .attr('y', lineSpacing)
+          .attr('transform', function (d, i) {
+            return 'translate(0,' + ((lineSpacing + dataHeight) * i) + ')';
+          })
+          .attr('width', -1 * paddingLeft)
+          .attr('height', dataHeight)
+          .attr('class', 'ytitle')
+          .html(function(d) {
+            if (d.measure_html != null) {
+              return d.measure_html;
+            }
           });
 
       // create vertical grid
