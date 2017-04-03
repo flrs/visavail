@@ -16,7 +16,7 @@ The Visavail.js library takes single data points with dates and information abou
 
 Demo
 ----
-A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in [examples/example_basic.htm](example_basic.htm).
+A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in the file [example_basic.htm](examples/example_basic.htm).
 
 Usage
 -----
