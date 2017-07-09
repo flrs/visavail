@@ -166,7 +166,7 @@ To use the chart in your project, follow these steps:
 
 Examples
 --------
-Five examples are provided with Visavail.js.
+Eight examples are provided with Visavail.js.
 
 1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
 
@@ -183,6 +183,10 @@ Five examples are provided with Visavail.js.
 7. **Linked Measure Labels** For adding a link to the measure labels, [the linked labels example](examples/example_linked_labels.htm) shows how it is done.
 
 8. **Measure Labels with HTML** If adding a link to the measure labels is not enough, you can make them full HTML, as explained in the [HTML labels example](examples/example_html_labels.htm).
+
+### Public Projects With Visavail.js
+
+- [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
 
 Download
 --------
