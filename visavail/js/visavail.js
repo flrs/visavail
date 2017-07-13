@@ -143,6 +143,8 @@ function visavailChart() {
                     '\'YYYY-MM-DD HH:MM:SS\'.');
               }
             }
+          } else {
+            isDateOnlyFormat = false;
           }
         });
       });
