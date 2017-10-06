@@ -45,6 +45,11 @@ function visavailChart() {
   // "curDisplayFirstDataset+maxDisplayDatasets"
   var curDisplayFirstDataset = 0;
 
+  // range of dates that will be shown
+  // if from-date (1st element) or to-date (2nd element) is zero,
+  // it will be determined according to your data (default: automatically)
+  var displayDateRange = [0, 0];
+
   // global div for tooltip
   var div = d3.select('body').append('div')
       .attr('class', 'tooltip')
@@ -185,8 +190,8 @@ function visavailChart() {
       });
 
       // determine start and end dates among all nested datasets
-      var startDate = 0;
-      var endDate = 0;
+      var startDate = displayDateRange[0];
+      var endDate = displayDateRange[1];
 
       dataset.forEach(function (series, seriesI) {
         if (series.disp_data.length>0) {
@@ -194,10 +199,10 @@ function visavailChart() {
             startDate = series.disp_data[0][0];
             endDate = series.disp_data[series.disp_data.length - 1][2];
           } else {
-            if (series.disp_data[0][0] < startDate) {
+            if (displayDateRange[0] === 0 && series.disp_data[0][0] < startDate) {
               startDate = series.disp_data[0][0];
             }
-            if (series.disp_data[series.disp_data.length - 1][2] > endDate) {
+            if (displayDateRange[1] === 0 && series.disp_data[series.disp_data.length - 1][2] > endDate) {
               endDate = series.disp_data[series.disp_data.length - 1][2];
             }
           }
@@ -528,6 +533,12 @@ function visavailChart() {
   chart.curDisplayFirstDataset = function (_) {
     if (!arguments.length) return curDisplayFirstDataset;
     curDisplayFirstDataset = _;
+    return chart;
+  };
+
+  chart.displayDateRange = function (_) {
+    if (!arguments.length) return displayDateRange;
+    displayDateRange = _;
     return chart;
   };
 
