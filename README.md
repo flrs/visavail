@@ -184,6 +184,8 @@ Eight examples are provided with Visavail.js.
 
 8. **Measure Labels with HTML** If adding a link to the measure labels is not enough, you can make them full HTML, as explained in the [HTML labels example](examples/example_html_labels.htm).
 
+9. **Restricting Visible Date Range** It is possible to restrict the visible date range. Find details in [the date range example](examples/example_daterange.htm).
+
 ### Public Projects With Visavail.js
 
 - [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
