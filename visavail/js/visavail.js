@@ -280,20 +280,22 @@ function visavailChart() {
           });
 
       // create vertical grid
-      svg.select('#g_axis').selectAll('line.vert_grid').data(xScale.ticks())
-          .enter()
-          .append('line')
-          .attr({
-            'class': 'vert_grid',
-            'x1': function (d) {
-              return xScale(d);
-            },
-            'x2': function (d) {
-              return xScale(d);
-            },
-            'y1': 0,
-            'y2': dataHeight * noOfDatasets + lineSpacing * noOfDatasets - 1 + paddingBottom
-          });
+      if (noOfDatasets) {
+        svg.select('#g_axis').selectAll('line.vert_grid').data(xScale.ticks())
+            .enter()
+            .append('line')
+            .attr({
+              'class': 'vert_grid',
+              'x1': function (d) {
+                return xScale(d);
+              },
+              'x2': function (d) {
+                return xScale(d);
+              },
+              'y1': 0,
+              'y2': dataHeight * noOfDatasets + lineSpacing * noOfDatasets - 1 + paddingBottom
+            });
+      }
 
       // create horizontal grid
       svg.select('#g_axis').selectAll('line.horz_grid').data(dataset)
@@ -312,9 +314,11 @@ function visavailChart() {
           });
 
       // create x axis
-      svg.select('#g_axis').append('g')
-          .attr('class', 'axis')
-          .call(xAxis);
+      if (noOfDatasets) {
+        svg.select('#g_axis').append('g')
+            .attr('class', 'axis')
+            .call(xAxis);
+      }
 
       // make y groups for different data series
       var g = svg.select('#g_data').selectAll('.g_data')
@@ -343,11 +347,11 @@ function visavailChart() {
           .attr('height', dataHeight)
           .attr('class', function (d) {
             if (customCategories) {
-              var series = dataset.find(
+              var series = dataset.filter(
                   function(series) {
                     return series.disp_data.indexOf(d) >= 0;
                   }
-              );
+              )[0];
               if (series && series.categories) {
                 d3.select(this).attr('fill', series.categories[d[1]].color);
                 return '';
@@ -459,14 +463,16 @@ function visavailChart() {
 
       // create subtitle
       var subtitleText = '';
-      if (isDateOnlyFormat) {
-        subtitleText = 'from ' + moment(parseDate(startDate)).format('MMMM Y') + ' to '
-          + moment(parseDate(endDate)).format('MMMM Y');
-      } else {
-        subtitleText = 'from ' + moment(parseDateTime(startDate)).format('l') + ' '
-            + moment(parseDateTime(startDate)).format('LTS') + ' to '
-            + moment(parseDateTime(endDate)).format('l') + ' '
-            + moment(parseDateTime(endDate)).format('LTS');
+      if (noOfDatasets) {
+        if (isDateOnlyFormat) {
+          subtitleText = 'from ' + moment(parseDate(startDate)).format('MMMM Y') + ' to '
+              + moment(parseDate(endDate)).format('MMMM Y');
+        } else {
+          subtitleText = 'from ' + moment(parseDateTime(startDate)).format('l') + ' '
+              + moment(parseDateTime(startDate)).format('LTS') + ' to '
+              + moment(parseDateTime(endDate)).format('l') + ' '
+              + moment(parseDateTime(endDate)).format('LTS');
+        }
       }
 
       svg.select('#g_title')
