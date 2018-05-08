@@ -13,13 +13,14 @@ function visavailChart(custom_options) {
 			// left margin should provide space for y axis titles
 			left: 100,
 		},
-		dataHeight: 18,
+		barHeight: 18,
 		lineSpacing: 14,
 		paddingTopHeading: -50,
 		paddingBottom: 10,
 		paddingLeft: -100,
 		// year ticks to be emphasized or not 
 		emphasizeYearTicks: true,
+		emphasizeMonthTicks: true,
 		// define chart pagination
 		// max. no. of datasets that is displayed, 0: all
 		maxDisplayDatasets: 0,
@@ -36,27 +37,45 @@ function visavailChart(custom_options) {
 		customCategories: false,
 		isDateOnlyFormat: true,
 		tooltip: {
-			class: 'tooltip'
+			class: 'tooltip',
+			//height of tooltip , correspond to line-height of class tooltip from css 
+			height: 11
 		},
 
 		legend: {
-			active: true,
+			enabled: true,
 			has_no_data_text: 'No Data available',
 			has_data_text: 'Data available'
 
 		},
 		// title of chart is drawn or not (default: true)
 		title: {
-			active: true,
+			enabled: true,
 			text: 'Data Availability Plot',
 		},
 		sub_title: {
-			active: true,
+			enabled: true,
 			from_text: 'from',
-			from_text: 'to',
+			to_text: 'to',
 		},
 		// if false remeber to set the padding and margin
 		ytitle: true,
+		//custom icon call (for example font awesome)
+		icon:{
+			class_has_data : 'fas fa-fw fa-check',
+			class_has_no_data: 'fas fa-fw fa-times'
+		},
+		//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
+		locale:{
+			"dateTime": "%a %e %b %X %Y",
+			"date": "%d/%m/%Y",
+			"time": "%H:%M:%S",
+			"periods": ["AM", "PM"],
+			"days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+			"shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			"months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			"shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+		}
 	}
 
 	if (custom_options != null) {
@@ -75,6 +94,9 @@ function visavailChart(custom_options) {
 
 	options.width = 940 - options.margin.left - options.margin.right;
 
+	//set to default locale 
+	d3.timeFormatDefaultLocale(options.locale);
+	
 	// global div for tooltip
 	var div = d3.select('body').append('div')
 		.attr('class', options.tooltip.class)
@@ -103,7 +125,7 @@ function visavailChart(custom_options) {
 			selection.attr('data-max-pages', maxPages);
 
 			var noOfDatasets = endSet - startSet;
-			var height = options.dataHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
+			var height = options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
 
 			// check how data is arranged
 			if (options.definedBlocks === null) {
@@ -120,10 +142,9 @@ function visavailChart(custom_options) {
 					}
 				}
 			}
-			console.log("definedBlocks", options.definedBlocks)
 			// parse data text strings to JavaScript date stamps
-			var parseDate = d3.time.format('%Y-%m-%d');
-			var parseDateTime = d3.time.format('%Y-%m-%d %H:%M:%S');
+			var parseDate = d3.timeParse('%Y-%m-%d');
+			var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
 			var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
 			var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
 
@@ -132,10 +153,10 @@ function visavailChart(custom_options) {
 					if (!(d1[0] instanceof Date)) {
 						if (parseDateRegEx.test(d1[0])) {
 							// d1[0] is date without time data
-							d1[0] = parseDate.parse(d1[0]);
+							d1[0] = parseDate(d1[0]);
 						} else if (parseDateTimeRegEx.test(d1[0])) {
 							// d1[0] is date with time data
-							d1[0] = parseDateTime.parse(d1[0]);
+							d1[0] = parseDateTime(d1[0]);
 							options.isDateOnlyFormat = false;
 						} else {
 							throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
@@ -143,14 +164,14 @@ function visavailChart(custom_options) {
 						}
 
 						if (!options.definedBlocks) {
-							d1[2] = d3.time.second.offset(d1[0], d.interval_s);
+							d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 						} else {
 							if (parseDateRegEx.test(d1[2])) {
 								// d1[2] is date without time data
-								d1[2] = parseDate.parse(d1[2]);
+								d1[2] = parseDate(d1[2]);
 							} else if (parseDateTimeRegEx.test(d1[2])) {
 								// d1[2] is date with time data
-								d1[2] = parseDateTime.parse(d1[2]);
+								d1[2] = parseDateTime(d1[2]);
 							} else {
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
@@ -217,17 +238,18 @@ function visavailChart(custom_options) {
 				}
 			});
 
+			
 			// define scales
-			var xScale = d3.time.scale()
+			var xScale = d3.scaleTime()
 				.domain([startDate, endDate])
 				.range([0, options.width])
 				.clamp(1);
 
+			
 			// define axes
-			var xAxis = d3.svg.axis()
-				.scale(xScale)
-				.orient('top');
-
+			var xAxis = d3.axisTop()
+				.scale(xScale);
+			
 			// create SVG element
 			var svg = d3.select(this).append('svg')
 				.attr('width', options.width + options.margin.left + options.margin.right)
@@ -249,14 +271,14 @@ function visavailChart(custom_options) {
 				// text labels
 				labels.append('text')
 					.attr('x', options.paddingLeft)
-					.attr('y', options.lineSpacing + options.dataHeight / 2)
+					.attr('y', options.lineSpacing + options.barHeight / 2)
 					.text(function (d) {
 						if (!(d.measure_html != null)) {
 							return d.measure;
 						}
 					})
 					.attr('transform', function (d, i) {
-						return 'translate(0,' + ((options.lineSpacing + options.dataHeight) * i) + ')';
+						return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
 					})
 					.attr('class', function (d) {
 						var returnCSSClass = 'ytitle';
@@ -277,10 +299,10 @@ function visavailChart(custom_options) {
 					.attr('x', options.paddingLeft)
 					.attr('y', options.lineSpacing)
 					.attr('transform', function (d, i) {
-						return 'translate(0,' + ((options.lineSpacing + options.dataHeight) * i) + ')';
+						return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
 					})
 					.attr('width', -1 * options.paddingLeft)
-					.attr('height', options.dataHeight)
+					.attr('height', options.barHeight)
 					.attr('class', 'ytitle')
 					.html(function (d) {
 						if (d.measure_html != null) {
@@ -288,41 +310,36 @@ function visavailChart(custom_options) {
 						}
 					});
 			}
-
+			
 			// create vertical grid
 			if (noOfDatasets) {
 				svg.select('#g_axis').selectAll('line.vert_grid').data(xScale.ticks())
 					.enter()
 					.append('line')
-					.attr({
-						'class': 'vert_grid',
-						'x1': function (d) {
-							return xScale(d);
-						},
-						'x2': function (d) {
-							return xScale(d);
-						},
-						'y1': 0,
-						'y2': options.dataHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom
-					});
+					.attr('x1', function (d) {
+						return xScale(d);
+					})
+					.attr('x2', function (d) {
+						return xScale(d);
+					})
+					.attr('y1', 0)
+					.attr('y2', options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom)
+					.attr('class', 'vert_grid');
 			}
-
 			// create horizontal grid
 			svg.select('#g_axis').selectAll('line.horz_grid').data(dataset)
 				.enter()
 				.append('line')
-				.attr({
-					'class': 'horz_grid',
-					'x1': 0,
-					'x2': options.width,
-					'y1': function (d, i) {
-						return ((options.lineSpacing + options.dataHeight) * i) + options.lineSpacing + options.dataHeight / 2;
-					},
-					'y2': function (d, i) {
-						return ((options.lineSpacing + options.dataHeight) * i) + options.lineSpacing + options.dataHeight / 2;
-					}
-				});
-
+				.attr('x1', 0)
+				.attr('x2', options.width)
+				.attr('y1', function (d, i) {
+					return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
+				})
+				.attr('y2', function (d, i) {
+					return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
+				})
+				.attr('class', 'horz_grid');
+				
 			// create x axis
 			if (noOfDatasets) {
 				svg.select('#g_axis').append('g')
@@ -336,7 +353,7 @@ function visavailChart(custom_options) {
 				.enter()
 				.append('g')
 				.attr('transform', function (d, i) {
-					return 'translate(0,' + ((options.lineSpacing + options.dataHeight) * i) + ')';
+					return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
 				})
 				.attr('class', 'dataset');
 
@@ -352,9 +369,11 @@ function visavailChart(custom_options) {
 				})
 				.attr('y', options.lineSpacing)
 				.attr('width', function (d) {
+					if((xScale(d[2]) - xScale(d[0]))  < 0 )
+						return 0;
 					return (xScale(d[2]) - xScale(d[0]));
 				})
-				.attr('height', options.dataHeight)
+				.attr('height', options.barHeight)
 				.attr('class', function (d) {
 					if (options.definedBlocks) {
 						var series = dataset.filter(
@@ -389,36 +408,36 @@ function visavailChart(custom_options) {
 							} else {
 								if (d[1] === 1) {
 									// checkmark icon
-									output = '<i class="fa fa-fw fa-check tooltip_has_data"></i>';
+									output = '<i class=" '+ options.icon.class_has_data +' tooltip_has_data"></i>';
 								} else {
 									// cross icon
-									output = '<i class="fa fa-fw fa-times tooltip_has_no_data"></i>';
+									output = '<i class=" '+ options.icon.class_has_no_data + ' tooltip_has_no_data"></i>';
 								}
 							}
 							if (options.isDateOnlyFormat) {
-								if (d[2] > d3.time.second.offset(d[0], 86400)) {
-									return output + moment(parseDate(d[0])).format('l') +
-										' - ' + moment(parseDate(d[2])).format('l');
+								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+									return output + moment(d[0]).format('l') +
+										' - ' + moment(d[2]).format('l');
 								}
-								return output + moment(parseDate(d[0])).format('l');
+								return output + moment(d[0]).format('l');
 							} else {
-								if (d[2] > d3.time.second.offset(d[0], 86400)) {
-									return output + moment(parseDateTime(d[0])).format('l') + ' ' +
-										moment(parseDateTime(d[0])).format('LTS') + ' - ' +
-										moment(parseDateTime(d[2])).format('l') + ' ' +
-										moment(parseDateTime(d[2])).format('LTS');
+								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {	
+									return output + moment(d[0]).format('l') + ' ' +
+										moment(d[0]).format('LTS') + ' - ' +
+										moment(d[2]).format('l') + ' ' +
+										moment(d[2]).format('LTS');
 								}
-								return output + moment(parseDateTime(d[0])).format('LTS') + ' - ' +
-									moment(parseDateTime(d[2])).format('LTS');
+								return output + moment(d[0]).format('LTS') + ' - ' +
+									moment(d[2]).format('LTS');
 							}
 						})
 						.style('left', function () {
 							return window.pageXOffset + matrix.e + 'px';
 						})
 						.style('top', function () {
-							return window.pageYOffset + matrix.f - 11 + 'px';
+							return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
 						})
-						.style('height', options.dataHeight + 11 + 'px');
+						.style('height', options.barHeight + options.tooltip.height + 'px');
 				})
 				.on('mouseout', function () {
 					div.transition()
@@ -438,6 +457,7 @@ function visavailChart(custom_options) {
 			var xTicks = xScale.ticks();
 			var isYearTick = xTicks.map(isYear);
 			var isMonthTick = xTicks.map(isMonth);
+
 			// year emphasis
 			// ensure year emphasis is only active if years are the biggest clustering unit
 			if (options.emphasizeYearTicks &&
@@ -450,43 +470,58 @@ function visavailChart(custom_options) {
 				d3.selectAll('g.tick').each(function (d, i) {
 					if (isYearTick[i]) {
 						d3.select(this)
-							.attr({
-								'class': 'x_tick_emph',
-							});
+							.attr('class', 'x_tick_emph');
 					}
 				});
 				d3.selectAll('.vert_grid').each(function (d, i) {
 					if (isYearTick[i]) {
 						d3.select(this)
-							.attr({
-								'class': 'vert_grid_emph',
-							});
+							.attr('class', 'vert_grid_emph');
 					}
 				});
 			}
-
+			// month emphasis
+			// ensure year emphasis is only active if month are the biggest clustering unit
+			if (options.emphasizeMonthTicks &&
+				!isMonthTick.every(function (d) {
+					return d === true;
+				})) {
+				d3.selectAll('g.tick').each(function (d, i) {
+					if (isMonthTick[i]) {
+						d3.select(this)
+							.attr('class', 'x_tick_emph');
+					}
+				});
+				d3.selectAll('.vert_grid').each(function (d, i) {
+					if (isMonthTick[i]) {
+						d3.select(this)
+							.attr('class', 'vert_grid_emph');
+					}
+				});
+			}
 			// create title
-			if (options.title.active) {
+			if (options.title.enabled) {
 				svg.select('#g_title')
 					.append('text')
 					.attr('x', options.paddingLeft)
 					.attr('y', options.paddingTopHeading)
-					.text('Data Availability Plot')
+					.text(options.title.text)
 					.attr('class', 'heading');
 			}
-			if (options.sub_title.active) {
-				// create subtitle
+			// create subtitle
+			if (options.sub_title.enabled) {
+				
 				var subtitleText = '';
 				if (noOfDatasets) {
 					if (options.isDateOnlyFormat) {
-						subtitleText = options.sub_title.from_text + ' ' + moment(parseDate(startDate)).format('MMMM Y') +
+						subtitleText = options.sub_title.from_text + ' ' + moment(startDate).format('MMMM Y') +
 							' ' + options.sub_title.to_text + ' ' +
-							moment(parseDate(endDate)).format('MMMM Y');
+							moment(endDate).format('MMMM Y');
 					} else {
-						subtitleText = options.sub_title.from_text + moment(parseDateTime(startDate)).format('l') + ' ' +
-							moment(parseDateTime(startDate)).format('LTS') + ' ' + options.sub_title.to_text + ' ' +
-							moment(parseDateTime(endDate)).format('l') + ' ' +
-							moment(parseDateTime(endDate)).format('LTS');
+						subtitleText = options.sub_title.from_text + ' ' + moment(startDate).format('l') + ' ' +
+							moment(startDate).format('LTS') + ' ' + options.sub_title.to_text + ' ' +
+							moment(endDate).format('l') + ' ' +
+							moment(endDate).format('LTS');
 					}
 				}
 
@@ -498,7 +533,7 @@ function visavailChart(custom_options) {
 					.attr('class', 'subheading');
 			}
 			// create legend
-			if (!options.definedBlocks && options.legend.active) {
+			if (!options.definedBlocks && options.legend.enabled) {
 				var legend = svg.select('#g_title')
 					.append('g')
 					.attr('id', 'g_legend')
@@ -531,7 +566,7 @@ function visavailChart(custom_options) {
 					.attr('class', 'legend');
 			}
 		});
-	}
+	};
 
 
 	chart.width = function (_) {
@@ -541,8 +576,8 @@ function visavailChart(custom_options) {
 	};
 
 	chart.drawTitle = function (_) {
-		if (!arguments.length) return options.title.active;
-		options.title.active = _;
+		if (!arguments.length) return options.title.enabled;
+		options.title.enabled = _;
 		return chart;
 	};
 
