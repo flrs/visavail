@@ -50,12 +50,13 @@
 <script src="./vendors/pagination/jquery.twbsPagination.min.js" type="text/javascript"></script>
 
 <!-- Visavail.js scripts -->
-<script src="../vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
-<script>
-    moment.locale('en');
-</script>
-<script src="../vendors/d3/d3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment-with-locales.js" type="text/javascript"></script>
+
+	<!--script src="https://d3js.org/d3.v5.min.js" ></script-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js" ></script>
+
 <script type="text/javascript">
+	moment.locale("it")
     var dataset = [{
         "measure": "Balance Sheet",
         "interval_s": 3 * 30.5 * 24 * 60 * 60,
@@ -1192,17 +1193,9 @@
     // draw Visavail.js chart
     var chart = visavailChart();
 
-    function draw_visavail() {
-        chart.width($('#visavail_container').width()-140);
-        $('#example').text('');
-        d3.select("#example")
-                .datum(dataset)
-                .call(chart);
-    }
+	chart.resizeWidth("example",dataset, $('#visavail_container').width()-140)
 
-    draw_visavail();
-
-    $(window).resize(function () { return draw_visavail(); });
+    $(window).resize(function () { return  chart.resizeWidth("example",dataset, $('#visavail_container').width()-140); });
 </script>
 
 </body>

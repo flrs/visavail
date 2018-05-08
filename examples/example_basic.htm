@@ -45,18 +45,29 @@
 
 	<script>
 		//set moment
-		console.log(moment.locale());
-
+		moment.locale("it")
 		var dataset = [{
 			"measure": "Balance Sheet",
 			"interval_s": 365,
 			"data": [
 				["2015-02-31 10:00:00", 0],
 				["2015-02-31 10:00:00", 1],
-				["2015-02-31 10:01:00", 0],
-				["2015-02-31 10:01:50", 1],
-				["2015-02-31 10:03:00", 0],
-				["2015-02-31 10:03:40", 1]
+				["2015-02-05 10:01:00", 0],
+				["2015-02-05 10:01:50", 0],
+				["2015-02-05 10:03:00", 0],
+				["2015-02-05 10:03:40", 1]
+			]
+		},
+		{
+			"measure": "Balance Sheet",
+			"interval_s": 365,
+			"data": [
+				["2015-02-31 10:00:00", 0],
+				["2015-02-31 10:00:00", 1],
+				["2015-02-05 10:01:00", 0],
+				["2015-02-05 10:01:50", 0],
+				["2015-02-05 10:03:00", 0],
+				["2015-02-05 10:03:40", 1]
 			]
 		},
 	];
@@ -78,16 +89,9 @@
 							height: 18
 						},
 						ytitle: true,
-						locale:{
-								"dateTime": "%A %e %B %Y, %X",
-								"date": "%d/%m/%Y",
-								"time": "%H:%M:%S",
-								"periods": ["AM", "PM"],
-						}
-					}
-		//var parseDate = d3.time.format('%Y-%m-%d %H:%M:%S');
-		var chart = visavailChart(options).createGraph("#example", dataset)
-	
+					};
+		var chart = visavailChart(options).createGraph("example", dataset)
+
 	</script>
 
 </body>
