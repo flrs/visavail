@@ -13,6 +13,7 @@ function visavailChart(custom_options) {
 			// left margin should provide space for y axis titles
 			left: 100,
 		},
+		width: 940,
 		barHeight: 18,
 		lineSpacing: 14,
 		paddingTopHeading: -50,
@@ -66,16 +67,16 @@ function visavailChart(custom_options) {
 			class_has_no_data: 'fas fa-fw fa-times'
 		},
 		//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
-		locale:{
-			"dateTime": "%a %e %b %X %Y",
+		locale: {
+			"dateTime": "%A %e %B %Y, %X",
 			"date": "%d/%m/%Y",
 			"time": "%H:%M:%S",
 			"periods": ["AM", "PM"],
-			"days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-			"shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-			"months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-			"shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-		}
+			"days": ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+			"shortDays": ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
+			"months": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+			"shortMonths": ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"]
+		  }
 	}
 
 	if (custom_options != null) {
@@ -92,9 +93,9 @@ function visavailChart(custom_options) {
 		}
 	}
 
-	options.width = 940 - options.margin.left - options.margin.right;
+	options.width = options.width - options.margin.left - options.margin.right;
 
-	//set to default locale 
+	//set to locale download the format from https://github.com/d3/d3-time-format/tree/master/locale
 	d3.timeFormatDefaultLocale(options.locale);
 	
 	// global div for tooltip
@@ -604,6 +605,13 @@ function visavailChart(custom_options) {
 		options.emphasizeYearTicks = _;
 		return chart;
 	};
+
+	chart.createGraph = function(id_element, dataset){
+		d3.select("#example")
+                .datum(dataset)
+				.call(chart);
+		return chart;
+	}
 
 	return chart;
 
