@@ -72,11 +72,22 @@ function visavailChart(custom_options) {
 			"date": "%d/%m/%Y",
 			"time": "%H:%M:%S",
 			"periods": ["AM", "PM"],
-			"days": ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
-			"shortDays": ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"],
-			"months": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
-			"shortMonths": ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"]
-		  }
+			"days": moment.weekdays(),
+			"shortDays": moment.weekdaysShort(),
+			"months": moment.months(),
+			"shortMonths": moment.monthsShort()
+		},
+		//use custom time format (for infomation about symbol visit: http://pubs.opengroup.org/onlinepubs/009604599/utilities/date.html)
+		customTimeFormat : {
+			formatMillisecond : d3.timeFormat(".%L"),
+			formatSecond : d3.timeFormat(":%S"),
+			formatMinute : d3.timeFormat("%H:%M"),
+			formatHour : d3.timeFormat("%H"),
+			formatDay : d3.timeFormat("%a %d"),
+			formatWeek : d3.timeFormat("%b %d"),
+			formatMonth : d3.timeFormat("%B"),
+			formatYear : d3.timeFormat("%Y")
+		}
 	}
 
 	if (custom_options != null) {
@@ -95,9 +106,16 @@ function visavailChart(custom_options) {
 
 	options.width = options.width - options.margin.left - options.margin.right;
 
-	//set to locale download the format from https://github.com/d3/d3-time-format/tree/master/locale
-	d3.timeFormatDefaultLocale(options.locale);
-	
+	//function for custom tick format of x axis
+	function multiFormat(date) {
+		return (d3.timeSecond(date) < date ? options.customTimeFormat.formatMillisecond
+		  : d3.timeMinute(date) < date ? options.customTimeFormat.formatSecond
+		  : d3.timeHour(date) < date ? options.customTimeFormat.formatMinute
+		  : d3.timeDay(date) < date ? options.customTimeFormat.formatHour
+		  : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? options.customTimeFormat.formatDay : options.customTimeFormat.formatWeek)
+		  : d3.timeYear(date) < date ? options.customTimeFormat.formatMonth
+		  : options.customTimeFormat.formatYear)(date);
+	  }
 	// global div for tooltip
 	var div = d3.select('body').append('div')
 		.attr('class', options.tooltip.class)
@@ -105,7 +123,10 @@ function visavailChart(custom_options) {
 
 	function chart(selection) {
 		selection.each(function drawGraph(dataset) {
-			// check which subset of datasets have to be displayed
+			
+			//set to locale download the format from https://github.com/d3/d3-time-format/tree/master/locale
+			d3.timeFormatDefaultLocale(options.locale);
+	
 			var maxPages = 0;
 			var startSet;
 			var endSet;
@@ -245,11 +266,11 @@ function visavailChart(custom_options) {
 				.domain([startDate, endDate])
 				.range([0, options.width])
 				.clamp(1);
-
 			
-			// define axes
+				// define axes
 			var xAxis = d3.axisTop()
-				.scale(xScale);
+				.scale(xScale)
+				.tickFormat(multiFormat);
 			
 			// create SVG element
 			var svg = d3.select(this).append('svg')
@@ -605,7 +626,7 @@ function visavailChart(custom_options) {
 		options.emphasizeYearTicks = _;
 		return chart;
 	};
-
+	
 	chart.createGraph = function(id_element, dataset){
 		d3.select("#example")
                 .datum(dataset)
