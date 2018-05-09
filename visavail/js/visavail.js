@@ -32,7 +32,12 @@ function visavailChart(custom_options) {
 		// range of dates that will be shown
 		// if from-date (1st element) or to-date (2nd element) is zero,
 		// it will be determined according to your data (default: automatically)
-		displayDateRange: [0, 0],
+
+		displayDateRange: {
+			dateRange: [0, 0],
+			format: '%Y-%m-%d'
+		},
+
 		definedBlocks: null,
 		//if true reminder to use the correct data format for d3
 		customCategories: false,
@@ -104,7 +109,7 @@ function visavailChart(custom_options) {
 		}
 	}
 
-	options.width = options.width - options.margin.left - options.margin.right;
+	
 
 	//function for custom tick format of x axis
 	function multiFormat(date) {
@@ -115,7 +120,7 @@ function visavailChart(custom_options) {
 		  : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? d3.timeFormat(options.customTimeFormat.formatDay) : d3.timeFormat(options.customTimeFormat.formatWeek))
 		  : d3.timeYear(date) < date ? d3.timeFormat(options.customTimeFormat.formatMonth)
 		  : d3.timeFormat(options.customTimeFormat.formatYear))(date);
-	  }
+	}
 	// global div for tooltip
 	var div = d3.select('body').append('div')
 		.attr('class', options.tooltip.class)
@@ -125,7 +130,7 @@ function visavailChart(custom_options) {
 		selection.each(function drawGraph(dataset) {
 			//set to locale with moment
 			d3.timeFormatDefaultLocale(options.locale);
-	
+			var width = options.width - options.margin.left - options.margin.right;
 			var maxPages = 0;
 			var startSet;
 			var endSet;
@@ -239,22 +244,26 @@ function visavailChart(custom_options) {
 				dataset[seriesI].disp_data = tmpData;
 			});
 
+			
+			
 			// determine start and end dates among all nested datasets
-			var startDate = options.displayDateRange[0];
-			var endDate = options.displayDateRange[1];
-
+			var startDate = options.displayDateRange.dateRange[0];
+			var endDate = options.displayDateRange.dateRange[1];
+			if(startDate !== 0)
+				startDate = d3.timeParse(options.displayDateRange.format)(startDate)
+			if(endDate !== 0)
+				endDate = d3.timeParse(options.displayDateRange.format)(endDate)
+			
 			dataset.forEach(function (series, seriesI) {
 				if (series.disp_data.length > 0) {
-					if (startDate === 0) {
+					if (startDate === 0 && endDate === 0) {
 						startDate = series.disp_data[0][0];
 						endDate = series.disp_data[series.disp_data.length - 1][2];
 					} else {
-						if (options.displayDateRange[0] === 0 && series.disp_data[0][0] < startDate) {
+						if (options.displayDateRange.dateRange[0] === 0 && series.disp_data[0][0] < startDate)
 							startDate = series.disp_data[0][0];
-						}
-						if (options.displayDateRange[1] === 0 && series.disp_data[series.disp_data.length - 1][2] > endDate) {
+						if (options.displayDateRange.dateRange[1] === 0 && series.disp_data[series.disp_data.length - 1][2] > endDate)
 							endDate = series.disp_data[series.disp_data.length - 1][2];
-						}
 					}
 				}
 			});
@@ -263,7 +272,7 @@ function visavailChart(custom_options) {
 			// define scales
 			var xScale = d3.scaleTime()
 				.domain([startDate, endDate])
-				.range([0, options.width])
+				.range([0, width])
 				.clamp(1);
 			
 				// define axes
@@ -273,7 +282,7 @@ function visavailChart(custom_options) {
 			
 			// create SVG element
 			var svg = d3.select(this).append('svg')
-				.attr('width', options.width + options.margin.left + options.margin.right)
+				.attr('width', width + options.margin.left + options.margin.right)
 				.attr('height', height + options.margin.top + options.margin.bottom)
 				.append('g')
 				.attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')');
@@ -352,7 +361,7 @@ function visavailChart(custom_options) {
 				.enter()
 				.append('line')
 				.attr('x1', 0)
-				.attr('x2', options.width)
+				.attr('x2', width)
 				.attr('y1', function (d, i) {
 					return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
 				})
@@ -561,31 +570,33 @@ function visavailChart(custom_options) {
 					.attr('transform', 'translate(0,-12)');
 
 				legend.append('rect')
-					.attr('x', options.width + options.margin.right - 150)
+					.attr('x', width + options.margin.right - 150)
 					.attr('y', options.paddingTopHeading)
 					.attr('height', 15)
 					.attr('width', 15)
 					.attr('class', 'rect_has_data');
 
 				legend.append('text')
-					.attr('x', options.width + options.margin.right - 150 + 20)
+					.attr('x', width + options.margin.right - 150 + 20)
 					.attr('y', options.paddingTopHeading + 8.5)
 					.text(options.legend.has_data_text)
 					.attr('class', 'legend');
 
 				legend.append('rect')
-					.attr('x', options.width + options.margin.right - 150)
+					.attr('x', width + options.margin.right - 150)
 					.attr('y', options.paddingTopHeading + 17)
 					.attr('height', 15)
 					.attr('width', 15)
 					.attr('class', 'rect_has_no_data');
 
 				legend.append('text')
-					.attr('x', options.width + options.margin.right - 150 + 20)
+					.attr('x', width + options.margin.right - 150 + 20)
 					.attr('y', options.paddingTopHeading + 8.5 + 15 + 2)
 					.text(options.legend.has_no_data_text)
 					.attr('class', 'legend');
 			}
+
+
 		});
 	};
 
@@ -614,11 +625,7 @@ function visavailChart(custom_options) {
 		return chart;
 	};
 
-	chart.displayDateRange = function (_) {
-		if (!arguments.length) return  options.displayDateRange;
-		options.displayDateRange = _;
-		return chart;
-	};
+	
 
 	chart.emphasizeYearTicks = function (_) {
 		if (!arguments.length) return  options.emphasizeYearTicks;
@@ -626,14 +633,29 @@ function visavailChart(custom_options) {
 		return chart;
 	};
 	
-	chart.resizeWidth = function(id_element, dataset, width){
+
+	chart.displayDateRange = function (id_element, date_range, date_format) {
+		if (!arguments.length) return  options.displayDateRange;
+		if(date_format)
+			options.displayDateRange.format = date_format
+		options.displayDateRange.dateRange = date_range ;
+		return chart.updateGraph(id_element)
+	};
+
+	chart.resizeWidth = function(id_element, width){
 		options.width = width;
+		return chart.updateGraph(id_element)
+	};
+
+	chart.updateGraph = function(id_element){
 		document.getElementById(id_element).innerHTML = "";
-		return chart.createGraph(id_element, dataset)
+		d3.select('#' + id_element)
+				.call(chart);
+		return chart;
 	};
 
 	chart.createGraph = function(id_element, dataset){
-		d3.select('#'+id_element)
+		d3.select('#' + id_element)
                 .datum(dataset)
 				.call(chart);
 		return chart;
