@@ -33,7 +33,7 @@
 	<p>This example demonstrates the basic use of
 		<a href="http://www.github.com/flrs/visavail" target="_blank">Visavail.js</a>.</p>
 
-	<div style="width: 100%" id="visavail_container">
+	<div style="width: 90%" id="visavail_container">
 		<p id="example">
 			<!-- Visavail.js chart will be placed here -->
 		</p>
@@ -44,7 +44,7 @@
 	<script src="https://d3js.org/d3.v5.min.js" ></script>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script> -->
 
-	<script src="../visavail/js/visavail.js"></script>
+	<script src="../visavail/js/visavail.min.js"></script>
 
 	<script>
 		//set moment
@@ -1202,19 +1202,17 @@
 				height: 18
 			},
 			ytitle: true,
-			// displayDateRange: {
-			// 	dateRange: ['2016-01-01','2016-12-31'],
-			// 	format: '%Y-%m-%d'
-			// },
+			dateRange: ['2016-01-01','2016-12-31'],
+
 		};
 		
 		console.log(options.width)
 		var chart = visavailChart(options)
 					.createGraph("example", dataset)
 	
-		setTimeout(function(){
-			console.log(options.width)
-			chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
+		// setTimeout(function(){
+		// 	console.log(options.width)
+		// 	chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
 
 		function redraw() {
 			chart.resizeWidth("example", document.getElementById("visavail_container").offsetWidth);

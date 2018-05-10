@@ -93,10 +93,10 @@ function visavailChart(custom_options) {
 	}
 
 	if (custom_options != null) {
-		for (const key in custom_options) {
+		for (var key in custom_options) {
 			if (options.hasOwnProperty(key)) {
 				if (typeof options[key] == 'object') {
-					for (const sub_key in custom_options[key]) {
+					for (var sub_key in custom_options[key]) {
 						if (options[key].hasOwnProperty(sub_key))
 							options[key][sub_key] = custom_options[key][sub_key];
 					}
@@ -265,11 +265,13 @@ function visavailChart(custom_options) {
 			}
 
 			// define scales
-			var xScale = d3.scaleTime()
-				.domain([startDate, endDate])
-				.range([0, width])
-				.clamp(1);
-			
+			if(options.xScale){
+				var xScale = options.xScale.range([0, width]);
+			} else {
+				var xScale = d3.scaleTime()
+					.domain([startDate, endDate])
+					.range([0, width])
+			}
 				// define axes
 			var xAxis = d3.axisTop()
 				.scale(xScale)
@@ -286,10 +288,10 @@ function visavailChart(custom_options) {
 			svg.append('g').attr('id', 'g_title');
 			svg.append('g').attr('id', 'g_axis');
 			svg.append('g').attr('id', 'g_data');
-
+			
 			if (options.ytitle) {
 				// create y axis labels
-				var labels = svg.select('#g_axis').selectAll('text')
+				var labels = svg.select('#g_axis').append('g').attr('id', 'yAxis').selectAll('text')
 					.data(dataset.slice(startSet, endSet))
 					.enter();
 
@@ -335,24 +337,30 @@ function visavailChart(custom_options) {
 						}
 					});
 			}
+			//xAxis
+			svg.select('#g_axis').append('g').attr('id', 'vGrid');
 			
-			// create vertical grid
-			if (noOfDatasets) {
-				svg.select('#g_axis').selectAll('line.vert_grid').data(xScale.ticks())
+			function createVGrid(scale){
+				svg.select('#vGrid').selectAll('line.vert_grid').data(scale.ticks())
 					.enter()
 					.append('line')
 					.attr('x1', function (d) {
-						return xScale(d);
+						return scale(d);
 					})
 					.attr('x2', function (d) {
-						return xScale(d);
+						return scale(d);
 					})
 					.attr('y1', 0)
 					.attr('y2', options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom)
 					.attr('class', 'vert_grid');
 			}
+
+			// create vertical grid
+			if (noOfDatasets) {
+				createVGrid(xScale)
+			}
 			// create horizontal grid
-			svg.select('#g_axis').selectAll('line.horz_grid').data(dataset)
+			svg.select('#g_axis').append('g').attr('id', 'hGrid').selectAll('line.horz_grid').data(dataset)
 				.enter()
 				.append('line')
 				.attr('x1', 0)
@@ -368,10 +376,11 @@ function visavailChart(custom_options) {
 			// create x axis
 			if (noOfDatasets) {
 				svg.select('#g_axis').append('g')
-					.attr('class', 'axis')
+					.attr('class', 'xAxis')
 					.call(xAxis);
 			}
 
+			
 			// make y groups for different data series
 			var g = svg.select('#g_data').selectAll('.g_data')
 				.data(dataset.slice(startSet, endSet))
@@ -390,6 +399,8 @@ function visavailChart(custom_options) {
 				.enter()
 				.append('rect')
 				.attr('x', function (d) {
+					if(xScale(d[0]) < 0)
+						return 0
 					return xScale(d[0]);
 				})
 				.attr('y', options.lineSpacing)
@@ -485,45 +496,49 @@ function visavailChart(custom_options) {
 
 			// year emphasis
 			// ensure year emphasis is only active if years are the biggest clustering unit
-			if (options.emphasizeYearTicks &&
-				!(isYearTick.every(function (d) {
-					return d === true;
-				})) &&
-				isMonthTick.every(function (d) {
-					return d === true;
-				})) {
-				d3.selectAll('g.tick').each(function (d, i) {
-					if (isYearTick[i]) {
-						d3.select(this)
-							.attr('class', 'x_tick_emph');
-					}
-				});
-				d3.selectAll('.vert_grid').each(function (d, i) {
-					if (isYearTick[i]) {
-						d3.select(this)
-							.attr('class', 'vert_grid_emph');
-					}
-				});
+			function emphasize(){
+				if (options.emphasizeYearTicks &&
+					!(isYearTick.every(function (d) {
+						return d === true;
+					})) &&
+					isMonthTick.every(function (d) {
+						return d === true;
+					})) {
+					d3.selectAll('g.tick').each(function (d, i) {
+						if (isYearTick[i]) {
+							d3.select(this)
+								.attr('class', 'tick x_tick_emph');
+						}
+					});
+					d3.selectAll('.vert_grid').each(function (d, i) {
+						if (isYearTick[i]) {
+							d3.select(this)
+								.attr('class', 'vert_grid vert_grid_emph');
+						}
+					});
+				}
+				// month emphasis
+				// ensure year emphasis is only active if month are the biggest clustering unit
+				if (options.emphasizeMonthTicks &&
+					!isMonthTick.every(function (d) {
+						return d === true;
+					})) {
+					d3.selectAll('g.tick').each(function (d, i) {
+						if (isMonthTick[i]) {
+							d3.select(this)
+								.attr('class', 'x_tick_emph');
+						}
+					});
+					d3.selectAll('.vert_grid').each(function (d, i) {
+						if (isMonthTick[i]) {
+							d3.select(this)
+								.attr('class', 'vert_grid_emph');
+						}
+					});
+				}
 			}
-			// month emphasis
-			// ensure year emphasis is only active if month are the biggest clustering unit
-			if (options.emphasizeMonthTicks &&
-				!isMonthTick.every(function (d) {
-					return d === true;
-				})) {
-				d3.selectAll('g.tick').each(function (d, i) {
-					if (isMonthTick[i]) {
-						d3.select(this)
-							.attr('class', 'x_tick_emph');
-					}
-				});
-				d3.selectAll('.vert_grid').each(function (d, i) {
-					if (isMonthTick[i]) {
-						d3.select(this)
-							.attr('class', 'vert_grid_emph');
-					}
-				});
-			}
+			//emphasize();
+
 			// create title
 			if (options.title.enabled) {
 				svg.select('#g_title')
@@ -590,7 +605,46 @@ function visavailChart(custom_options) {
 					.text(options.legend.has_no_data_text)
 					.attr('class', 'legend');
 			}
+			
+			//implement zooming
+			var zoom = d3.zoom()
+				// .scaleExtent([-1, Infinity])
+				// .translateExtent([[0, 0], [width, height]])
+				// .extent([[0, 0], [width, height]])
+				.on("zoom", zoomed);
+			
+			svg.select("#g_data").call(zoom)
+			
+			function zoomed() {
 
+				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+				options.xScale = d3.event.transform.rescaleX(xScale);
+				
+				g.selectAll('rect')
+					.data(function (d) {
+						return d.disp_data;
+					})
+					.attr('x', function (d) {
+						if(options.xScale(d[0]) < 0)
+							return 0
+						return options.xScale(d[0]);
+					})
+					.attr('width', function (d) {
+							
+						if((options.xScale(d[2]) - options.xScale(d[0]))  < 0 )
+							return 0;
+
+						return (options.xScale(d[2]) - options.xScale(d[0]));
+					})
+
+				//change label x axis
+				svg.select(".xAxis").call(xAxis.scale(options.xScale));
+				//change v grid data axis
+				svg.select('#vGrid').selectAll('line').remove();		
+				createVGrid(options.xScale);
+					
+				//emphasize();
+			}
 
 		});
 	};

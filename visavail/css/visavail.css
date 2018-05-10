@@ -61,12 +61,12 @@ div.tooltip {
     fill: #07C;
 }
 
-.axis path,
-.axis line {
+.xAxis path,
+.xAxis line {
     display: none;
 }
 
-.axis text {
+.xAxis text {
     font-size: 12px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
