@@ -89,7 +89,8 @@ function visavailChart(custom_options) {
 			formatWeek : "%b %d",
 			formatMonth : "%B",
 			formatYear : "%Y"
-		}
+		},
+		zoom: true,
 	}
 
 	if (custom_options != null) {
@@ -287,6 +288,22 @@ function visavailChart(custom_options) {
 			// create basic element groups
 			svg.append('g').attr('id', 'g_title');
 			svg.append('g').attr('id', 'g_axis');
+			
+			if (options.zoom) {
+				//implement zooming
+				var zoom = d3.zoom().on("zoom", zoomed);
+				// this rect acts as a layer so that zooming works anywhere in the svg. otherwise, 
+				// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
+				svg.append('rect')
+					.attr('id', 'zoom')
+					.attr('width', width)
+					.attr('height', height)
+					.attr('fill-opacity', 0)
+					.attr('cursor', "ew-resize")
+					.attr('x', 0)
+					.attr('y', 0)
+				svg.call(zoom)
+			}
 			svg.append('g').attr('id', 'g_data');
 			
 			if (options.ytitle) {
@@ -359,6 +376,7 @@ function visavailChart(custom_options) {
 			if (noOfDatasets) {
 				createVGrid(xScale)
 			}
+
 			// create horizontal grid
 			svg.select('#g_axis').append('g').attr('id', 'hGrid').selectAll('line.horz_grid').data(dataset)
 				.enter()
@@ -389,6 +407,7 @@ function visavailChart(custom_options) {
 				.attr('transform', function (d, i) {
 					return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
 				})
+				.attr('cursor', 'pointer')
 				.attr('class', 'dataset');
 
 			// add data series
@@ -468,7 +487,7 @@ function visavailChart(custom_options) {
 							}
 						})
 						.style('left', function () {
-							return window.pageXOffset + matrix.e + 'px';
+							return (event.pageX) + 'px';
 						})
 						.style('top', function () {
 							return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
@@ -479,8 +498,11 @@ function visavailChart(custom_options) {
 					div.transition()
 						.duration(500)
 						.style('opacity', 0);
-				});
-
+				})
+				.on("mousemove", function(){
+					div.style('left', (event.pageX) + 'px')
+				})
+				;
 			// rework ticks and grid for better visual structure
 			function isYear(t) {
 				return +t === +(new Date(t.getFullYear(), 0, 1, 0, 0, 0));
@@ -605,21 +627,15 @@ function visavailChart(custom_options) {
 					.text(options.legend.has_no_data_text)
 					.attr('class', 'legend');
 			}
-			
-			//implement zooming
-			var zoom = d3.zoom()
-				// .scaleExtent([-1, Infinity])
-				// .translateExtent([[0, 0], [width, height]])
-				// .extent([[0, 0], [width, height]])
-				.on("zoom", zoomed);
-			
-			svg.select("#g_data").call(zoom)
-			
-			function zoomed() {
-
-				if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-				options.xScale = d3.event.transform.rescaleX(xScale);
 				
+			function zoomed() {
+				// if (d3.event.sourceEvent){
+				// 	return
+				// }
+				options.xScale = d3.event.transform.rescaleX(xScale);
+				//hide tooltip when zooming or tran
+				div.style('left', (event.pageX) + 'px')
+				//.style('opacity', 0);
 				g.selectAll('rect')
 					.data(function (d) {
 						return d.disp_data;
@@ -630,11 +646,14 @@ function visavailChart(custom_options) {
 						return options.xScale(d[0]);
 					})
 					.attr('width', function (d) {
-							
-						if((options.xScale(d[2]) - options.xScale(d[0]))  < 0 )
+						if ((options.xScale(d[2]) - options.xScale(d[0]))  < 0 || (options.xScale(d[2]) < 0 && options.xScale(d[1]) < 0))
 							return 0;
-
-						return (options.xScale(d[2]) - options.xScale(d[0]));
+						if (options.xScale(d[0]) < 0 && options.xScale(d[2]) > 0)
+							return options.xScale(d[2]) 
+						if (options.xScale(d[2]) < 0 && options.xScale(d[1]) > 0)
+							return options.xScale(d[1]) 
+				
+						return ((options.xScale(d[2]) - options.xScale(d[0])));
 					})
 
 				//change label x axis
@@ -642,7 +661,6 @@ function visavailChart(custom_options) {
 				//change v grid data axis
 				svg.select('#vGrid').selectAll('line').remove();		
 				createVGrid(options.xScale);
-					
 				//emphasize();
 			}
 
