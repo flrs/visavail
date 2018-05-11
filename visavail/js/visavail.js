@@ -37,7 +37,6 @@ function visavailChart(custom_options, dataset) {
 
 		displayDateRange: [0, 0],
 
-		definedBlocks: null,
 		//if true reminder to use the correct data format for d3
 		customCategories: false,
 		isDateOnlyFormat: true,
@@ -154,20 +153,21 @@ function visavailChart(custom_options, dataset) {
 			var height = options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
 
 			// check how data is arranged
-			if (options.definedBlocks === null) {
-				options.definedBlocks = 0;
-				for (var i = 0; i < dataset.length; i++) {
-					if (dataset[i].data[0].length === 3) {
-						options.definedBlocks = 1;
-						break;
-					} else {
-						if (options.definedBlocks) {
-							throw new Error('Detected different data formats in input data. Format can either be ' +
-								'continuous data format or time gap data format but not both.');
-						}
+			options.definedBlocks = false;
+			for (var i = 0; i < dataset.length; i++) {
+				if(dataset[i].description)
+					options.tooltip.description = true;
+				if (dataset[i].data[0].length === 3) {
+					options.definedBlocks = true;
+					break;
+				} else {
+					if (options.definedBlocks) {
+						throw new Error('Detected different data formats in input data. Format can either be ' +
+							'continuous data format or time gap data format but not both.');
 					}
 				}
 			}
+			
 			// parse data text strings to JavaScript date stamps
 			var parseDate = d3.timeParse('%Y-%m-%d');
 			var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
@@ -463,6 +463,7 @@ function visavailChart(custom_options, dataset) {
 						.duration(200)
 						.style('opacity', 0.9);
 					div.html(function () {
+						
 							var output = '';
 							if (options.definedBlocks) {
 								// custom categories: display category name
@@ -474,6 +475,16 @@ function visavailChart(custom_options, dataset) {
 								} else {
 									// cross icon
 									output = '<i class=" '+ options.icon.class_has_no_data + ' tooltip_has_no_data"></i>';
+								}
+							}
+							if(options.tooltip.description){
+								var series = dataset.filter(
+									function (series) {
+										return series.disp_data.indexOf(d) >= 0;
+									}
+								)[0];
+								if (series && series.description[i]) {
+									output += ' ' + series.description[i] + ' ';
 								}
 							}
 							if (options.isDateOnlyFormat) {
