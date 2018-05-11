@@ -422,11 +422,14 @@ function visavailChart(custom_options) {
 						return 0
 					return xScale(d[0]);
 				})
-				.attr('y', options.lineSpacing)
 				.attr('width', function (d) {
-					if((xScale(d[2]) - xScale(d[0]))  < 0 )
+					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
 						return 0;
-					return (xScale(d[2]) - xScale(d[0]));
+					if (xScale(d[0]) < 0 && xScale(d[2]) > 0)
+						return xScale(d[2]) 
+					if (xScale(d[2]) < 0 && xScale(d[1]) > 0)
+						return xScale(d[1]) 
+					return ((xScale(d[2]) - xScale(d[0])));
 				})
 				.attr('height', options.barHeight)
 				.attr('class', function (d) {
@@ -652,7 +655,6 @@ function visavailChart(custom_options) {
 							return options.xScale(d[2]) 
 						if (options.xScale(d[2]) < 0 && options.xScale(d[1]) > 0)
 							return options.xScale(d[1]) 
-				
 						return ((options.xScale(d[2]) - options.xScale(d[0])));
 					})
 
