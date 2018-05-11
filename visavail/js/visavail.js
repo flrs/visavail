@@ -1,6 +1,8 @@
-function visavailChart(custom_options) {
+function visavailChart(custom_options, dataset) {
 
 	var options = {
+		id_div_container: "visavail_container",
+		id_div_graph: "example",
 		margin: {
 			// top margin includes title and legend
 			top: 70,
@@ -91,6 +93,7 @@ function visavailChart(custom_options) {
 			formatYear : "%Y"
 		},
 		zoom: true,
+		responsive: true
 	}
 
 	if (custom_options != null) {
@@ -431,6 +434,7 @@ function visavailChart(custom_options) {
 						return xScale(d[1]) 
 					return ((xScale(d[2]) - xScale(d[0])));
 				})
+				.attr('y', options.lineSpacing)
 				.attr('height', options.barHeight)
 				.attr('class', function (d) {
 					if (options.definedBlocks) {
@@ -630,13 +634,13 @@ function visavailChart(custom_options) {
 					.text(options.legend.has_no_data_text)
 					.attr('class', 'legend');
 			}
-				
+			// function for zoomed	
 			function zoomed() {
 				// if (d3.event.sourceEvent){
 				// 	return
 				// }
 				options.xScale = d3.event.transform.rescaleX(xScale);
-				//hide tooltip when zooming or tran
+				//position of tooltip when zooming or translate
 				div.style('left', (event.pageX) + 'px')
 				//.style('opacity', 0);
 				g.selectAll('rect')
@@ -664,8 +668,7 @@ function visavailChart(custom_options) {
 				svg.select('#vGrid').selectAll('line').remove();		
 				createVGrid(options.xScale);
 				//emphasize();
-			}
-
+			}			
 		});
 	};
 
@@ -714,8 +717,11 @@ function visavailChart(custom_options) {
 		return chart.updateGraph(id_element)
 	};
 
-	chart.updateGraph = function(id_element){
+	chart.updateGraph = function(id_element, dataset){
 		document.getElementById(id_element).innerHTML = "";
+		if(dataset){
+			return createGraph(id_element,dataset)
+		}
 		d3.select('#' + id_element)
 				.call(chart);
 		return chart;
@@ -727,7 +733,15 @@ function visavailChart(custom_options) {
 				.call(chart);
 		return chart;
 	};
+			// function for resposive
+	function responsive() {
+		chart.resizeWidth(options.id_div_graph, document.getElementById(options.id_div_container).offsetWidth);
+	}
 
+	if(options.responsive)
+		window.addEventListener("resize", responsive);
+	
+	chart.createGraph(options.id_div_graph, dataset);
 	return chart;
 
 }

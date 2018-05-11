@@ -1183,6 +1183,8 @@
 		
 		// draw Visavail.js chart
 		var options = {
+			id_div_container: "visavail_container",
+			id_div_graph: "example",
 			barHeight: 40,
 			width: document.getElementById("visavail_container").offsetWidth,
 			legend: {
@@ -1205,21 +1207,12 @@
 			ytitle: true,
 			dateRange: ['2016-01-01','2016-12-31'],
 
+
 		};
 		
 		console.log(options.width)
-		var chart = visavailChart(options)
-					.createGraph("example", dataset)
+		var chart = visavailChart(options, dataset)
 	
-		// setTimeout(function(){
-		// 	console.log(options.width)
-		// 	chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
-
-		function redraw() {
-			chart.resizeWidth("example", document.getElementById("visavail_container").offsetWidth);
-		}
-		
-		window.addEventListener("resize", redraw);
 	</script>
 
 </body>
