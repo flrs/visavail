@@ -519,13 +519,13 @@ function visavailChart(custom_options, dataset) {
 				return +t === +(new Date(t.getFullYear(), t.getMonth(), 1, 0, 0, 0));
 			}
 
-			var xTicks = xScale.ticks();
-			var isYearTick = xTicks.map(isYear);
-			var isMonthTick = xTicks.map(isMonth);
-
 			// year emphasis
 			// ensure year emphasis is only active if years are the biggest clustering unit
-			function emphasize(){
+			function emphasize(scale){
+				var xTicks = scale.ticks();
+				var isYearTick = xTicks.map(isYear);
+				var isMonthTick = xTicks.map(isMonth);
+
 				if (options.emphasizeYearTicks &&
 					!(isYearTick.every(function (d) {
 						return d === true;
@@ -555,18 +555,18 @@ function visavailChart(custom_options, dataset) {
 					d3.selectAll('g.tick').each(function (d, i) {
 						if (isMonthTick[i]) {
 							d3.select(this)
-								.attr('class', 'x_tick_emph');
+								.attr('class', 'tick x_tick_emph');
 						}
 					});
 					d3.selectAll('.vert_grid').each(function (d, i) {
 						if (isMonthTick[i]) {
 							d3.select(this)
-								.attr('class', 'vert_grid_emph');
+								.attr('class', 'vert_grid vert_grid_emph');
 						}
 					});
 				}
 			}
-			//emphasize();
+			emphasize(xScale);
 
 			// create title
 			if (options.title.enabled) {
@@ -578,8 +578,7 @@ function visavailChart(custom_options, dataset) {
 					.attr('class', 'heading');
 			}
 			// create subtitle
-			if (options.sub_title.enabled) {
-				
+			if (options.sub_title.enabled) {	
 				var subtitleText = '';
 				if (noOfDatasets) {
 					if (options.isDateOnlyFormat) {
@@ -636,17 +635,15 @@ function visavailChart(custom_options, dataset) {
 			}
 			// function for zoomed	
 			function zoomed() {
-				// if (d3.event.sourceEvent){
-				// 	return
-				// }
+				//prevent event null for type != zooming
+				if (d3.event.sourceEvent == null && d3.event.type !== "zoom")
+					return
 				options.xScale = d3.event.transform.rescaleX(xScale);
 				//position of tooltip when zooming or translate
-				div.style('left', (event.pageX) + 'px')
-				//.style('opacity', 0);
+				if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
+					div.style('left', (event.pageX) + 'px')
+
 				g.selectAll('rect')
-					.data(function (d) {
-						return d.disp_data;
-					})
 					.attr('x', function (d) {
 						if(options.xScale(d[0]) < 0)
 							return 0
@@ -667,7 +664,7 @@ function visavailChart(custom_options, dataset) {
 				//change v grid data axis
 				svg.select('#vGrid').selectAll('line').remove();		
 				createVGrid(options.xScale);
-				//emphasize();
+				emphasize(options.xScale);
 			}			
 		});
 	};
