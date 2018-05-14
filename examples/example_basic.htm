@@ -1212,6 +1212,17 @@
 			},
 			ytitle: true,
 			dateRange: ['2016-01-01','2016-12-31'],
+			zoom:{
+				onzoom: function(domain){
+					console.log("onzoom domain", domain)
+				},
+				onzoomend: function(domain){
+					console.log("onzoomend domain", domain)
+				},
+				onzoomstart: function(event){
+					console.log("onzoomstart event", event)
+				},
+			}
 
 
 		};
@@ -1219,9 +1230,9 @@
 		console.log(options.width)
 		var chart = visavailChart(options, dataset)
 	
-		// setTimeout(function(){
-		// 	console.log(options.width)
-		// 	chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
+		setTimeout(function(){
+			console.log(options.width)
+			chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
 
 		// function redraw() {
 		// 	chart.resizeWidth("example", document.getElementById("visavail_container").offsetWidth);

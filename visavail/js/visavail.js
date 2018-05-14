@@ -91,7 +91,15 @@ function visavailChart(custom_options, dataset) {
 			formatMonth : "%B",
 			formatYear : "%Y"
 		},
-		zoom: true,
+		zoom: {
+			enabled: true,
+			//return domain of current scale 
+			onzoom: function onzoom(){},
+			//return event of at start 
+			onzoomstart: function onzoomstart(){},
+			//return domain of current scale at the endo of the scale zoom
+			onzoomend: function onzoomend(){},
+		},
 		responsive: true
 	}
 
@@ -292,9 +300,30 @@ function visavailChart(custom_options, dataset) {
 			svg.append('g').attr('id', 'g_title');
 			svg.append('g').attr('id', 'g_axis');
 			
-			if (options.zoom) {
+			if (options.zoom.enabled) {
 				//implement zooming
-				var zoom = d3.zoom().on("zoom", zoomed);
+				var zoom = d3.zoom()
+				.on("zoom", zoomed)
+				.on("start", function () {
+					var e = d3.event;
+					if (e && e.type === "brush") {
+						return;
+					}
+					startEvent = e;
+					options.zoom.onzoomstart.call(this, e);
+				})
+				.on('end', function () {
+					var e = d3.event.sourceEvent;
+					if (e && e.type === "brush") {
+						return;
+					}
+					// if click, do nothing. otherwise, click interaction will be canceled.
+					if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
+						return;
+					}
+					options.zoom.onzoomend.call(this, options.xScale.domain());
+				});
+		;
 				// this rect acts as a layer so that zooming works anywhere in the svg. otherwise, 
 				// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
 				svg.append('rect')
@@ -483,7 +512,7 @@ function visavailChart(custom_options, dataset) {
 										return series.disp_data.indexOf(d) >= 0;
 									}
 								)[0];
-								if (series && series.description[i]) {
+								if (series && series.description && series.description[i]) {
 									output += ' ' + series.description[i] + ' ';
 								}
 							}
@@ -644,6 +673,7 @@ function visavailChart(custom_options, dataset) {
 					.text(options.legend.has_no_data_text)
 					.attr('class', 'legend');
 			}
+
 			// function for zoomed	
 			function zoomed() {
 				//prevent event null for type != zooming
@@ -676,6 +706,9 @@ function visavailChart(custom_options, dataset) {
 				svg.select('#vGrid').selectAll('line').remove();		
 				createVGrid(options.xScale);
 				emphasize(options.xScale);
+
+				options.zoom.onzoom.call(this, options.xScale.domain())
+
 			}			
 		});
 	};
