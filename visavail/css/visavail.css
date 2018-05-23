@@ -1,33 +1,6 @@
 /* style for visavail.js */
-.rect_has_data {
-    /* blocks that have data */
-    fill: #5cb85c;
-}
 
-.rect_has_data:hover {
-    fill: #449d44
-}
-
-.rect_has_no_data {
-    /* blocks without data */
-    fill: #d9534d;
-}
-
-.rect_has_no_data:hover {
-    fill: #c9302c;
-}
-
-.tooltip_has_data {
-    /* color of symbol in tooltip if there is data */
-    color: #449d44;
-}
-
-.tooltip_has_no_data {
-    /* color of symbol in tooltip if there is no data */
-    color: #c9302c;
-}
-
-div.tooltip {
+.visavail div.tooltip {
     position: absolute;
     text-align: left;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
@@ -42,12 +15,40 @@ div.tooltip {
     padding-top: 0;
     display: block;
 }
+.visavail .rect_has_data {
+    /* blocks that have data */
+    fill: #5cb85c;
+}
 
-.x_tick_emph {
+.visavail .rect_has_data:hover {
+    fill: #449d44
+}
+
+.visavail .rect_has_no_data {
+    /* blocks without data */
+    fill: #d9534d;
+}
+
+.visavail .rect_has_no_data:hover {
+    fill: #c9302c;
+}
+
+.visavail .tooltip_has_data {
+    /* color of symbol in tooltip if there is data */
+    color: #449d44;
+}
+
+.visavail .tooltip_has_no_data {
+    /* color of symbol in tooltip if there is no data */
+    color: #c9302c;
+}
+
+
+.visavail .x_tick_emph {
     font-weight: bold;
 }
 
-.ytitle {
+.visavail .ytitle {
     /* y axis labels */
     dominant-baseline: middle;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
@@ -55,57 +56,57 @@ div.tooltip {
     font-size: 12px;
 }
 
-.ytitle.link {
+.visavail .ytitle.link {
     /* y axis label with link */
     cursor: pointer;
     fill: #07C;
 }
 
-.xAxis path,
-.xAxis line {
+.visavail .xAxis path,
+.visavail .xAxis line {
     display: none;
 }
 
-.xAxis text {
+.visavail .xAxis text {
     font-size: 12px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
     fill: #777;
 }
 
-.vert_grid {
+.visavail .vert_grid {
     fill: none;
     stroke: #dddddd;
     stroke-width: 1px;
 }
 
-.vert_grid_emph {
+.visavail .vert_grid_emph {
     fill: none;
     stroke: #dddddd;
     stroke-width: 2px;
 }
 
-.horz_grid {
+.visavail .horz_grid {
     fill: none;
     stroke: #dddddd;
     stroke-width: 1px;
 }
 
-.heading {
+.visavail .heading {
     font-size: 16px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
     font-weight: bold;
 }
 
-.subheading {
+.visavail .subheading {
     font-size: 12px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
     fill: #777;
 }
 
-.legend {
+.visavail .legend {
     dominant-baseline: middle;
     font-size: 12px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;

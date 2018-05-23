@@ -142,6 +142,8 @@
 		
 		// global div for tooltip
 		var div = d3.select('body').append('div')
+			.attr('class', "visavail")
+			.append('div')
 			.attr('class', options.tooltip.class)
 			.style('opacity', 0);
 
