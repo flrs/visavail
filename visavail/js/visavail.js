@@ -5,7 +5,13 @@
 }(this, (function () {
 	var visavail = {};
 	function visavailChart(custom_options, dataset) {
+		var d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
+		var moment = window.moment ? window.moment : typeof require !== 'undefined' ? require("moment") : undefined;
 
+		if(!d3)
+			throw new Error('Require D3.js before visavail script');
+		if(!moment)
+			throw new Error('Require moment before visavail script');
 		var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "example",
