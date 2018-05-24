@@ -100,7 +100,12 @@
 			},
 			lineSpacing: 24,
 			tooltip: {
-				height: 18
+				class: 'tooltip',
+				//height of tooltip , correspond to line-height of class tooltip from css 
+				height: 18,
+				//position: "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height
+				position: "overlay",
+				left_spacing: 20
 			},
 			ytitle: true,
 			dateRange: ['2016-01-01','2016-12-31'],

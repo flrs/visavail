@@ -55,7 +55,10 @@
 			tooltip: {
 				class: 'tooltip',
 				//height of tooltip , correspond to line-height of class tooltip from css 
-				height: 11
+				height: 11,
+				//position: "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height
+				position: "top",
+				left_spacing: 0
 			},
 
 			legend: {
@@ -144,7 +147,7 @@
 		var div = d3.select('body').append('div')
 			.attr('class', "visavail")
 			.append('div')
-			.attr('class', options.tooltip.class)
+			.attr('class', (options.tooltip.class+"-"+options.tooltip.position))
 			.style('opacity', 0);
 
 		function chart(selection) {
@@ -548,12 +551,28 @@
 								}
 							})
 							.style('left', function () {
-								return (d3.event.pageX) + 'px';
+								if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth')))
+									return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+								return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 							})
-							.style('top', function () {
+
+						if(options.tooltip.position === "top"){
+							div.style('top', function () {
 								return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
 							})
-							.style('height', options.barHeight + options.tooltip.height + 'px');
+							.style('height', options.barHeight + options.tooltip.height + 'px')
+							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
+								div.style('border-right', "solid thin rgb(0, 0, 0)")
+									.style('border-left', "none");
+							} else {
+								div.style('border-left', "solid thin rgb(0, 0, 0)")
+									.style('border-right', "none");
+							}
+
+						}
+						if(options.tooltip.position === "overlay"){
+							div.style('top', (d3.event.pageY) + 'px')
+						}
 					})
 					.on('mouseout', function () {
 						div.transition()
@@ -561,10 +580,26 @@
 							.style('opacity', 0);
 					})
 					.on("mousemove", function(){
-					
-						div.style('left', (d3.event.pageX) + 'px')
-					})
-					;
+						
+						div.style('left',  function () {
+							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth')))
+								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+							return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
+						});
+						
+						if(options.tooltip.position === "top"){
+							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
+								div.style('border-right', "solid thin rgb(0, 0, 0)")
+									.style('border-left', "none");
+							} else {
+								div.style('border-left', "solid thin rgb(0, 0, 0)")
+									.style('border-right', "none");
+							}
+						}
+						if(options.tooltip.position === "overlay"){
+							div.style('top', (d3.event.pageY) + 'px')
+						}
+					});
 				// rework ticks and grid for better visual structure
 				function isYear(t) {
 					return +t === +(new Date(t.getFullYear(), 0, 1, 0, 0, 0));
