@@ -182,7 +182,7 @@
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0].length === 3) {
+					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3) {
 						options.definedBlocks = true;
 						break;
 					} else {
@@ -586,7 +586,7 @@
 								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 							return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 						});
-						
+
 						if(options.tooltip.position === "top"){
 							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
@@ -811,7 +811,7 @@
 		chart.updateGraph = function(id_element, dataset){
 			document.getElementById(id_element).innerHTML = "";
 			if(dataset){
-				return createGraph(id_element,dataset)
+				return chart.createGraph(id_element,dataset)
 			}
 			d3.select('#' + id_element)
 					.call(chart);
