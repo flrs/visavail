@@ -17,7 +17,7 @@
 			id_div_graph: "example",
 			margin: {
 				// top margin includes title and legend
-				top: 70,
+				top: 35,
 
 				// right margin should provide space for last horz. axis title
 				right: 40,
@@ -551,7 +551,7 @@
 								}
 							})
 							.style('left', function () {
-								if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth')))
+								if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth' + options.tooltip.left_spacing)))
 									return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 								return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 							})
@@ -580,15 +580,16 @@
 							.style('opacity', 0);
 					})
 					.on("mousemove", function(){
-						
+						//console.log(d3.event ,   div.property('offsetWidth'),width + options.margin.right, d3.event.pageX + div.property('offsetWidth'))
+										
 						div.style('left',  function () {
-							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth')))
+							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 							return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 						});
-
+						
 						if(options.tooltip.position === "top"){
-							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
+							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth'))){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
 									.style('border-left', "none");
 							} else {
