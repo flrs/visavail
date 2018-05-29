@@ -39,7 +39,7 @@
 				</div>
 				<div style="width: 90%" class="col-6 visavail" id="visavail_container">
 						<p>ciaoooooo</p>
-					<p id="example">
+					<p id="ciao">
 						<!-- Visavail.js chart will be placed here -->
 					</p>
 					
@@ -87,7 +87,7 @@
 		// draw Visavail.js chart
 		var options = {
 			id_div_container: "visavail_container",
-			id_div_graph: "example",
+			id_div_graph: "ciao",
 			barHeight: 40,
 			width: document.getElementById("visavail_container").offsetWidth,
 			legend: {
@@ -133,9 +133,9 @@
 		console.log(options.width)
 		var chart = visavail.generate(options, dataset)
 	
-		// setTimeout(function(){
-		// 	console.log(options.width)
-		// 	chart.displayDateRange("example", ['2016-01-01',0])}, 5000)
+		setTimeout(function(){
+			console.log(options.width)
+			chart.destroy()}, 1000)
 
 		// function redraw() {
 		// 	chart.resizeWidth("example", document.getElementById("visavail_container").offsetWidth);

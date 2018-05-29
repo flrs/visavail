@@ -115,7 +115,10 @@
 				//return domain of current scale at the endo of the scale zoom
 				onzoomend: function onzoomend(){},
 			},
-			responsive: true
+			responsive: {
+				enabled: true,
+				onresize: function onresize(){},
+			}
 		}
 
 		if (custom_options != null) {
@@ -182,7 +185,7 @@
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3) {
+					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1])) {
 						options.definedBlocks = true;
 						break;
 					} else {
@@ -798,42 +801,56 @@
 		};
 		
 
-		chart.displayDateRange = function (id_element, date_range) {
+		chart.displayDateRange = function (date_range) {
 			if (!arguments.length) return  options.displayDateRange;
 			options.displayDateRange = date_range ;
-			return chart.updateGraph(id_element)
+			return chart.updateGraph(options.id_div_graph)
 		};
 
-		chart.resizeWidth = function(id_element, width){
+		chart.resizeWidth = function(width){
 			options.width = width;
-			return chart.updateGraph(id_element)
+			return chart.updateGraph()
 		};
 
-		chart.updateGraph = function(id_element, dataset){
-			document.getElementById(id_element).innerHTML = "";
+		chart.updateGraph = function(dataset){
+			document.getElementById(options.id_div_graph).innerHTML = "";
 			if(dataset){
-				return chart.createGraph(id_element,dataset)
+				return chart.createGraph(options.id_div_graph,dataset)
 			}
-			d3.select('#' + id_element)
+			d3.select('#' + options.id_div_graph)
 					.call(chart);
 			return chart;
 		};
 
-		chart.createGraph = function(id_element, dataset){
-			d3.select('#' + id_element)
+		chart.createGraph = function( dataset){
+			d3.select('#' + options.id_div_graph)
 					.datum(dataset)
 					.call(chart);
 			return chart;
 		};
-				// function for resposive
-		function responsive() {
-			chart.resizeWidth(options.id_div_graph, document.getElementById(options.id_div_container).offsetWidth);
+
+		chart.destroy = function(_){
+			document.getElementById(options.id_div_graph).innerHTML = "";
+			Object.keys(options).forEach(function (key) {
+				options[key] = null;
+			});
+			return null;
+		};
+				
+		// function for resposive
+		options.responsive["function"] = function () {
+			// if element not displayed skip it
+            if (!options.id_div_container) {
+                return;
+            }
+
+           chart.resizeWidth(document.getElementById(options.id_div_container).offsetWidth);
 		}
 
-		if(options.responsive)
-			window.addEventListener("resize", responsive);
-		
-		chart.createGraph(options.id_div_graph, dataset);
+		if(options.responsive.enabled){
+			window.addEventListener("resize", options.responsive.function);
+		}
+		chart.createGraph(dataset);
 		return chart;
 
 	}
