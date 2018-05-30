@@ -813,12 +813,14 @@
 		};
 
 		chart.updateGraph = function(dataset){
-			document.getElementById(options.id_div_graph).innerHTML = "";
-			if(dataset){
-				return chart.createGraph(options.id_div_graph,dataset)
+			if(document.getElementById(options.id_div_graph)){
+				document.getElementById(options.id_div_graph).innerHTML = "";
+				if(dataset){
+					return chart.createGraph(options.id_div_graph,dataset)
+				}
+				d3.select('#' + options.id_div_graph)
+						.call(chart);
 			}
-			d3.select('#' + options.id_div_graph)
-					.call(chart);
 			return chart;
 		};
 
@@ -837,13 +839,10 @@
 			return null;
 		};
 				
-		// function for resposive
 		options.responsive["function"] = function () {
-			// if element not displayed skip it
-            if (!options.id_div_container) {
-                return;
+            if (!options.id_div_container || !document.getElementById(options.id_div_graph)) {
+				return;
             }
-
            chart.resizeWidth(document.getElementById(options.id_div_container).offsetWidth);
 		}
 
