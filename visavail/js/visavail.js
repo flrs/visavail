@@ -813,7 +813,7 @@
 		};
 
 		chart.updateGraph = function(dataset){
-			if(document.getElementById(options.id_div_graph)){
+			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != ""){
 				document.getElementById(options.id_div_graph).innerHTML = "";
 				if(dataset){
 					return chart.createGraph(options.id_div_graph,dataset)
@@ -840,7 +840,7 @@
 		};
 				
 		options.responsive["function"] = function () {
-            if (!options.id_div_container || !document.getElementById(options.id_div_graph)) {
+            if (!options.id_div_container || !document.getElementById(options.id_div_graph) || document.getElementById(options.id_div_graph).innerHTML == "") {
 				return;
             }
            chart.resizeWidth(document.getElementById(options.id_div_container).offsetWidth);
