@@ -34,10 +34,7 @@
 	<p>This example demonstrates the basic use of<a href="http://www.github.com/flrs/visavail" target="_blank">Visavail.js</a>.</p>
 		<div class="container-fluid">
 			<div class="row">
-				<div  class="col-6" id="visavail_container">	
-				
-				</div>
-				<div style="width: 90%" class="col-6 visavail" id="visavail_container">
+				<div style="width: 92%;overflow: hidden;" class="visavail" id="visavail_container">
 						<p>ciaoooooo</p>
 					<p id="ciao">
 						<!-- Visavail.js chart will be placed here -->
@@ -59,21 +56,24 @@
 		//set moment
 		//moment.locale("it")
 		var dataset = [{
-			"measure": "Balance Sheet",
-			"interval_s": 3 * 30.5 * 24 * 60 * 60,
+			"measure": "Balance Sheet sadsada sadasdsad",
+			"interval_s":  60,
+			"categories": {
+				"0": { "color": "#377eb8" },
+				"1": { "color": "#ff7f00" },
+				"Zoe": { "color": "purple" },
+			},
 			"data": [
-				["2015-03-31", 0],
-				["2015-06-30", 1],
-				["2015-09-30", 1],
-				["2015-12-31", 1],
-				["2016-03-31", 1],
-				["2016-06-30", 1],
-				["2016-09-30", 1],
-				["2016-12-31", 1],
-				["2017-03-31", 0],
-				["2017-06-30", 1],
-				["2017-09-30", 1],
-				["2017-12-31 10:00:00", 1]
+				
+				["2016-01-01 14:25:51", "1"],
+				
+				["2016-01-01 14:22:53", "1"],
+				["2016-01-01 12:00:00", "0"],
+				["2016-01-01 14:22:52", "0"],
+				["2016-01-01 16:22:12", "0"],
+				
+				// ["2016-01-01 19:22:05", "1"],
+				// ["2016-01-01 20:30:00", "Zoe", "2016-01-01 22:00:00"]
 			],
 			description:[
 				['<i class=" fas fa-fw fa-check tooltip_has_data"></i>ERRORE TRASFERIMENTO'],
@@ -88,7 +88,7 @@
 		var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "ciao",
-			barHeight: 40,
+			barHeight: 20,
 			width: document.getElementById("visavail_container").offsetWidth,
 			legend: {
 				enabled: false
@@ -103,7 +103,7 @@
 				class_has_data: 'fas fa-fw fa-check',
 				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
 			},
-			lineSpacing: 24,
+			lineSpacing: 26,
 			tooltip: {
 				class: 'tooltip',
 				//height of tooltip , correspond to line-height of class tooltip from css 
@@ -113,19 +113,16 @@
 				left_spacing: 20
 			},
 			ytitle: true,
-			dateRange: ['2016-01-01','2018-12-31'],
 			zoom:{
 				enabled: true,
-				onzoom: function(domain){
-					console.log("onzoom domain", domain)
-				},
-				onzoomend: function(domain){
-					console.log("onzoomend domain", domain)
-				},
-				onzoomstart: function(event){
-					console.log("onzoomstart event", event)
-				},
+
+			},
+			tooltip: {
+				height: 18,
+				position: "overlay",
+				left_spacing: 20
 			}
+			,graph_type: "rhombus"
 
 
 		};

@@ -26,14 +26,15 @@
 
 				// left margin should provide space for y axis titles
 				left: 100,
-			},
+            },
+            reduce_space_wrap:35,
 			width: 940,
 			barHeight: 18,
 			lineSpacing: 14,
 			paddingTopHeading: -50,
 			paddingBottom: 10,
 			paddingLeft: -100,
-			// year ticks to be emphasized or not 
+			// year ticks to be emphasized or not
 			emphasizeYearTicks: true,
 			emphasizeMonthTicks: true,
 			// define chart pagination
@@ -54,7 +55,7 @@
 			isDateOnlyFormat: true,
 			tooltip: {
 				class: 'tooltip',
-				//height of tooltip , correspond to line-height of class tooltip from css 
+				//height of tooltip , correspond to line-height of class tooltip from css
 				height: 11,
 				//position: "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height
 				position: "top",
@@ -108,13 +109,15 @@
 			},
 			zoom: {
 				enabled: false,
-				//return domain of current scale 
+				//return domain of current scale
 				onzoom: function onzoom(){},
-				//return event of at start 
+				//return event of at start
 				onzoomstart: function onzoomstart(){},
 				//return domain of current scale at the endo of the scale zoom
 				onzoomend: function onzoomend(){},
 			},
+			definedBlocks: false,
+			graph_type: "" ,
 			responsive: {
 				enabled: true,
 				onresize: function onresize(){},
@@ -145,7 +148,7 @@
 			: d3.timeYear(date) < date ? d3.timeFormat(options.customTimeFormat.formatMonth)
 			: d3.timeFormat(options.customTimeFormat.formatYear))(date);
 		}
-		
+
 		// global div for tooltip
 		var div = d3.select('body').append('div')
 			.attr('class', "visavail")
@@ -181,22 +184,16 @@
 				var height = options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
 
 				// check how data is arranged
-				options.definedBlocks = false;
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1])) {
+					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1]) || options.graph_type == "rhombus") {
 						options.definedBlocks = true;
 						break;
-					} else {
-						if (options.definedBlocks) {
-							throw new Error('Detected different data formats in input data. Format can either be ' +
-								'continuous data format or time gap data format but not both.');
-						}
 					}
 				}
 				
-				// parse data text strings to JavaScript date stamps
+						// parse data text strings to JavaScript date stamps
 				var parseDate = d3.timeParse('%Y-%m-%d');
 				var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
 				var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
@@ -227,19 +224,30 @@
 									// d1[2] is date with time data
 									d1[2] = parseDateTime(d1[2]);
 								} else {
-									throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+									d1[2] = d1[0];
+									if(options.graph_type != "rhombus")
+										console.error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 										'\'YYYY-MM-DD HH:MM:SS\'.');
 								}
 							}
 						}
 					});
 				});
-
+				var startDate = moment().year(2999),
+					endDate = moment().year(0);
+				
 				// cluster data by dates to form time blocks
 				dataset.forEach(function (series, seriesI) {
 					var tmpData = [];
 					var dataLength = series.data.length;
+					console.log(series)
 					series.data.forEach(function (d, i) {
+						console.log(moment(d[0]).isSameOrAfter(endDate))
+						if(moment(d[0]).isSameOrAfter(endDate))
+							endDate = d[0]
+						if(moment(d[0]).isSameOrBefore(startDate))
+							startDate =d[0]
+
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
@@ -271,17 +279,18 @@
 					});
 					dataset[seriesI].disp_data = tmpData;
 				});
-		
-				// determine start and end dates among all nested datasets
-				var startDate = options.displayDateRange[0];
-				var endDate = options.displayDateRange[1];
-				if(startDate !== 0)
-					startDate = moment(startDate)
-				if(endDate !== 0)
-					endDate = moment(endDate)
 
-				if(options.displayDateRange[0] === 0 || options.displayDateRange[1] === 0){
+				// determine start and end dates among all nested datasets
+
+				if(options.displayDateRange[0] != 0)
+					startDate = moment(options.displayDateRange[0]);	
+				if(options.displayDateRange[1] != 0)
+					endDate = moment(options.displayDateRange[1])
+				
+
+				/*if(options.displayDateRange[0] === 0 || options.displayDateRange[1] === 0){
 					dataset.forEach(function (series, seriesI) {
+						console.log(series)
 						if (series.disp_data.length > 0) {
 							if (startDate === 0 && endDate === 0) {
 								startDate = series.disp_data[0][0];
@@ -294,7 +303,7 @@
 							}
 						}
 					});
-				}
+				}*/
 
 				// define scales
 				if(options.xScale){
@@ -308,7 +317,7 @@
 				var xAxis = d3.axisTop()
 					.scale(xScale)
 					.tickFormat(multiFormat);
-				
+
 				// create SVG element
 				var svg = d3.select(this).append('svg')
 					.attr('width', width + options.margin.left + options.margin.right)
@@ -319,10 +328,12 @@
 				// create basic element groups
 				svg.append('g').attr('id', 'g_title');
 				svg.append('g').attr('id', 'g_axis');
-				
+
 				if (options.zoom.enabled) {
 					//implement zooming
 					var zoom = d3.zoom()
+					.scaleExtent([1,10000000])
+					.translateExtent([[0,0],[options.width,options.height]])
 					.on("zoom", zoomed)
 					.on("start", function () {
 						var e = d3.event;
@@ -334,6 +345,8 @@
 					})
 					.on('end', function () {
 						var e = d3.event.sourceEvent;
+						if(e == null)
+							zoomed();
 						if (e && e.type === "brush") {
 							return;
 						}
@@ -341,10 +354,10 @@
 						if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
 							return;
 						}
-						options.zoom.onzoomend.call(this, options.xScale.domain());
+						options.zoom.onzoomend.call(this, xScale.domain());
 					});
 			;
-					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise, 
+					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
 					// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
 					svg.append('rect')
 						.attr('id', 'zoom')
@@ -357,7 +370,7 @@
 					svg.call(zoom)
 				}
 				svg.append('g').attr('id', 'g_data');
-				
+
 				if (options.ytitle) {
 					// create y axis labels
 					var labels = svg.select('#g_axis').append('g').attr('id', 'yAxis').selectAll('text')
@@ -372,7 +385,7 @@
 							if (!(d.measure_html != null)) {
 								return d.measure;
 							}
-						})
+						}).each(wrap)
 						.attr('transform', function (d, i) {
 							return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
 						})
@@ -404,11 +417,23 @@
 							if (d.measure_html != null) {
 								return d.measure_html;
 							}
-						});
+                        });
+
+                    function wrap() {
+                        var self = d3.select(this),
+                            textLength = self.node().getComputedTextLength(),
+                            text = self.text();
+
+                        while (textLength > (options.margin.left + options.reduce_space_wrap) && text.length > 0) {
+                            text = text.slice(0, -1);
+                            self.text(text + '...');
+                            textLength = self.node().getComputedTextLength();
+                        }
+                    }
 				}
 				//xAxis
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
-				
+
 				function createVGrid(scale){
 					svg.select('#vGrid').selectAll('line.vert_grid').data(scale.ticks())
 						.enter()
@@ -442,7 +467,7 @@
 						return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
 					})
 					.attr('class', 'horz_grid');
-					
+
 				// create x axis
 				if (noOfDatasets) {
 					svg.select('#g_axis').append('g')
@@ -450,7 +475,7 @@
 						.call(xAxis);
 				}
 
-				
+
 				// make y groups for different data series
 				var g = svg.select('#g_data').selectAll('.g_data')
 					.data(dataset.slice(startSet, endSet))
@@ -462,6 +487,7 @@
 					.attr('cursor', 'pointer')
 					.attr('class', 'dataset');
 
+
 				// add data series
 				g.selectAll('rect')
 					.data(function (d) {
@@ -470,21 +496,16 @@
 					.enter()
 					.append('rect')
 					.attr('x', function (d) {
-						if(xScale(d[0]) < 0)
-							return 0
-						return xScale(d[0]);
+						return xForRect(d, xScale)
 					})
 					.attr('width', function (d) {
-						if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
-							return 0;
-						if (xScale(d[0]) < 0 && xScale(d[2]) > 0)
-							return xScale(d[2]) 
-						if (xScale(d[2]) < 0 && xScale(d[1]) > 0)
-							return xScale(d[1]) 
-						return ((xScale(d[2]) - xScale(d[0])));
+						return widthForRect(d, xScale)
 					})
 					.attr('y', options.lineSpacing)
 					.attr('height', options.barHeight)
+					.attr('transform',  function (d) {
+						return rotateForRect(d, xScale)
+					})
 					.attr('class', function (d) {
 						if (options.definedBlocks) {
 							var series = dataset.filter(
@@ -512,7 +533,7 @@
 							.duration(200)
 							.style('opacity', 0.9);
 						div.html(function () {
-							
+
 								var output = '';
 								if (options.definedBlocks) {
 									// custom categories: display category name
@@ -543,7 +564,7 @@
 									}
 									return output + moment(d[0]).format('l');
 								} else {
-									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {	
+									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
 										return output + moment(d[0]).format('l') + ' ' +
 											moment(d[0]).format('LTS') + ' - ' +
 											moment(d[2]).format('l') + ' ' +
@@ -583,14 +604,13 @@
 							.style('opacity', 0);
 					})
 					.on("mousemove", function(){
-						//console.log(d3.event ,   div.property('offsetWidth'),width + options.margin.right, d3.event.pageX + div.property('offsetWidth'))
-										
+
 						div.style('left',  function () {
 							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 							return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 						});
-						
+
 						if(options.tooltip.position === "top"){
 							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth'))){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
@@ -672,7 +692,7 @@
 						.attr('class', 'heading');
 				}
 				// create subtitle
-				if (options.sub_title.enabled) {	
+				if (options.sub_title.enabled) {
 					var subtitleText = '';
 					if (noOfDatasets) {
 						if (options.isDateOnlyFormat) {
@@ -728,42 +748,70 @@
 						.attr('class', 'legend');
 				}
 
-				// function for zoomed	
+				// function for zoomed
 				function zoomed() {
 					//prevent event null for type != zooming
-					if (d3.event.sourceEvent == null && d3.event.type !== "zoom")
+					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
 						return
-					options.xScale = d3.event.transform.rescaleX(xScale);
-					//position of tooltip when zooming or translate
-					if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
-						div.style('left', (d3.event.pageX) + 'px')
+					if(d3.event.transform.k || d3.event.transform.x){
+						options.xScale = d3.event.transform.rescaleX(xScale).range([0, width]);
+						//position of tooltip when zooming or translate
+						if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
+							div.style('left', (d3.event.pageX) + 'px')
+					
+						g.selectAll('rect')
+							.attr('x', function (d) {
+								return xForRect(d, options.xScale);
+							})
+							.attr('width', function (d) {
+								return widthForRect(d, options.xScale);
+							})
+							.attr('transform',  function (d) {
+								return rotateForRect(d, options.xScale)
+							})
 
-					g.selectAll('rect')
-						.attr('x', function (d) {
-							if(options.xScale(d[0]) < 0)
-								return 0
-							return options.xScale(d[0]);
-						})
-						.attr('width', function (d) {
-							if ((options.xScale(d[2]) - options.xScale(d[0]))  < 0 || (options.xScale(d[2]) < 0 && options.xScale(d[1]) < 0))
-								return 0;
-							if (options.xScale(d[0]) < 0 && options.xScale(d[2]) > 0)
-								return options.xScale(d[2]) 
-							if (options.xScale(d[2]) < 0 && options.xScale(d[1]) > 0)
-								return options.xScale(d[1]) 
-							return ((options.xScale(d[2]) - options.xScale(d[0])));
-						})
+						//change label x axis
+						svg.select(".xAxis").call(xAxis.scale(options.xScale));
+						//change v grid data axis
+						svg.select('#vGrid').selectAll('line').remove();
+						createVGrid(options.xScale);
+						emphasize(options.xScale);
 
-					//change label x axis
-					svg.select(".xAxis").call(xAxis.scale(options.xScale));
-					//change v grid data axis
-					svg.select('#vGrid').selectAll('line').remove();		
-					createVGrid(options.xScale);
-					emphasize(options.xScale);
+						options.zoom.onzoom.call(this, options.xScale.domain())
+					}
 
-					options.zoom.onzoom.call(this, options.xScale.domain())
+				}
 
-				}			
+				function xForRect(d, xScale){
+					if(xScale(d[0]) < 0)
+						return 0
+					if(options.graph_type == "rhombus")
+						return xScale(d[0]) - options.barHeight/2
+					
+					return xScale(d[0]);
+				}
+				function widthForRect(d, xScale){
+					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
+						return 0;
+					if(options.graph_type == "rhombus" ){
+						if(xScale(d[0]) < 0)
+							return 0
+						return options.barHeight;
+					}
+
+					if (xScale(d[0]) < 0 && xScale(d[2]) > 0)
+						return xScale(d[2])
+					if (xScale(d[2]) < 0 && xScale(d[1]) > 0)
+						return xScale(d[1])
+					return ((xScale(d[2]) - xScale(d[0])));			
+				}
+
+				function rotateForRect(d, xScale){
+					if(options.graph_type == "rhombus" && xScale(d[0]) > 0 )
+						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.barHeight/2 + options.lineSpacing)+")"
+					if(options.graph_type == "rhombus" && xScale(d[0]) <= 0 )
+						return  'rotate(45 0 '+ (options.barHeight/2 + options.lineSpacing) +')'
+				}
 			});
 		};
 
@@ -792,19 +840,22 @@
 			return chart;
 		};
 
-		
+
 
 		chart.emphasizeYearTicks = function (_) {
 			if (!arguments.length) return  options.emphasizeYearTicks;
 			options.emphasizeYearTicks = _;
 			return chart;
 		};
-		
+
 
 		chart.displayDateRange = function (date_range) {
 			if (!arguments.length) return  options.displayDateRange;
 			options.displayDateRange = date_range ;
-			return chart.updateGraph(options.id_div_graph)
+			if(!document.getElementById(options.id_div_graph) ){
+                return chart;
+            }
+            return chart.updateGraph()
 		};
 
 		chart.resizeWidth = function(width){
@@ -813,18 +864,18 @@
 		};
 
 		chart.updateGraph = function(dataset){
-			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != ""){
+			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != "" ){
 				document.getElementById(options.id_div_graph).innerHTML = "";
 				if(dataset){
-					return chart.createGraph(options.id_div_graph,dataset)
+					return chart.createGraph(dataset)
 				}
-				d3.select('#' + options.id_div_graph)
+                d3.select('#' + options.id_div_graph)
 						.call(chart);
 			}
 			return chart;
 		};
 
-		chart.createGraph = function( dataset){
+		chart.createGraph = function(dataset){
 			d3.select('#' + options.id_div_graph)
 					.datum(dataset)
 					.call(chart);
@@ -838,10 +889,10 @@
 			});
 			return null;
 		};
-				
+
 		options.responsive["function"] = function () {
-            if (!options.id_div_container || !document.getElementById(options.id_div_graph) || document.getElementById(options.id_div_graph).innerHTML == "") {
-				return;
+            if (!options.id_div_container || !document.getElementById(options.id_div_graph) || document.getElementById(options.id_div_graph).innerHTML == "" ) {
+                return;
             }
            chart.resizeWidth(document.getElementById(options.id_div_container).offsetWidth);
 		}
