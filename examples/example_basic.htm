@@ -34,7 +34,7 @@
 	<p>This example demonstrates the basic use of<a href="http://www.github.com/flrs/visavail" target="_blank">Visavail.js</a>.</p>
 		<div class="container-fluid">
 			<div class="row">
-				<div style="width: 92%;overflow: hidden;" class="visavail" id="visavail_container">
+				<div style="width: 100%;overflow: hidden;" class="visavail" id="visavail_container">
 						<p>ciaoooooo</p>
 					<p id="ciao">
 						<!-- Visavail.js chart will be placed here -->
@@ -88,8 +88,8 @@
 		var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "ciao",
-			barHeight: 20,
 			width: document.getElementById("visavail_container").offsetWidth,
+		
 			legend: {
 				enabled: false
 			},
@@ -117,19 +117,26 @@
 				enabled: true,
 
 			},
+			onclickblock: function onclickblock(data, index){
+				console.log(data, index)
+			},
+
 			tooltip: {
 				height: 18,
 				position: "overlay",
 				left_spacing: 20
 			}
-			,graph_type: "rhombus"
+			,graph:{
+				type: "rhombus",
+				height:20,
+				width:20
+			}
 
 
 		};
 		
 		console.log(options.width)
 		var chart = visavail.generate(options, dataset)
-	
 		/*setTimeout(function(){
 			console.log(options.width)
 			chart.destroy()}, 1000)*/

@@ -29,7 +29,7 @@
             },
             reduce_space_wrap:35,
 			width: 940,
-			barHeight: 18,
+			
 			lineSpacing: 14,
 			paddingTopHeading: -50,
 			paddingBottom: 10,
@@ -116,8 +116,13 @@
 				//return domain of current scale at the endo of the scale zoom
 				onzoomend: function onzoomend(){},
 			},
+			onclickblock: function onclickblock(){},
 			definedBlocks: false,
-			graph_type: "" ,
+			graph:{
+				type: "bar" ,
+				width: 20,
+				height:18
+			},
 			responsive: {
 				enabled: true,
 				onresize: function onresize(){},
@@ -181,13 +186,13 @@
 				selection.attr('data-max-pages', maxPages);
 
 				var noOfDatasets = endSet - startSet;
-				var height = options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
+				var height = options.graph.height * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
 
 				// check how data is arranged
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1]) || options.graph_type == "rhombus") {
+					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1]) || options.graph.type == "rhombus") {
 						options.definedBlocks = true;
 						break;
 					}
@@ -225,7 +230,7 @@
 									d1[2] = parseDateTime(d1[2]);
 								} else {
 									d1[2] = d1[0];
-									if(options.graph_type != "rhombus")
+									if(options.graph.type != "rhombus")
 										console.error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 										'\'YYYY-MM-DD HH:MM:SS\'.');
 								}
@@ -240,9 +245,7 @@
 				dataset.forEach(function (series, seriesI) {
 					var tmpData = [];
 					var dataLength = series.data.length;
-					console.log(series)
 					series.data.forEach(function (d, i) {
-						console.log(moment(d[0]).isSameOrAfter(endDate))
 						if(moment(d[0]).isSameOrAfter(endDate))
 							endDate = d[0]
 						if(moment(d[0]).isSameOrBefore(startDate))
@@ -286,33 +289,12 @@
 					startDate = moment(options.displayDateRange[0]);	
 				if(options.displayDateRange[1] != 0)
 					endDate = moment(options.displayDateRange[1])
-				
-
-				/*if(options.displayDateRange[0] === 0 || options.displayDateRange[1] === 0){
-					dataset.forEach(function (series, seriesI) {
-						console.log(series)
-						if (series.disp_data.length > 0) {
-							if (startDate === 0 && endDate === 0) {
-								startDate = series.disp_data[0][0];
-								endDate = series.disp_data[series.disp_data.length - 1][2];
-							} else {
-								if (options.displayDateRange[0] === 0 && series.disp_data[0][0] < startDate)
-									startDate = series.disp_data[0][0];
-								if (options.displayDateRange[1] === 0 && series.disp_data[series.disp_data.length - 1][2] > endDate)
-									endDate = series.disp_data[series.disp_data.length - 1][2];
-							}
-						}
-					});
-				}*/
 
 				// define scales
-				if(options.xScale){
-					var xScale = options.xScale.range([0, width]);
-				} else {
-					var xScale = d3.scaleTime()
-						.domain([startDate, endDate])
-						.range([0, width])
-				}
+				var xScale = d3.scaleTime()
+					.domain([startDate, endDate])
+					.range([0, width])
+				
 					// define axes
 				var xAxis = d3.axisTop()
 					.scale(xScale)
@@ -331,32 +313,34 @@
 
 				if (options.zoom.enabled) {
 					//implement zooming
-					var zoom = d3.zoom()
-					.scaleExtent([1,10000000])
-					.translateExtent([[0,0],[options.width,options.height]])
-					.on("zoom", zoomed)
-					.on("start", function () {
-						var e = d3.event;
-						if (e && e.type === "brush") {
-							return;
-						}
-						startEvent = e;
-						options.zoom.onzoomstart.call(this, e);
-					})
-					.on('end', function () {
-						var e = d3.event.sourceEvent;
-						if(e == null)
-							zoomed();
-						if (e && e.type === "brush") {
-							return;
-						}
-						// if click, do nothing. otherwise, click interaction will be canceled.
-						if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
-							return;
-						}
-						options.zoom.onzoomend.call(this, xScale.domain());
-					});
-			;
+					options.zoomed = d3.zoom()
+						.scaleExtent([1,Infinity])
+						.translateExtent([[0,0],[width, options.height]])
+						.extent([[0, 0], [width, options.height]])
+						.on("zoom", zoomed)
+						.on("start", function () {
+							var e = d3.event;
+							if (e && e.type === "brush") {
+								return;
+							}
+							startEvent = e;
+							options.zoom.onzoomstart.call(this, e);
+						})
+						.on('end', function () {
+							var e = d3.event.sourceEvent;
+							// if(e == null)
+							// 	zoomed();
+							if (e && e.type === "brush") {
+								return;
+							}
+							// if click, do nothing. otherwise, click interaction will be canceled.
+							if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
+								return;
+							}
+							options["scale"] = d3.zoomTransform(svg.node())
+							options.zoom.onzoomend.call(this, xScale.domain());
+						});
+					
 					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
 					// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
 					svg.append('rect')
@@ -367,7 +351,8 @@
 						.attr('cursor', "ew-resize")
 						.attr('x', 0)
 						.attr('y', 0)
-					svg.call(zoom)
+					svg.call(options.zoomed)
+						
 				}
 				svg.append('g').attr('id', 'g_data');
 
@@ -380,14 +365,14 @@
 					// text labels
 					labels.append('text')
 						.attr('x', options.paddingLeft)
-						.attr('y', options.lineSpacing + options.barHeight / 2)
+						.attr('y', options.lineSpacing + options.graph.height / 2)
 						.text(function (d) {
 							if (!(d.measure_html != null)) {
 								return d.measure;
 							}
 						}).each(wrap)
 						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
+							return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
 						})
 						.attr('class', function (d) {
 							var returnCSSClass = 'ytitle';
@@ -408,10 +393,10 @@
 						.attr('x', options.paddingLeft)
 						.attr('y', options.lineSpacing)
 						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
+							return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
 						})
 						.attr('width', -1 * options.paddingLeft)
-						.attr('height', options.barHeight)
+						.attr('height', options.graph.height)
 						.attr('class', 'ytitle')
 						.html(function (d) {
 							if (d.measure_html != null) {
@@ -445,7 +430,7 @@
 							return scale(d);
 						})
 						.attr('y1', 0)
-						.attr('y2', options.barHeight * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom)
+						.attr('y2', options.graph.height * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom)
 						.attr('class', 'vert_grid');
 				}
 
@@ -461,10 +446,10 @@
 					.attr('x1', 0)
 					.attr('x2', width)
 					.attr('y1', function (d, i) {
-						return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
+						return ((options.lineSpacing + options.graph.height) * i) + options.lineSpacing + options.graph.height / 2;
 					})
 					.attr('y2', function (d, i) {
-						return ((options.lineSpacing + options.barHeight) * i) + options.lineSpacing + options.barHeight / 2;
+						return ((options.lineSpacing + options.graph.height) * i) + options.lineSpacing + options.graph.height / 2;
 					})
 					.attr('class', 'horz_grid');
 
@@ -482,7 +467,7 @@
 					.enter()
 					.append('g')
 					.attr('transform', function (d, i) {
-						return 'translate(0,' + ((options.lineSpacing + options.barHeight) * i) + ')';
+						return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
 					})
 					.attr('cursor', 'pointer')
 					.attr('class', 'dataset');
@@ -502,7 +487,7 @@
 						return widthForRect(d, xScale)
 					})
 					.attr('y', options.lineSpacing)
-					.attr('height', options.barHeight)
+					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
 						return rotateForRect(d, xScale)
 					})
@@ -584,7 +569,7 @@
 							div.style('top', function () {
 								return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
 							})
-							.style('height', options.barHeight + options.tooltip.height + 'px')
+							.style('height', options.graph.height + options.tooltip.height + 'px')
 							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
 									.style('border-left', "none");
@@ -602,6 +587,9 @@
 						div.transition()
 							.duration(500)
 							.style('opacity', 0);
+					})
+					.on('click', function(d,i){
+						options.onclickblock.call(this, d,i);
 					})
 					.on("mousemove", function(){
 
@@ -647,13 +635,13 @@
 						isMonthTick.every(function (d) {
 							return d === true;
 						})) {
-						d3.selectAll('g.tick').each(function (d, i) {
+						d3.selectAll('#' + options.id_div_graph +' g.tick').each(function (d, i) {
 							if (isYearTick[i]) {
 								d3.select(this)
 									.attr('class', 'tick x_tick_emph');
 							}
 						});
-						d3.selectAll('.vert_grid').each(function (d, i) {
+						d3.selectAll('#' + options.id_div_graph +' .vert_grid').each(function (d, i) {
 							if (isYearTick[i]) {
 								d3.select(this)
 									.attr('class', 'vert_grid vert_grid_emph');
@@ -666,14 +654,14 @@
 						!isMonthTick.every(function (d) {
 							return d === true;
 						})) {
-						d3.selectAll('g.tick').each(function (d, i) {
-							if (isMonthTick[i]) {
+                        d3.selectAll('#' + options.id_div_graph +' g.tick').each(function (d, i) {
+                            if (isMonthTick[i]) {
 								d3.select(this)
 									.attr('class', 'tick x_tick_emph');
 							}
 						});
-						d3.selectAll('.vert_grid').each(function (d, i) {
-							if (isMonthTick[i]) {
+						d3.selectAll('#' + options.id_div_graph + ' g.vert_grid').each(function (d, i) {
+                            if (isMonthTick[i]) {
 								d3.select(this)
 									.attr('class', 'vert_grid vert_grid_emph');
 							}
@@ -750,11 +738,12 @@
 
 				// function for zoomed
 				function zoomed() {
+										
 					//prevent event null for type != zooming
 					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
 						return
 					if(d3.event.transform.k || d3.event.transform.x){
-						options.xScale = d3.event.transform.rescaleX(xScale).range([0, width]);
+						options.xScale = d3.event.transform.rescaleX(xScale);
 						//position of tooltip when zooming or translate
 						if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
 							div.style('left', (d3.event.pageX) + 'px')
@@ -781,22 +770,25 @@
 					}
 
 				}
+				//restore to previous zoom
+				if(options.scale)
+					svg.call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 
 				function xForRect(d, xScale){
 					if(xScale(d[0]) < 0)
 						return 0
-					if(options.graph_type == "rhombus")
-						return xScale(d[0]) - options.barHeight/2
+					if(options.graph.type == "rhombus")
+						return xScale(d[0]) - options.graph.width/2
 					
 					return xScale(d[0]);
 				}
 				function widthForRect(d, xScale){
 					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
 						return 0;
-					if(options.graph_type == "rhombus" ){
+					if(options.graph.type == "rhombus" ){
 						if(xScale(d[0]) < 0)
 							return 0
-						return options.barHeight;
+						return options.graph.width;
 					}
 
 					if (xScale(d[0]) < 0 && xScale(d[2]) > 0)
@@ -807,10 +799,10 @@
 				}
 
 				function rotateForRect(d, xScale){
-					if(options.graph_type == "rhombus" && xScale(d[0]) > 0 )
-						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.barHeight/2 + options.lineSpacing)+")"
-					if(options.graph_type == "rhombus" && xScale(d[0]) <= 0 )
-						return  'rotate(45 0 '+ (options.barHeight/2 + options.lineSpacing) +')'
+					if(options.graph.type == "rhombus" && xScale(d[0]) > 0 )
+						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.graph.height/2 + options.lineSpacing)+")"
+					if(options.graph.type == "rhombus" && xScale(d[0]) <= 0 )
+						return  'rotate(45 0 '+ (options.graph.height/2 + options.lineSpacing) +')'
 				}
 			});
 		};
@@ -858,6 +850,7 @@
             return chart.updateGraph()
 		};
 
+
 		chart.resizeWidth = function(width){
 			options.width = width;
 			return chart.updateGraph()
@@ -900,6 +893,7 @@
 		if(options.responsive.enabled){
 			window.addEventListener("resize", options.responsive.function);
 		}
+
 		chart.createGraph(dataset);
 		return chart;
 
