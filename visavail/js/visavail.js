@@ -29,7 +29,7 @@
             },
             reduce_space_wrap:35,
 			width: 940,
-			
+
 			lineSpacing: 14,
 			paddingTopHeading: -50,
 			paddingBottom: 10,
@@ -197,7 +197,7 @@
 						break;
 					}
 				}
-				
+
 						// parse data text strings to JavaScript date stamps
 				var parseDate = d3.timeParse('%Y-%m-%d');
 				var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
@@ -240,7 +240,7 @@
 				});
 				var startDate = moment().year(2999),
 					endDate = moment().year(0);
-				
+
 				// cluster data by dates to form time blocks
 				dataset.forEach(function (series, seriesI) {
 					var tmpData = [];
@@ -286,7 +286,7 @@
 				// determine start and end dates among all nested datasets
 
 				if(options.displayDateRange[0] != 0)
-					startDate = moment(options.displayDateRange[0]);	
+					startDate = moment(options.displayDateRange[0]);
 				if(options.displayDateRange[1] != 0)
 					endDate = moment(options.displayDateRange[1])
 
@@ -294,7 +294,7 @@
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])
 					.range([0, width])
-				
+
 					// define axes
 				var xAxis = d3.axisTop()
 					.scale(xScale)
@@ -340,7 +340,7 @@
 							options["scale"] = d3.zoomTransform(svg.node())
 							options.zoom.onzoomend.call(this, xScale.domain());
 						});
-					
+
 					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
 					// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
 					svg.append('rect')
@@ -352,7 +352,7 @@
 						.attr('x', 0)
 						.attr('y', 0)
 					svg.call(options.zoomed)
-						
+
 				}
 				svg.append('g').attr('id', 'g_data');
 
@@ -370,7 +370,8 @@
 							if (!(d.measure_html != null)) {
 								return d.measure;
 							}
-						}).each(wrap)
+						})
+						.each(wrap)
 						.attr('transform', function (d, i) {
 							return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
 						})
@@ -387,6 +388,11 @@
 							}
 							return null;
 						});
+						
+					labels.append('title')
+					.text(function (d) {
+							return d.measure;
+					})
 
 					// HTML labels
 					labels.append('foreignObject')
@@ -738,7 +744,7 @@
 
 				// function for zoomed
 				function zoomed() {
-										
+
 					//prevent event null for type != zooming
 					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
 						return
@@ -747,7 +753,7 @@
 						//position of tooltip when zooming or translate
 						if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
 							div.style('left', (d3.event.pageX) + 'px')
-					
+
 						g.selectAll('rect')
 							.attr('x', function (d) {
 								return xForRect(d, options.xScale);
@@ -779,7 +785,7 @@
 						return 0
 					if(options.graph.type == "rhombus")
 						return xScale(d[0]) - options.graph.width/2
-					
+
 					return xScale(d[0]);
 				}
 				function widthForRect(d, xScale){
@@ -795,7 +801,7 @@
 						return xScale(d[2])
 					if (xScale(d[2]) < 0 && xScale(d[1]) > 0)
 						return xScale(d[1])
-					return ((xScale(d[2]) - xScale(d[0])));			
+					return ((xScale(d[2]) - xScale(d[0])));
 				}
 
 				function rotateForRect(d, xScale){
@@ -876,7 +882,8 @@
 		};
 
 		chart.destroy = function(_){
-			document.getElementById(options.id_div_graph).innerHTML = "";
+            if(document.getElementById(options.id_div_graph))
+			    document.getElementById(options.id_div_graph).innerHTML = "";
 			Object.keys(options).forEach(function (key) {
 				options[key] = null;
 			});
