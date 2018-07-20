@@ -13,6 +13,7 @@
 		if(!moment)
 			throw new Error('Require moment before visavail script');
 		var options = {
+			id: "",
 			id_div_container: "visavail_container",
 			id_div_graph: "example",
 			margin: {
@@ -85,6 +86,7 @@
 				class_has_data : 'fas fa-fw fa-check',
 				class_has_no_data: 'fas fa-fw fa-times'
 			},
+			date_in_utc: true,
 			//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
 			locale: {
 				"dateTime": "%A %e %B %Y, %X",
@@ -146,6 +148,7 @@
 		if(!custom_options.hasOwnProperty("width"))
 			options.width = document.getElementById(options.id_div_container).offsetWidth;
 
+		options.id = "visavail-" + Math.random().toString(36).substring(7);
 		//function for custom tick format of x axis
 		function multiFormat(date) {
 			return (d3.timeSecond(date) < date ? d3.timeFormat(options.customTimeFormat.formatMillisecond)
@@ -159,9 +162,10 @@
 
 		// global div for tooltip
 		var div = d3.select('body').append('div')
-			.attr('class', "visavail-tooltip")
+			.attr('class', "visavail-tooltip " + options.id)
+			.attr('id', options.id)
 			.append('div')
-			.attr('class', (options.tooltip.class+"-"+options.tooltip.position))
+			.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
 			.style('opacity', 0);
 
 		function chart(selection) {
@@ -195,7 +199,7 @@
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0] != null && dataset[i].data[0].length >= 3 ){
+					if (dataset[i].data[0] != null && dataset[i].data[0].length == 3 ){
 						options.definedBlocks = true
 						if(!Number.isInteger(dataset[i].data[0][1])) 
 							options.custom_categories = true;
@@ -203,9 +207,18 @@
 					}
 				}
 
-						// parse data text strings to JavaScript date stamps
-				var parseDate = d3.timeParse('%Y-%m-%d');
-				var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
+				// parse data text strings to JavaScript date stamps
+				// var parseDate = d3.timeParse('%Y-%m-%d');
+				// var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
+				if(options.date_in_utc){
+					var parseDate = function(date) {return moment.utc(date).toDate()};
+					var parseDateTime =  function(date) {return moment.utc(date).toDate()};
+				} else {
+					var parseDate = function(date) {return moment(date).toDate()};
+					var parseDateTime =  function(date) {return moment(date).toDate()};
+					
+				}
+				
 				var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
 				var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
 
@@ -254,7 +267,7 @@
 							endDate = d[2]
 						if(moment(d[0]).isSameOrBefore(startDate))
 							startDate = d[0]
-
+						
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
@@ -300,7 +313,7 @@
 					.range([0, width])
 
 					// define axes
-				var xAxis = d3.axisTop()
+				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
 					.tickFormat(multiFormat);
 
@@ -430,7 +443,9 @@
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
 
 				function createVGrid(scale){
-					svg.select('#vGrid').selectAll('line.vert_grid').data(scale.ticks())
+					svg.select('#vGrid')
+						.selectAll('line.vert_grid')
+						.data(scale.ticks())
 						.enter()
 						.append('line')
 						.attr('x1', function (d) {
@@ -789,7 +804,7 @@
 						return 0
 					if(options.graph.type == "rhombus")
 						return xScale(d[0]) - options.graph.width/2
-
+					
 					return xScale(d[0]);
 				}
 				function widthForRect(d, xScale){
@@ -887,7 +902,9 @@
 
 		chart.destroy = function(_){
             if(document.getElementById(options.id_div_graph))
-			    document.getElementById(options.id_div_graph).innerHTML = "";
+				document.getElementById(options.id_div_graph).innerHTML = "";
+			if(document.getElementById(options.id))
+				document.getElementById(options.id).remove();
 			Object.keys(options).forEach(function (key) {
 				options[key] = null;
 			});
