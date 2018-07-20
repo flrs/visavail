@@ -1,11 +1,11 @@
 /* style for visavail.js */
 
- .visavail div.tooltip-top {
+ .visavail-tooltip div.tooltip-top {
     position: absolute;
     text-align: left;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 14px;
+    font-size: 11px;
     padding-left: 0;
     width: auto;
     border: 0;
@@ -16,12 +16,12 @@
     display: block;
 }
 
-.visavail div.tooltip-overlay {
+.visavail-tooltip div.tooltip-overlay {
     position: absolute;
     text-align: left;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 14px;
+    font-size: 11px;
     width: 120px;
     border: 0;
     pointer-events: none;
@@ -50,12 +50,12 @@
     fill: #c9302c;
 }
 
-.visavail .tooltip_has_data {
+.visavail-tooltip .tooltip_has_data {
     /* color of symbol in tooltip if there is data */
     color: #449d44;
 }
 
-.visavail .tooltip_has_no_data {
+.visavail-tooltip .tooltip_has_no_data {
     /* color of symbol in tooltip if there is no data */
     color: #c9302c;
 }

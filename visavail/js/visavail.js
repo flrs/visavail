@@ -17,7 +17,7 @@
 			id_div_graph: "example",
 			margin: {
 				// top margin includes title and legend
-				top: 35,
+				top: 65,
 
 				// right margin should provide space for last horz. axis title
 				right: 40,
@@ -26,10 +26,10 @@
 
 				// left margin should provide space for y axis titles
 				left: 100,
-            },
-            reduce_space_wrap:35,
-			width: 940,
+			},
+			width: 960,
 
+            reduce_space_wrap: 35,
 			lineSpacing: 14,
 			paddingTopHeading: -50,
 			paddingBottom: 10,
@@ -48,10 +48,10 @@
 			// if from-date (1st element) or to-date (2nd element) is zero,
 			// it will be determined according to your data (default: automatically)
 
-			displayDateRange: [0, 0],
+			display_date_range: [0, 0],
 
 			//if true reminder to use the correct data format for d3
-			customCategories: false,
+			custom_categories: false,
 			isDateOnlyFormat: true,
 			tooltip: {
 				class: 'tooltip',
@@ -124,7 +124,7 @@
 				height:18
 			},
 			responsive: {
-				enabled: true,
+				enabled: false,
 				onresize: function onresize(){},
 			}
 		}
@@ -143,6 +143,9 @@
 			}
 		}
 
+		if(!custom_options.hasOwnProperty("width"))
+			options.width = document.getElementById(options.id_div_container).offsetWidth;
+
 		//function for custom tick format of x axis
 		function multiFormat(date) {
 			return (d3.timeSecond(date) < date ? d3.timeFormat(options.customTimeFormat.formatMillisecond)
@@ -156,7 +159,7 @@
 
 		// global div for tooltip
 		var div = d3.select('body').append('div')
-			.attr('class', "visavail")
+			.attr('class', "visavail-tooltip")
 			.append('div')
 			.attr('class', (options.tooltip.class+"-"+options.tooltip.position))
 			.style('opacity', 0);
@@ -192,8 +195,10 @@
 				for (var i = 0; i < dataset.length; i++) {
 					if(dataset[i].description)
 						options.tooltip.description = true;
-					if (dataset[i].data[0] != null && dataset[i].data[0].length === 3 && !Number.isInteger(dataset[i].data[0][1]) || options.graph.type == "rhombus") {
-						options.definedBlocks = true;
+					if (dataset[i].data[0] != null && dataset[i].data[0].length >= 3 ){
+						options.definedBlocks = true
+						if(!Number.isInteger(dataset[i].data[0][1])) 
+							options.custom_categories = true;
 						break;
 					}
 				}
@@ -218,7 +223,6 @@
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
 							}
-
 							if (!options.definedBlocks) {
 								d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 							} else {
@@ -246,10 +250,10 @@
 					var tmpData = [];
 					var dataLength = series.data.length;
 					series.data.forEach(function (d, i) {
-						if(moment(d[0]).isSameOrAfter(endDate))
-							endDate = d[0]
+						if(moment(d[2]).isSameOrAfter(endDate))
+							endDate = d[2]
 						if(moment(d[0]).isSameOrBefore(startDate))
-							startDate =d[0]
+							startDate = d[0]
 
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
@@ -283,13 +287,13 @@
 					dataset[seriesI].disp_data = tmpData;
 				});
 
+				
 				// determine start and end dates among all nested datasets
 
-				if(options.displayDateRange[0] != 0)
-					startDate = moment(options.displayDateRange[0]);
-				if(options.displayDateRange[1] != 0)
-					endDate = moment(options.displayDateRange[1])
-
+				if(options.display_date_range[0] != 0)
+					startDate = moment(options.display_date_range[0]);
+				if(options.display_date_range[1] != 0)
+					endDate = moment(options.display_date_range[1])
 				// define scales
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])
@@ -388,7 +392,7 @@
 							}
 							return null;
 						});
-						
+
 					labels.append('title')
 					.text(function (d) {
 							return d.measure;
@@ -498,7 +502,7 @@
 						return rotateForRect(d, xScale)
 					})
 					.attr('class', function (d) {
-						if (options.definedBlocks) {
+						if (options.custom_categories) {
 							var series = dataset.filter(
 								function (series) {
 									return series.disp_data.indexOf(d) >= 0;
@@ -526,7 +530,7 @@
 						div.html(function () {
 
 								var output = '';
-								if (options.definedBlocks) {
+								if (options.custom_categories) {
 									// custom categories: display category name
 									output = '&nbsp;' + d[1] + '&nbsp;';
 								} else {
@@ -709,7 +713,7 @@
 						.attr('class', 'subheading');
 				}
 				// create legend
-				if (!options.definedBlocks && options.legend.enabled) {
+				if (!options.custom_categories && options.legend.enabled) {
 					var legend = svg.select('#g_title')
 						.append('g')
 						.attr('id', 'g_legend')
@@ -848,8 +852,8 @@
 
 
 		chart.displayDateRange = function (date_range) {
-			if (!arguments.length) return  options.displayDateRange;
-			options.displayDateRange = date_range ;
+			if (!arguments.length) return  options.display_date_range;
+			options.display_date_range = date_range ;
 			if(!document.getElementById(options.id_div_graph) ){
                 return chart;
             }
