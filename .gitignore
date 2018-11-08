@@ -1,3 +1,4 @@
 .DS-Store
 .idea
 .eslintrc
+node_modules

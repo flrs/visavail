@@ -87,28 +87,29 @@
 				class_has_no_data: 'fas fa-fw fa-times'
 			},
 			date_in_utc: true,
+			
 			//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
-			locale: {
-				"dateTime": "%A %e %B %Y, %X",
-				"date": "%d/%m/%Y",
-				"time": "%H:%M:%S",
-				"periods": ["AM", "PM"],
-				"days": moment.weekdays(),
-				"shortDays": moment.weekdaysShort(),
-				"months": moment.months(),
-				"shortMonths": moment.monthsShort()
-			},
+			// locale: {
+			// 	"dateTime": "%A %e %B %Y, %X",
+			// 	"date": "%d/%m/%Y",
+			// 	"time": "%H:%M:%S",
+			// 	"periods": ["AM", "PM"],
+			// 	"days": moment.weekdays(),
+			// 	"shortDays": moment.weekdaysShort(),
+			// 	"months": moment.months(),
+			// 	"shortMonths": moment.monthsShort()
+			// },
 			//use custom time format (for infomation about symbol visit: http://pubs.opengroup.org/onlinepubs/009604599/utilities/date.html)
-			customTimeFormat : {
-				formatMillisecond : ".%L",
-				formatSecond : ":%S",
-				formatMinute : "%H:%M",
-				formatHour : "%H",
-				formatDay : "%a %d",
-				formatWeek : "%b %d",
-				formatMonth : "%B",
-				formatYear : "%Y"
-			},
+			// customTimeFormat : {
+			// 	formatMillisecond : ".%L",
+			// 	formatSecond : ":%S",
+			// 	formatMinute : "%H:%M",
+			// 	formatHour : "%H",
+			// 	formatDay : "%a %d",
+			// 	formatWeek : "%b %d",
+			// 	formatMonth : "%B",
+			// 	formatYear : "%Y"
+			// },
 			zoom: {
 				enabled: false,
 				//return domain of current scale
@@ -130,6 +131,51 @@
 				onresize: function onresize(){},
 			}
 		}
+		var date_format_local = moment().creationData().locale._longDateFormat;
+
+		function convertMomentToStrftime(momentFormat){
+			var replacements =  {"ddd":"a","dddd":"A","MMM":"b","MMMM":"B","lll":"c","DD":"d","D":"e","YYYY-MM-DD":"F","HH":"H","H":"k","hh":"I","h":"l","DDDD":"j","DDD":"-j","MM":"m","M":"-m","mm":"M","m":"-M","A":"p","a":"P","ss":"S","s":"-S","E":"u","d":"w","WW":"W","ll":"x","LTS":"X","YY":"y","YYYY":"Y","ZZ":"z","z":"Z","SSS":"f","%":"%"}
+			var tokens = momentFormat.split(/( |\/|:)/);
+			var strftime = tokens.map(function (token) {
+				// Replace strftime tokens with moment formats
+				if(token[0] == ":" || token[0] == "/" || token[0] == " ")
+					return token
+				else 
+					if (replacements.hasOwnProperty(token))
+						return "%" + replacements[token];
+				// Escape non-token strings to avoid accidental formatting
+				return token.length > 0 ? '[' + token + ']' : token;
+				}).join('');
+			return strftime;
+		}
+		function periodInLocal(){
+			if (date_format_local.LTS.indexOf('a') > -1 ||  date_format_local.LTS.indexOf('A') > -1)
+				return ["AM", "PM"];
+			return [];
+			
+		}
+
+		options.locale = {
+			"dateTime": convertMomentToStrftime(date_format_local.LLLL),
+			"date": convertMomentToStrftime(date_format_local.L),
+			"time": convertMomentToStrftime(date_format_local.LTS),
+			"periods": periodInLocal(),
+			"days": moment.weekdays(),
+			"shortDays": moment.weekdaysShort(),
+			"months": moment.months(),
+			"shortMonths": moment.monthsShort()
+		};
+
+		options.customTimeFormat = {
+			formatMillisecond : ".%L",
+			formatSecond : ":%S",
+			formatMinute : "%H:%M",
+			formatHour : "%H",
+			formatDay : "%a %d",
+			formatWeek : "%b %d",
+			formatMonth : "%B",
+			formatYear : "%Y"
+		};
 
 		if (custom_options != null) {
 			for (var key in custom_options) {
@@ -167,7 +213,7 @@
 			.append('div')
 			.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
 			.style('opacity', 0);
-
+		
 		function chart(selection) {
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
@@ -315,7 +361,7 @@
 					// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
-					.tickFormat(multiFormat);
+					//.tickFormat(multiFormat);
 
 				// create SVG element
 				var svg = d3.select(this).append('svg')
@@ -380,36 +426,33 @@
 						.enter();
 
 					// text labels
-					labels.append('text')
-						.attr('x', options.paddingLeft)
-						.attr('y', options.lineSpacing + options.graph.height / 2)
-						.text(function (d) {
-							if (!(d.measure_html != null)) {
-								return d.measure;
-							}
-						})
-						.each(wrap)
-						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
-						})
-						.attr('class', function (d) {
-							var returnCSSClass = 'ytitle';
-							if (d.measure_url != null) {
-								returnCSSClass = returnCSSClass + ' link';
-							}
-							return returnCSSClass;
-						})
-						.on('click', function (d) {
-							if (d.measure_url != null) {
-								return window.open(d.measure_url);
-							}
-							return null;
-						});
-
-					labels.append('title')
-					.text(function (d) {
-							return d.measure;
-					})
+					// labels.append('text')
+					// 	.attr('x', options.paddingLeft)
+					// 	.attr('y', options.lineSpacing + options.graph.height / 2)
+					// 	.html(function (d) {
+							
+					// 	})
+					// 	.each(wrap)
+					// 	.attr('transform', function (d, i) {
+					// 		return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
+					// 	})
+					// 	.attr('class', function (d) {
+					// 		var returnCSSClass = 'ytitle';
+					// 		if (d.measure_url != null) {
+					// 			returnCSSClass = returnCSSClass + ' link';
+					// 		}
+					// 		return returnCSSClass;
+					// 	})
+						// .on('click', function (d) {
+						// 	if (d.measure_url != null) {
+						// 		return window.open(d.measure_url);
+						// 	}
+						// 	return null;
+						// })
+					// 	.append('title')
+					// 	.text(function (d) {
+					// 		return d.measure;
+					// 	})
 
 					// HTML labels
 					labels.append('foreignObject')
@@ -420,19 +463,32 @@
 						})
 						.attr('width', -1 * options.paddingLeft)
 						.attr('height', options.graph.height)
-						.attr('class', 'ytitle')
+						.attr('class', function (d) {
+							var returnCSSClass = 'ytitle';
+							if (d.measure_url != null) {
+								returnCSSClass = returnCSSClass + ' link';
+							}
+							return returnCSSClass;
+						})
 						.html(function (d) {
 							if (d.measure_html != null) {
 								return d.measure_html;
+							} else {
+								return d.measure;
 							}
-                        });
+						})
+						.on('click', function (d) {
+							if (d.measure_url != null) {
+								return window.open(d.measure_url);
+							}
+							return null;
+						});
 
                     function wrap() {
                         var self = d3.select(this),
                             textLength = self.node().getComputedTextLength(),
                             text = self.text();
-
-                        while (textLength > (options.margin.left + options.reduce_space_wrap) && text.length > 0) {
+						 while (textLength > (options.margin.left + options.reduce_space_wrap) && text.length > 0) {
                             text = text.slice(0, -1);
                             self.text(text + '...');
                             textLength = self.node().getComputedTextLength();
@@ -514,7 +570,13 @@
 					.attr('y', options.lineSpacing)
 					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
-						return rotateForRect(d, xScale)
+						return transformForTypeOfGraph(d, xScale)
+					})
+					.attr('rx',  function (d) {
+						return roundedRect()
+					})
+					.attr('ry',  function (d) {
+						return roundedRect()
 					})
 					.attr('class', function (d) {
 						if (options.custom_categories) {
@@ -781,7 +843,7 @@
 								return widthForRect(d, options.xScale);
 							})
 							.attr('transform',  function (d) {
-								return rotateForRect(d, options.xScale)
+								return transformForTypeOfGraph(d, options.xScale)
 							})
 
 						//change label x axis
@@ -802,7 +864,7 @@
 				function xForRect(d, xScale){
 					if(xScale(d[0]) < 0)
 						return 0
-					if(options.graph.type == "rhombus")
+					if(options.graph.type == "rhombus" || options.graph.type == "circle")
 						return xScale(d[0]) - options.graph.width/2
 					
 					return xScale(d[0]);
@@ -810,7 +872,7 @@
 				function widthForRect(d, xScale){
 					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
 						return 0;
-					if(options.graph.type == "rhombus" ){
+					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
 						if(xScale(d[0]) < 0)
 							return 0
 						return options.graph.width;
@@ -823,12 +885,20 @@
 					return ((xScale(d[2]) - xScale(d[0])));
 				}
 
-				function rotateForRect(d, xScale){
-					if(options.graph.type == "rhombus" && xScale(d[0]) > 0 )
+				function transformForTypeOfGraph(d, xScale){
+					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& xScale(d[0]) > 0 )
 						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.graph.height/2 + options.lineSpacing)+")"
-					if(options.graph.type == "rhombus" && xScale(d[0]) <= 0 )
+					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && xScale(d[0]) <= 0 )
 						return  'rotate(45 0 '+ (options.graph.height/2 + options.lineSpacing) +')'
 				}
+
+				function roundedRect(){
+					if(options.graph.type == "circle")
+						return 200000
+					return 0  
+				}
+				
+
 			});
 		};
 

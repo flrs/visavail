@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Visavail.js Example: </title>
+	<title>Visavail.js Example: Basic Configuration</title>
 
 	<!-- Visavail.js style -->
 	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
@@ -26,7 +26,7 @@
 <body>
 	<div class="container">
 		<div class="col-md-12">
-			<h1>Visavail.js two chart with two tooltip configuration</h1>
+			<h1>Visavail.js Type Chart with Rhombus</h1>
 		</div>	
 		<div class="col-md-12">
 			<div style="overflow: hidden;" class="visavail" id="visavail_container">
@@ -47,7 +47,7 @@
 	<!-- <script src="../visavail/js/visavail.min.js"></script> -->
 
 	<script>
-	var dataset = [{
+		var dataset = [{
         "measure_html": "Balance",
         "interval_s": 3 * 30.5 * 24 * 60 * 60,
         "data": [
@@ -1177,7 +1177,7 @@
         ]
     }];// draw Visavail.js chart
 		
-		var options_1 = {
+	var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "visavail_graph",
 			
@@ -1185,26 +1185,20 @@
 				class_has_data: 'fas fa-fw fa-check',
 				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
 			},
-			
-		};
-		var options_2 = {
-			id_div_container: "visavail_container",
-			id_div_graph: "visavail_graph",
-			
-			icon: {
-				class_has_data: 'fas fa-fw fa-check',
-				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
+			graph:{
+				type: "circle",
+				height:30,
+				width:30
 			},
 			tooltip:{
-				height: 18,
-				position: "overlay",
-				left_spacing: 20
+				position:"overlay"
 			}
 			
+			
+
 		};
 		
-		var chart_1 = visavail.generate(options_1, dataset);
-		var chart_2 = visavail.generate(options_2, dataset);
+		var chart = visavail.generate(options, dataset)
 
 	</script>
 

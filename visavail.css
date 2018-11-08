@@ -70,7 +70,8 @@
     dominant-baseline: middle;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 12px;
+	font-size: 12px;
+	overflow: hidden;
 }
 
 .visavail .ytitle.link {
