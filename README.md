@@ -63,6 +63,7 @@ The source code of the a basic demo is shown in the file [basic.html](https://gi
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
 ## 3.1. Input Data Format
+--------
 The input to the Visavail.js library is a JSON-like structure. There are three formats that Visavail.js accepts. Which format is right for you depends on your use case.
 
 ### 3.1.1. Continuous Data
@@ -168,9 +169,12 @@ var dataset = [{
 ```
 
 ## 3.2. Display Style
+--------
+
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/tanganellilore/visavail/blob/master/visavail.css) are self-explanatory.
 
 ### 3.2.1. Type of Chart
+
 The library support three type of chart for different type of visualization "bar" (default), "rhombus", "circle".
 If you want to change type of graph you can follow this code
 ```javascript
@@ -186,6 +190,8 @@ var options = {
 
 
 ## 3.3. Options
+--------
+
 The options of the chart are in JSON format and you can customize everything.
 You can pass the JSON Object to library with custom settings
 
@@ -228,6 +234,7 @@ You can pass the JSON Object to library with custom settings
 | *left* | `number` | 100 | Number express in px |
 
 ### 3.3.2. Padding
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *top* | `number` | -50 | Number express in px |
@@ -236,6 +243,7 @@ You can pass the JSON Object to library with custom settings
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
 ### 3.3.3. Tooltip
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class* | `string` | tooltip | Set a custrom class if you want |
@@ -244,6 +252,7 @@ You can pass the JSON Object to library with custom settings
 | *left_spacing* | `number` | 0 | Left space from tooltip and mouse |
 
 ### 3.3.4. Legend
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the legend (If you use a custom categories the legend is hidden) |
@@ -253,6 +262,7 @@ You can pass the JSON Object to library with custom settings
 | *has_data_text* | `string` | Data available | String for no data available |
 
 ### 3.3.5. Title
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the title |
@@ -260,6 +270,7 @@ You can pass the JSON Object to library with custom settings
 | *text* | `string` | Data Availability Plot | String Title |
 
 ### 3.3.6. Sub Title
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the title |
@@ -268,12 +279,14 @@ You can pass the JSON Object to library with custom settings
 | *to_text* | `string` | to | String for to date  |
 
 ### 3.3.7. Icon
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class_has_data* | `string` | fas fa-fw fa-check | custom icon call (for example font awesome) |
 | *class_has_no_data* | `string` | fas fa-fw fa-times | custom icon call (for example font awesome)  |
 
 ### 3.3.8. Graph
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *type* | `string` | bar | There are three type of graph; "bar" is a classical horizzontal bar, "rhombus" use a rhombus for a simple alert, "circle" a drop for a event chart |
@@ -281,12 +294,15 @@ You can pass the JSON Object to library with custom settings
 | *width* | `number` | 20 | width of type of graph, used only for rhombus type and circle type|
 
 ### 3.3.9. Responsive
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable the resposive chart for a responsive layout (this option recreate the chart when the page or div of chart will be resized) |
 | *onresize* | `function` | null | at the moment not supported |
 
+
 ### 3.3.10. Zoom
+
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable the zoom in the chart. We can zoom with mousewheel and you can mof left-right for move in the graph |
@@ -294,8 +310,8 @@ You can pass the JSON Object to library with custom settings
 | *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
-
 ### 3.3.11. Example Usage
+
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
 var options = {
@@ -316,6 +332,7 @@ var options = {
 ```
 
 ## 3.4. Implementation
+--------
 To use the chart in your project, follow these steps:
 
 1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project.
