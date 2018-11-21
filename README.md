@@ -20,7 +20,7 @@ The Visavail.js library takes single data points with dates and information abou
 Demo
 ----
 Some example of Visavail.js in action is displayed at [Demo](https://tanganellilore.github.io/visavail/docs/index.html). 
-The source code of the a basic demo is shown in the file [basic.html] (https://github.com/tanganellilore/visavail/blob/master/docs/samples/basic.html).
+The source code of the a basic demo is shown in the file [basic.html](https://github.com/tanganellilore/visavail/blob/master/docs/samples/basic.html).
 
 Usage
 -----
