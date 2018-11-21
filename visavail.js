@@ -55,6 +55,10 @@
 			//if true reminder to use the correct data format for d3
 			custom_categories: false,
 			is_date_only_format: true,
+			date_in_utc: true,
+			// if false remeber to set the padding and margin
+			show_y_title: true,
+			defined_blocks: false,
 			tooltip: {
 				class: 'tooltip',
 				//height of tooltip , correspond to line-height of class tooltip from css
@@ -63,7 +67,6 @@
 				position: "top",
 				left_spacing: 0
 			},
-
 			legend: {
 				enabled: true,
 				line_space: 12,
@@ -83,14 +86,30 @@
 				to_text: 'to',
 				line_spacing: 16
 			},
-			// if false remeber to set the padding and margin
-			show_y_title: true,
 			//custom icon call (for example font awesome)
 			icon:{
 				class_has_data : 'fas fa-fw fa-check',
 				class_has_no_data: 'fas fa-fw fa-times'
 			},
-			date_in_utc: true,
+			zoom: {
+				enabled: false,
+				//return domain of current scale
+				onZoom: function onZoom(){},
+				//return event of at start
+				onZoomStart: function onZoomStart(){},
+				//return domain of current scale at the endo of the scale zoom
+				onZoomEnd: function onZoomEnd(){},
+			},
+			onClickBlock: function onclickblock(){},
+			graph:{
+				type: "bar" ,
+				width: 20,
+				height:18
+			},
+			responsive: {
+				enabled: false,
+				onresize: function onresize(){},
+			}
 			
 			//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
 			// locale: {
@@ -114,26 +133,6 @@
 			// 	formatMonth : "%B",
 			// 	formatYear : "%Y"
 			// },
-			zoom: {
-				enabled: false,
-				//return domain of current scale
-				onzoom: function onzoom(){},
-				//return event of at start
-				onzoomstart: function onzoomstart(){},
-				//return domain of current scale at the endo of the scale zoom
-				onzoomend: function onzoomend(){},
-			},
-			onclickblock: function onclickblock(){},
-			definedBlocks: false,
-			graph:{
-				type: "bar" ,
-				width: 20,
-				height:18
-			},
-			responsive: {
-				enabled: false,
-				onresize: function onresize(){},
-			}
 		}
 		var date_format_local = moment().creationData().locale._longDateFormat;
 
@@ -250,7 +249,7 @@
 					if(dataset[i].description)
 						options.tooltip.description = true;
 					if (dataset[i].data[0] != null && dataset[i].data[0].length == 3 ){
-						options.definedBlocks = true
+						options.defined_blocks = true
 						if(!Number.isInteger(dataset[i].data[0][1])) 
 							options.custom_categories = true;
 						break;
@@ -286,7 +285,7 @@
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
 							}
-							if (!options.definedBlocks) {
+							if (!options.defined_blocks) {
 								d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 							} else {
 								if (parseDateRegEx.test(d1[2])) {
@@ -321,7 +320,7 @@
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
-								if (options.definedBlocks) {
+								if (options.defined_blocks) {
 									if (tmpData[tmpData.length - 1][2].getTime() === d[0].getTime()) {
 										// end of old and start of new block are the same
 										tmpData[tmpData.length - 1][2] = d[2];
@@ -336,7 +335,7 @@
 							} else {
 								// the value has changed since the last date
 								d[3] = 0;
-								if (!options.definedBlocks) {
+								if (!options.defined_blocks) {
 									// extend last block until new block starts
 									tmpData[tmpData.length - 1][2] = d[0];
 								}
@@ -390,8 +389,9 @@
 							if (e && e.type === "brush") {
 								return;
 							}
+							//define startEvent for fix error in click
 							startEvent = e;
-							options.zoom.onzoomstart.call(this, e);
+							options.zoom.onZoomStart.call(this, e);
 						})
 						.on('end', function () {
 							var e = d3.event.sourceEvent;
@@ -405,7 +405,7 @@
 								return;
 							}
 							options["scale"] = d3.zoomTransform(svg.node())
-							options.zoom.onzoomend.call(this, xScale.domain());
+							options.zoom.onZoomEnd.call(this, xScale.domain());
 						});
 
 					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
@@ -674,7 +674,7 @@
 							.style('opacity', 0);
 					})
 					.on('click', function(d,i){
-						options.onclickblock.call(this, d,i);
+						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
 
@@ -851,7 +851,7 @@
 						createVGrid(options.xScale);
 						emphasize(options.xScale);
 
-						options.zoom.onzoom.call(this, options.xScale.domain())
+						options.zoom.onZoom.call(this, options.xScale.domain())
 					}
 
 				}

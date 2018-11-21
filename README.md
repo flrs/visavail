@@ -23,8 +23,16 @@ Table of contents
 		- [3.2.1. Type of Chart](#321-type-of-chart)
 	- [3.3. Options](#33-options)
 		- [3.3.1. Margin](#331-margin)
-		- [Padding](#padding)
-		- [3.3.2. Example Usage](#332-example-usage)
+		- [3.3.2. Padding](#332-padding)
+		- [3.3.3. Tooltip](#333-tooltip)
+		- [3.3.4. Legend](#334-legend)
+		- [3.3.5. Title](#335-title)
+		- [3.3.6. Sub Title](#336-sub-title)
+		- [3.3.7. Icon](#337-icon)
+		- [3.3.8. Graph](#338-graph)
+		- [3.3.9. Responsive](#339-responsive)
+		- [3.3.10. Zoom](#3310-zoom)
+		- [3.3.11. Example Usage](#3311-example-usage)
 	- [3.4. Implementation](#34-implementation)
 - [4. Download](#4-download)
 - [5. Dependencies](#5-dependencies)
@@ -183,24 +191,35 @@ You can pass the JSON Object to library with custom settings
 
 | Name | Type | Default | Description|
 | ---- |------| ------- | ---------- |
-| *id_div_container* | `string` | visavail_container | Id of div that contain the graph tag |
-| *id_div_graph* | `string` | example | Id of div that contain the graph |
-| *margin* | `Object {}` | [more](#331-margin) | Json Object that contain margin of graphs include title, legent etc. |
-| *padding* | `Object {}` | [more](#331-margin) | Json Object that contain padding of graphs |
-| *width* | `number` | 960 | Width of the graph, this option was ignored if option resposive is enabled |
-| *reduce_space_wrap* | `number` | 36 | Space for three dots when you use a simple title of mesurment |
-| *line_spacing* | `number` | 16 | Space between two row of dataset |
-| *emphasize_year_ticks* | `boolean` | true | Emphasize the year when the range of data cover one more year |
-| *emphasize_month_ticks* | `boolean` | true | Emphasize the month when the range of data cover one more month and not exceed the year |
-| *max_display_datasets* | `number` | 0 | max. no. of datasets that is displayed, 0: all (is the same option of original library) |
-| *cur_display_first_dataset* | `number` | 0 | current first dataset to display (is the same option of original library) |
-| *display_date_range* | `Array[]` | [0,0] | range of dates that will be shown. If from-date (1st element) or to-date (2nd element) is zero, it will be determined according to your data (default: automatically) |
-| *custom_categories* | `boolean` | false | Set to true if you want to use custom category |
-| *is_date_only_format* | `boolean` | false | Check if the date is with date only ( will set Automatically) |
-| *show_y_title* | `boolean` | true | If you set to fale, reminder to set properly margin and padding left |
-| *date_in_utc* | `boolean` | true | Set truo or false in bae of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script|
+| *id_div_container* | `string` | **visavail_container** | Id of div that contain the graph tag |
+| *id_div_graph* | `string` | **example** | Id of div that contain the graph |
+| *margin* | `Object{}` | **[more info](#331-margin)** | Json Object that contain margin of graphs include title, legent etc. |
+| *padding* | `Object{}` | **[more info](#331-padding)** | Json Object that contain padding of graphs |
+| *width* | `number` | **960** | Width of the graph, this option was ignored if option resposive is enabled |
+| *reduce_space_wrap* | `number` | **36** | Space for three dots when you use a simple title of mesurment |
+| *line_spacing* | `number` | **16** | Space between two row of dataset |
+| *emphasize_year_ticks* | `boolean` | **true** | Emphasize the year when the range of data cover one more year |
+| *emphasize_month_ticks* | `boolean` | **true** | Emphasize the month when the range of data cover one more month and not exceed the year |
+| *max_display_datasets* | `number` | **0** | max. no. of datasets that is displayed, 0: all (is the same option of original library) |
+| *cur_display_first_dataset* | `number` | **0** | current first dataset to display (is the same option of original library) |
+| *display_date_range* | `Array[]` | **[0,0]** | range of dates that will be shown. If from-date (1st element) or to-date (2nd element) is zero, it will be determined according to your data (default: automatically) |
+| *custom_categories* | `boolean` | **false** | Set to true if you want to use custom category |
+| *is_date_only_format* | `boolean` | **false** | Check if the date is with date only ( will set Automatically) |
+| *show_y_title* | `boolean` | **true** | If you set to fale, reminder to set properly margin and padding left |
+| *date_in_utc* | `boolean` | **true** | Set true or false in base of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script |
+| *defined_blocks* | `boolean` | **false** | If set to true the we ignore interval_s options in datasets and we use a block defined. This option is set automatically if in there is a date/time defined |
+| *onClickBlock* | `function(d,i)` | null | return "d" an arry with date and value precessed and "i" value of block clicked item |
+| *tooltip* | `Object{}` | **[more info](#333-tooltip)** | Json Object that contain tooltip option for the graph |
+| *legend* | `Object{}` | **[more info](#334-legend)** | Json Object that contain legend option for the graph |
+| *title* | `Object{}` | **[more info](#335-title)** | Json Object that contain title option for the graph |
+| *sub_title* | `Object{}` | **[more info](#336-sub-title)** | Json Object that contain sub-title option for the graph |
+| *icon* | `Object{}` | **[more info](#337-icon)** | Json Object that contain icon option for the graph |
+| *graph* | `Object{}` | **[more info](#338-graph)** | Json Object that contain option for custom type of graph |
+| *responsive* | `Object{}` | **[more info](#339-responsive)** | Json Object that contain option for responsive layout of graph |
+| *zoom* | `Object{}` | **[more info](#3310-zoom)** | Json Object that contain option for zoom in the graph |
 
 ### 3.3.1. Margin
+
 | Name | Type | Default | Description|
 | ---- |------| ------- | ---------- |
 | *top* | `number` | 65 | Number express in px |
@@ -208,15 +227,75 @@ You can pass the JSON Object to library with custom settings
 | *right* | `number` | 20 | Number express in px |
 | *left* | `number` | 100 | Number express in px |
 
-###  Padding
+### 3.3.2. Padding
 | Name | Type | Default | Description|
 | ---- |------| ------- | ---------- |
 | *top* | `number` | -50 | Number express in px |
-| *bottom* | `number` | 10 | Number express in px (not used at the moment)|
-| *right* | `number` | 0 | Number express in px (not used at the moment)|
-| *left* | `number` |- 100 | Number express in px, used for move the y title on the left |
+| *bottom* | `number` | 10 | Number express in px (not used at the moment) |
+| *right* | `number` | 0 | Number express in px (not used at the moment) |
+| *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
-### 3.3.2. Example Usage
+### 3.3.3. Tooltip
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *class* | `string` | tooltip | Set a custrom class if you want |
+| *height* | `number` | 10 | height of tooltip , correspond to line-height of class tooltip from css) |
+| *position* | `string` | top | Two type of tooltip:  "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height |
+| *left_spacing* | `number` | 0 | Left space from tooltip and mouse |
+
+### 3.3.4. Legend
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | true | Enable the legend (If you use a custom categories the legend is hidden) |
+| *line_space* | `number` | 12 | height of legend font , correspond to line-height of class tooltip from css) |
+| *offset* | `number` | 5 | Distance from two data of legend |
+| *has_no_data_text* | `string` | No Data available | String for no data available |
+| *has_data_text* | `string` | Data available | String for no data available |
+
+### 3.3.5. Title
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | true | Enable the title |
+| *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
+| *text* | `string` | Data Availability Plot | String Title |
+
+### 3.3.6. Sub Title
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | true | Enable the title |
+| *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
+| *from_text* | `string` | from | String for from date |
+| *to_text* | `string` | to | String for to date  |
+
+### 3.3.7. Icon
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *class_has_data* | `string` | fas fa-fw fa-check | custom icon call (for example font awesome) |
+| *class_has_no_data* | `string` | fas fa-fw fa-times | custom icon call (for example font awesome)  |
+
+### 3.3.8. Graph
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *type* | `string` | bar | There are three type of graph; "bar" is a classical horizzontal bar, "rhombus" use a rhombus for a simple alert, "circle" a drop for a event chart |
+| *height* | `number` | 20 | height of type of graph |
+| *width* | `number` | 20 | width of type of graph, used only for rhombus type and circle type|
+
+### 3.3.9. Responsive
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | Enable the resposive chart for a responsive layout (this option recreate the chart when the page or div of chart will be resized) |
+| *onresize* | `function` | null | at the moment not supported |
+
+### 3.3.10. Zoom
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | Enable the zoom in the chart. We can zoom with mousewheel and you can mof left-right for move in the graph |
+| *onZoom* | `function(e)` | null | return a current array with current domain of current zoom in date format |
+| *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
+| *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
+
+
+### 3.3.11. Example Usage
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
 var options = {

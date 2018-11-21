@@ -1174,7 +1174,7 @@
             ["2017-01-01", 1],
             ["2018-01-01", 1]
         ]
-    }];// draw Visavail.js chart
+    }];
 		
 		var options_1 = {
 			id_div_container: "visavail_container",
@@ -1215,7 +1215,17 @@
 					class_has_no_data: 'fas fa-fw fa-exclamation-circle'
 				},
 				zoom:{
-					enabled:true
+					enabled:true,
+					onZoom: function(d){
+						console.log("onzoom:", d)
+					},
+					onZoomEnd: function(d,i){
+						console.log("onzoomend:", d,i)
+					},
+					onZoomStart: function(d,i){
+						console.log("onZoomStart:", d)
+					}
+					
 				},
 				responsive:{
 					enabled:true
@@ -1237,8 +1247,10 @@
 				tooltip:{
 					position: "overlay",
 					left_spacing: 20
-				}
-				
+				},
+				onClickBlock: function(d,i){
+					console.log(d,i,e)
+				}				
 			};
 			chart = visavail.generate(options_2, dataset)
 
