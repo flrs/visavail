@@ -189,7 +189,7 @@ var options = {
 The options of the chart are in JSON format and you can customize everything.
 You can pass the JSON Object to library with custom settings
 
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *id_div_container* | `string` | **visavail_container** | Id of div that contain the graph tag |
 | *id_div_graph* | `string` | **example** | Id of div that contain the graph |
@@ -220,7 +220,7 @@ You can pass the JSON Object to library with custom settings
 
 ### 3.3.1. Margin
 
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *top* | `number` | 65 | Number express in px |
 | *bottom* | `number` | 40 | Number express in px |
@@ -228,7 +228,7 @@ You can pass the JSON Object to library with custom settings
 | *left* | `number` | 100 | Number express in px |
 
 ### 3.3.2. Padding
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *top* | `number` | -50 | Number express in px |
 | *bottom* | `number` | 10 | Number express in px (not used at the moment) |
@@ -236,7 +236,7 @@ You can pass the JSON Object to library with custom settings
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
 ### 3.3.3. Tooltip
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class* | `string` | tooltip | Set a custrom class if you want |
 | *height* | `number` | 10 | height of tooltip , correspond to line-height of class tooltip from css) |
@@ -244,7 +244,7 @@ You can pass the JSON Object to library with custom settings
 | *left_spacing* | `number` | 0 | Left space from tooltip and mouse |
 
 ### 3.3.4. Legend
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the legend (If you use a custom categories the legend is hidden) |
 | *line_space* | `number` | 12 | height of legend font , correspond to line-height of class tooltip from css) |
@@ -253,14 +253,14 @@ You can pass the JSON Object to library with custom settings
 | *has_data_text* | `string` | Data available | String for no data available |
 
 ### 3.3.5. Title
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the title |
 | *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
 | *text* | `string` | Data Availability Plot | String Title |
 
 ### 3.3.6. Sub Title
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | true | Enable the title |
 | *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
@@ -268,26 +268,26 @@ You can pass the JSON Object to library with custom settings
 | *to_text* | `string` | to | String for to date  |
 
 ### 3.3.7. Icon
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class_has_data* | `string` | fas fa-fw fa-check | custom icon call (for example font awesome) |
 | *class_has_no_data* | `string` | fas fa-fw fa-times | custom icon call (for example font awesome)  |
 
 ### 3.3.8. Graph
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *type* | `string` | bar | There are three type of graph; "bar" is a classical horizzontal bar, "rhombus" use a rhombus for a simple alert, "circle" a drop for a event chart |
 | *height* | `number` | 20 | height of type of graph |
 | *width* | `number` | 20 | width of type of graph, used only for rhombus type and circle type|
 
 ### 3.3.9. Responsive
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable the resposive chart for a responsive layout (this option recreate the chart when the page or div of chart will be resized) |
 | *onresize* | `function` | null | at the moment not supported |
 
 ### 3.3.10. Zoom
-| Name | Type | Default | Description|
+| Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable the zoom in the chart. We can zoom with mousewheel and you can mof left-right for move in the graph |
 | *onZoom* | `function(e)` | null | return a current array with current domain of current zoom in date format |
