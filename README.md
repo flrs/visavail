@@ -1,6 +1,9 @@
 Visavail.js - A Time Data Availability Chart
 =============================
 This library visualizes the availability of time-dependent data with a chart on a website.
+This is a fork of the Visavail original library [https://github.com/flrs/visavail](https://github.com/flrs/visavail).
+
+I modify the structure of library and implement new functionality for a better and dynamic library.
 
 Description
 -----------
@@ -16,7 +19,8 @@ The Visavail.js library takes single data points with dates and information abou
 
 Demo
 ----
-A demo of Visavail.js in action is displayed at [http://bit.ly/1tevllL](http://bit.ly/1tevllL). The source code of the demo is shown in the file [example_basic.htm](examples/example_basic.htm).
+Some example of Visavail.js in action is displayed at [Demo](https://tanganellilore.github.io/visavail/docs/index.html). 
+The source code of the a basic demo is shown in the file [basic.html] https://github.com/tanganellilore/visavail/blob/master/docs/samples/basic.html).
 
 Usage
 -----
@@ -44,8 +48,8 @@ var dataset = [{
 ```
 
 #### Data With Time Gaps
-You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start
-and an end date, as shown in the code below. In this case, no information about `"interval_s"` (as explained in the previous use case) is needed.
+You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start and an end date, as shown in the code below. 
+In this case, no information about `"interval_s"` (as explained in the previous use case) is needed.
 ```javascript
 var dataset = [{
     "measure": "Annual Report", // name of the data series, will become y-axis label
@@ -127,68 +131,55 @@ var dataset = [{
 }];
 ```
 
-
 ### Display Style
-The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](visavail/css/visavail.css) are self-explanatory.
+The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/tanganellilore/visavail/blob/master/visavail.css) are self-explanatory.
+
+#### Type of Chart
+The library support three type of chart for different type of visualization "bar" (default), "rhombus", "circle".
+If you want to change type of graph you can follow this code
+```javascript
+var options = {
+			graph:{
+				type: "circle",
+				height:30,
+				width:30
+			},
+		};
+```
 
 ### Implementation
 To use the chart in your project, follow these steps:
 
-1. Copy the `vendors` folder and the `visavail` folder to the *root folder* of your project.
+1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project.
 
 2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website:
     ```html
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
-    <link href="./visavail/css/visavail.css" rel="stylesheet" type="text/css">
-    <link href="./vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/visavail.css" rel="stylesheet" type="text/css">
+    <link href="./css/font-awesome.min.css" rel="stylesheet" type="text/css">
     ```
 3. And the following lines to the `<body>` of your website:
     ```html
-    <script src="./vendors/moment/moment-with-locales.min.js" type="text/javascript"></script>
-    <script>
-        moment.locale("en");
-    </script>
-    <script src="./vendors/d3/d3.min.js" charset="utf-8"></script>
-    <script type="text/javascript">
-        var dataset = ... // see examples/example_basic.htm
-    </script>
+    <script src="./js/moment-with-locales.min.js" type="text/javascript"></script>
+    <script src="./js/d3.min.js" charset="utf-8"></script>
     <script src="./visavail/js/visavail.js"></script>
     
-    <p id="example"><!-- Visavail.js chart will be inserted here --></p>
+    <div style="overflow: hidden;" class="visavail" id="visavail_container">
+		<p id="visavail_graph"><!-- Visavail.js chart will be placed here --></p>
+	</div>
     
-    <script>
-        var chart = visavailChart().width(800); // define width of chart in px
-        d3.select("#example")
-                .datum(dataset)
-                .call(chart);
+	<script type="text/javascript">
+		moment.locale("en");
+		var dataset = ... // see examples/example_basic.htm
+		var options = {
+			id_div_container: "visavail_container",
+			id_div_graph: "visavail_graph",
+		};
+		
+		var chart = visavail.generate(options, dataset)
     </script>
-    ```
+	```
 
-Examples
---------
-Eight examples are provided with Visavail.js.
-
-1. **Basic Example** The [basic example](examples/example_basic.htm) gives you the quick "plug and play" experience.
-
-2. **Time Gap Example** Check out the [time gap example](examples/example_timegaps.htm) for getting to know how to define time gaps in your input dataset.
-
-3. **Pagination with Bootstrap** As datasets grow bigger, you might want to display the data in pages. [This Bootstrap pagination example](examples/example_pagination_bootstrap.htm) has you covered.
-
-4. **Responsive Layout with Bootstrap** When optimizing for mobile, [this example with responsive layout](examples/example_responsive_bootstrap.htm) is a good starting point.
-
-5. **Dates and Times** When you also want to display times and not only dates, [the dates and times example](examples/example_dates_and_times.htm) shows you how.
-
-6. **Custom Category Data** Categories other than "data available" and "no data available" can be used, as shown in [the custom category data example](examples/example_custom_categories.htm).
-
-7. **Linked Measure Labels** For adding a link to the measure labels, [the linked labels example](examples/example_linked_labels.htm) shows how it is done.
-
-8. **Measure Labels with HTML** If adding a link to the measure labels is not enough, you can make them full HTML, as explained in the [HTML labels example](examples/example_html_labels.htm).
-
-9. **Restricting Visible Date Range** It is possible to restrict the visible date range. Find details in [the date range example](examples/example_daterange.htm).
-
-### Public Projects With Visavail.js
-
-- [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
 
 Download
 --------
