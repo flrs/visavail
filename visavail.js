@@ -31,29 +31,30 @@
 			width: 960,
 
             reduce_space_wrap: 35,
-			lineSpacing: 14,
-			paddingTopHeading: -50,
-			paddingBottom: 10,
-			paddingLeft: -100,
+			line_spacing: 16,
+			padding:{
+				top: -49,
+				bottom: 0,
+				right: 0,
+				left: -100
+			},
 			// year ticks to be emphasized or not
-			emphasizeYearTicks: true,
-			emphasizeMonthTicks: true,
+			emphasize_year_ticks: true,
+			emphasize_month_ticks: true,
 			// define chart pagination
 			// max. no. of datasets that is displayed, 0: all
-			maxDisplayDatasets: 0,
+			max_display_datasets: 0,
 			// dataset that is displayed first in the current
-			// display, chart will show datasets "curDisplayFirstDataset" to
-			// "curDisplayFirstDataset+maxDisplayDatasets"
-			curDisplayFirstDataset: 0,
+			// display, chart will show datasets "cur_display_first_dataset" to
+			// "cur_display_first_dataset+max_display_datasets"
+			cur_display_first_dataset: 0,
 			// range of dates that will be shown
 			// if from-date (1st element) or to-date (2nd element) is zero,
 			// it will be determined according to your data (default: automatically)
-
 			display_date_range: [0, 0],
-
 			//if true reminder to use the correct data format for d3
 			custom_categories: false,
-			isDateOnlyFormat: true,
+			is_date_only_format: true,
 			tooltip: {
 				class: 'tooltip',
 				//height of tooltip , correspond to line-height of class tooltip from css
@@ -65,22 +66,25 @@
 
 			legend: {
 				enabled: true,
+				line_space: 12,
+				offset: 5,
 				has_no_data_text: 'No Data available',
 				has_data_text: 'Data available'
-
 			},
 			// title of chart is drawn or not (default: true)
 			title: {
 				enabled: true,
 				text: 'Data Availability Plot',
+				line_spacing: 16
 			},
 			sub_title: {
 				enabled: true,
 				from_text: 'from',
 				to_text: 'to',
+				line_spacing: 16
 			},
 			// if false remeber to set the padding and margin
-			ytitle: true,
+			show_y_title: true,
 			//custom icon call (for example font awesome)
 			icon:{
 				class_has_data : 'fas fa-fw fa-check',
@@ -222,14 +226,14 @@
 				var maxPages = 0;
 				var startSet;
 				var endSet;
-				if (options.maxDisplayDatasets !== 0) {
-					startSet = options.curDisplayFirstDataset;
-					if (options.curDisplayFirstDataset + options.maxDisplayDatasets > dataset.length) {
+				if (options.max_display_datasets !== 0) {
+					startSet = options.cur_display_first_dataset;
+					if (options.cur_display_first_dataset + options.max_display_datasets > dataset.length) {
 						endSet = dataset.length;
 					} else {
-						endSet = options.curDisplayFirstDataset + options.maxDisplayDatasets;
+						endSet = options.cur_display_first_dataset + options.max_display_datasets;
 					}
-					maxPages = Math.ceil(dataset.length / options.maxDisplayDatasets);
+					maxPages = Math.ceil(dataset.length / options.max_display_datasets);
 				} else {
 					startSet = 0;
 					endSet = dataset.length;
@@ -239,7 +243,7 @@
 				selection.attr('data-max-pages', maxPages);
 
 				var noOfDatasets = endSet - startSet;
-				var height = options.graph.height * noOfDatasets + options.lineSpacing * noOfDatasets - 1;
+				var height = options.graph.height * noOfDatasets + options.line_spacing * noOfDatasets - 1;
 
 				// check how data is arranged
 				for (var i = 0; i < dataset.length; i++) {
@@ -277,7 +281,7 @@
 							} else if (parseDateTimeRegEx.test(d1[0])) {
 								// d1[0] is date with time data
 								d1[0] = parseDateTime(d1[0]);
-								options.isDateOnlyFormat = false;
+								options.is_date_only_format = false;
 							} else {
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
@@ -419,63 +423,38 @@
 				}
 				svg.append('g').attr('id', 'g_data');
 
-				if (options.ytitle) {
+				if (options.show_y_title) {
 					// create y axis labels
-					var labels = svg.select('#g_axis').append('g').attr('id', 'yAxis').selectAll('text')
+					svg.select('#g_axis').append('g').attr('id', 'yAxis').selectAll('text')
 						.data(dataset.slice(startSet, endSet))
-						.enter();
-
-					// text labels
-					// labels.append('text')
-					// 	.attr('x', options.paddingLeft)
-					// 	.attr('y', options.lineSpacing + options.graph.height / 2)
-					// 	.html(function (d) {
-							
-					// 	})
-					// 	.each(wrap)
-					// 	.attr('transform', function (d, i) {
-					// 		return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
-					// 	})
-					// 	.attr('class', function (d) {
-					// 		var returnCSSClass = 'ytitle';
-					// 		if (d.measure_url != null) {
-					// 			returnCSSClass = returnCSSClass + ' link';
-					// 		}
-					// 		return returnCSSClass;
-					// 	})
-						// .on('click', function (d) {
-						// 	if (d.measure_url != null) {
-						// 		return window.open(d.measure_url);
-						// 	}
-						// 	return null;
-						// })
-					// 	.append('title')
-					// 	.text(function (d) {
-					// 		return d.measure;
-					// 	})
-
-					// HTML labels
-					labels.append('foreignObject')
-						.attr('x', options.paddingLeft)
-						.attr('y', options.lineSpacing)
-						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
+						.enter()
+						.append('g')
+						.attr('id', function (d,i) {
+							return i;
 						})
-						.attr('width', -1 * options.paddingLeft)
-						.attr('height', options.graph.height)
+						.append('title')
+                        .text(function (d) {
+                                 return d.measure;
+						});
+
+					svg.select('#yAxis').selectAll("g").append('text')
+						.attr('x', options.padding.left)
+						.attr('y', options.line_spacing + options.graph.height / 2)
+						.text(function (d) {
+							if (!(d.measure_html != null)) {
+								return d.measure;
+							}
+						})
+						.each(wrap)
+						.attr('transform', function (d, i) {
+							return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
+						})
 						.attr('class', function (d) {
 							var returnCSSClass = 'ytitle';
 							if (d.measure_url != null) {
 								returnCSSClass = returnCSSClass + ' link';
 							}
 							return returnCSSClass;
-						})
-						.html(function (d) {
-							if (d.measure_html != null) {
-								return d.measure_html;
-							} else {
-								return d.measure;
-							}
 						})
 						.on('click', function (d) {
 							if (d.measure_url != null) {
@@ -484,16 +463,35 @@
 							return null;
 						});
 
+					
+
+					svg.select('#yAxis').selectAll("g")
+						.insert('foreignObject', ':first-child')
+						.attr('x', options.padding.left)
+						.attr('y', options.line_spacing)
+						.attr('transform', function (d, i) {
+							return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
+						})
+						.attr('width', -1 * options.padding.left)
+						.attr('height', options.graph.height)
+						.attr('class', 'ytitle')
+						.html(function (d) {
+							if (d.measure_html != null) {
+								return d.measure_html;
+							}
+						});
+
                     function wrap() {
                         var self = d3.select(this),
                             textLength = self.node().getComputedTextLength(),
-                            text = self.text();
-						 while (textLength > (options.margin.left + options.reduce_space_wrap) && text.length > 0) {
+							text = self.text();
+						
+						 while (textLength > (-1 * options.padding.left + options.reduce_space_wrap) && text.length > 0) {
                             text = text.slice(0, -1);
                             self.text(text + '...');
                             textLength = self.node().getComputedTextLength();
-                        }
-                    }
+						}
+					}
 				}
 				//xAxis
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
@@ -511,7 +509,7 @@
 							return scale(d);
 						})
 						.attr('y1', 0)
-						.attr('y2', options.graph.height * noOfDatasets + options.lineSpacing * noOfDatasets - 1 + options.paddingBottom)
+						.attr('y2', options.graph.height * noOfDatasets + options.line_spacing * noOfDatasets - 1 + options.margin.bottom)
 						.attr('class', 'vert_grid');
 				}
 
@@ -527,10 +525,10 @@
 					.attr('x1', 0)
 					.attr('x2', width)
 					.attr('y1', function (d, i) {
-						return ((options.lineSpacing + options.graph.height) * i) + options.lineSpacing + options.graph.height / 2;
+						return ((options.line_spacing + options.graph.height) * i) + options.line_spacing + options.graph.height / 2;
 					})
 					.attr('y2', function (d, i) {
-						return ((options.lineSpacing + options.graph.height) * i) + options.lineSpacing + options.graph.height / 2;
+						return ((options.line_spacing + options.graph.height) * i) + options.line_spacing + options.graph.height / 2;
 					})
 					.attr('class', 'horz_grid');
 
@@ -548,7 +546,7 @@
 					.enter()
 					.append('g')
 					.attr('transform', function (d, i) {
-						return 'translate(0,' + ((options.lineSpacing + options.graph.height) * i) + ')';
+						return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
 					})
 					.attr('cursor', 'pointer')
 					.attr('class', 'dataset');
@@ -567,7 +565,7 @@
 					.attr('width', function (d) {
 						return widthForRect(d, xScale)
 					})
-					.attr('y', options.lineSpacing)
+					.attr('y', options.line_spacing)
 					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
 						return transformForTypeOfGraph(d, xScale)
@@ -629,7 +627,7 @@
 										output += ' ' + series.description[i] + ' ';
 									}
 								}
-								if (options.isDateOnlyFormat) {
+								if (options.is_date_only_format) {
 									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
 										return output + moment(d[0]).format('l') +
 											' - ' + moment(d[2]).format('l');
@@ -715,7 +713,7 @@
 					var isYearTick = xTicks.map(isYear);
 					var isMonthTick = xTicks.map(isMonth);
 
-					if (options.emphasizeYearTicks &&
+					if (options.emphasize_year_ticks &&
 						!(isYearTick.every(function (d) {
 							return d === true;
 						})) &&
@@ -737,7 +735,7 @@
 					}
 					// month emphasis
 					// ensure year emphasis is only active if month are the biggest clustering unit
-					if (options.emphasizeMonthTicks &&
+					if (options.emphasize_month_ticks &&
 						!isMonthTick.every(function (d) {
 							return d === true;
 						})) {
@@ -761,8 +759,8 @@
 				if (options.title.enabled) {
 					svg.select('#g_title')
 						.append('text')
-						.attr('x', options.paddingLeft)
-						.attr('y', options.paddingTopHeading)
+						.attr('x', options.padding.left)
+						.attr('y', options.padding.top)
 						.text(options.title.text)
 						.attr('class', 'heading');
 				}
@@ -770,7 +768,7 @@
 				if (options.sub_title.enabled) {
 					var subtitleText = '';
 					if (noOfDatasets) {
-						if (options.isDateOnlyFormat) {
+						if (options.is_date_only_format) {
 							subtitleText = options.sub_title.from_text + ' ' + moment(startDate).format('MMMM Y') +
 								' ' + options.sub_title.to_text + ' ' +
 								moment(endDate).format('MMMM Y');
@@ -784,8 +782,8 @@
 
 					svg.select('#g_title')
 						.append('text')
-						.attr('x', options.paddingLeft)
-						.attr('y', options.paddingTopHeading + 17)
+						.attr('x', options.padding.left)
+						.attr('y', options.padding.top + options.title.line_spacing)
 						.text(subtitleText)
 						.attr('class', 'subheading');
 				}
@@ -798,27 +796,27 @@
 
 					legend.append('rect')
 						.attr('x', width + options.margin.right - 150)
-						.attr('y', options.paddingTopHeading)
+						.attr('y', options.padding.top)
 						.attr('height', 15)
 						.attr('width', 15)
 						.attr('class', 'rect_has_data');
 
 					legend.append('text')
 						.attr('x', width + options.margin.right - 150 + 20)
-						.attr('y', options.paddingTopHeading + 8.5)
+						.attr('y', options.padding.top + options.legend.line_space - options.legend.offset/2)
 						.text(options.legend.has_data_text)
 						.attr('class', 'legend');
 
 					legend.append('rect')
 						.attr('x', width + options.margin.right - 150)
-						.attr('y', options.paddingTopHeading + 17)
+						.attr('y', options.padding.top + options.legend.line_space + options.legend.offset)
 						.attr('height', 15)
 						.attr('width', 15)
 						.attr('class', 'rect_has_no_data');
 
 					legend.append('text')
 						.attr('x', width + options.margin.right - 150 + 20)
-						.attr('y', options.paddingTopHeading + 8.5 + 15 + 2)
+						.attr('y', options.padding.top + options.legend.line_space * 2 +  options.legend.offset/2)
 						.text(options.legend.has_no_data_text)
 						.attr('class', 'legend');
 				}
@@ -887,9 +885,9 @@
 
 				function transformForTypeOfGraph(d, xScale){
 					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& xScale(d[0]) > 0 )
-						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.graph.height/2 + options.lineSpacing)+")"
+						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.graph.height/2 + options.line_spacing)+")"
 					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && xScale(d[0]) <= 0 )
-						return  'rotate(45 0 '+ (options.graph.height/2 + options.lineSpacing) +')'
+						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing) +')'
 				}
 
 				function roundedRect(){
@@ -916,22 +914,22 @@
 		};
 
 		chart.maxDisplayDatasets = function (_) {
-			if (!arguments.length) return  options.maxDisplayDatasets;
-			options.maxDisplayDatasets = _;
+			if (!arguments.length) return  options.max_display_datasets;
+			options.max_display_datasets = _;
 			return chart;
 		};
 
 		chart.curDisplayFirstDataset = function (_) {
-			if (!arguments.length) return  options.curDisplayFirstDataset;
-			options.curDisplayFirstDataset = _;
+			if (!arguments.length) return  options.cur_display_first_dataset;
+			options.cur_display_first_dataset = _;
 			return chart;
 		};
 
 
 
 		chart.emphasizeYearTicks = function (_) {
-			if (!arguments.length) return  options.emphasizeYearTicks;
-			options.emphasizeYearTicks = _;
+			if (!arguments.length) return  options.emphasize_year_ticks;
+			options.emphasize_year_ticks = _;
 			return chart;
 		};
 

@@ -5,7 +5,35 @@ This is a fork of the Visavail original library [https://github.com/flrs/visavai
 
 I modify the structure of library and implement new functionality for a better and dynamic library.
 
-Description
+Table of contents
+----
+<!-- TOC -->
+
+- [1. Description](#1-description)
+- [2. Demo](#2-demo)
+- [3. Usage](#3-usage)
+	- [3.1. Input Data Format](#31-input-data-format)
+		- [3.1.1. Continuous Data](#311-continuous-data)
+		- [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
+		- [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
+		- [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
+		- [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
+		- [3.1.6. Measure Labels with HTML](#316-measure-labels-with-html)
+	- [3.2. Display Style](#32-display-style)
+		- [3.2.1. Type of Chart](#321-type-of-chart)
+	- [3.3. Options](#33-options)
+		- [3.3.1. Margin](#331-margin)
+		- [Padding](#padding)
+		- [3.3.2. Example Usage](#332-example-usage)
+	- [3.4. Implementation](#34-implementation)
+- [4. Download](#4-download)
+- [5. Dependencies](#5-dependencies)
+- [6. Contribution](#6-contribution)
+- [7. License](#7-license)
+
+<!-- /TOC -->
+
+# 1. Description
 -----------
 The Visavail.js chart allows a quick insight into which periods of time a time-dependent dataset covers. It is visually similar to a Gantt chart and allows easy identification of missing pieces and gaps in large datasets. Missing periods of data are marked in red while blocks of complete periods of data are marked in green. The user discovers dates that define start and end of such periods by tooltips, as shown in the picture below.
 
@@ -17,19 +45,19 @@ An example use case is the visualization of a dataset that contains time-depende
 
 The Visavail.js library takes single data points with dates and information about data availability as inputs, combines them into time blocks, and visualizes these blocks.
 
-Demo
+# 2. Demo
 ----
 Some example of Visavail.js in action is displayed at [Demo](https://tanganellilore.github.io/visavail/docs/index.html). 
 The source code of the a basic demo is shown in the file [basic.html](https://github.com/tanganellilore/visavail/blob/master/docs/samples/basic.html).
 
-Usage
+# 3. Usage
 -----
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
-### Input Data Format
+## 3.1. Input Data Format
 The input to the Visavail.js library is a JSON-like structure. There are three formats that Visavail.js accepts. Which format is right for you depends on your use case.
 
-#### Continuous Data
+### 3.1.1. Continuous Data
 You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that information about the availability of some data is valid until the next data point shows up.
 Thus, the library will plot a continuous bar from the first to the last data point. The last data point will be assumed valid for a period of `"interval_s"`.
 The below code comments point out the elements that should be included in the input data.
@@ -47,7 +75,7 @@ var dataset = [{
 }];
 ```
 
-#### Data With Time Gaps
+### 3.1.2. Data With Time Gaps
 You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start and an end date, as shown in the code below. 
 In this case, no information about `"interval_s"` (as explained in the previous use case) is needed.
 ```javascript
@@ -64,7 +92,7 @@ var dataset = [{
 }];
 ```
 
-#### Data With Dates and Times
+### 3.1.3. Data With Dates and Times
 The library also supports the display of data in smaller units than days as in the previous examples. Visavail.js currently supports display of data in second intervals. The code below is based on the time gap data format outlined above.
 To display date and time data correctly, all data must be formatted in a 24-hour format.
 ```javascript
@@ -79,7 +107,7 @@ var dataset = [{
 }];
 ```
 
-#### Data With Custom Categories
+### 3.1.4. Data With Custom Categories
 If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in custom categories. In this case, you have to assign all of your categories a name and a color that is used for displaying the category in the chart.
 
 The chart legend will not appear on charts with data in custom categories. Instead, the category name will be shown in the tooltip that appears when you hover over the bars in the chart. See the code below for an example.
@@ -100,7 +128,7 @@ var dataset = [{
 }];
 ```
 
-#### Linking Measure Labels
+### 3.1.5. Linking Measure Labels
 If you want to add a link to your measure label, you can do so by adding an URL through the `measure_url` property in the `dataset`. Here is an example:
 ```javascript
 var dataset = [{
@@ -116,7 +144,7 @@ var dataset = [{
 }];
 ```
 
-#### Measure Labels with HTML
+### 3.1.6. Measure Labels with HTML
 Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:
 ```javascript
 var dataset = [{
@@ -131,23 +159,84 @@ var dataset = [{
 }];
 ```
 
-### Display Style
+## 3.2. Display Style
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/tanganellilore/visavail/blob/master/visavail.css) are self-explanatory.
 
-#### Type of Chart
+### 3.2.1. Type of Chart
 The library support three type of chart for different type of visualization "bar" (default), "rhombus", "circle".
 If you want to change type of graph you can follow this code
 ```javascript
 var options = {
-			graph:{
-				type: "circle",
-				height:30,
-				width:30
-			},
-		};
+	graph:{
+		type: "circle",
+		height:30,
+		width:30
+	}
+};
 ```
 
-### Implementation
+
+
+## 3.3. Options
+The options of the chart are in JSON format and you can customize everything.
+You can pass the JSON Object to library with custom settings
+
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *id_div_container* | `string` | visavail_container | Id of div that contain the graph tag |
+| *id_div_graph* | `string` | example | Id of div that contain the graph |
+| *margin* | `Object {}` | [more](#331-margin) | Json Object that contain margin of graphs include title, legent etc. |
+| *padding* | `Object {}` | [more](#331-margin) | Json Object that contain padding of graphs |
+| *width* | `number` | 960 | Width of the graph, this option was ignored if option resposive is enabled |
+| *reduce_space_wrap* | `number` | 36 | Space for three dots when you use a simple title of mesurment |
+| *line_spacing* | `number` | 16 | Space between two row of dataset |
+| *emphasize_year_ticks* | `boolean` | true | Emphasize the year when the range of data cover one more year |
+| *emphasize_month_ticks* | `boolean` | true | Emphasize the month when the range of data cover one more month and not exceed the year |
+| *max_display_datasets* | `number` | 0 | max. no. of datasets that is displayed, 0: all (is the same option of original library) |
+| *cur_display_first_dataset* | `number` | 0 | current first dataset to display (is the same option of original library) |
+| *display_date_range* | `Array[]` | [0,0] | range of dates that will be shown. If from-date (1st element) or to-date (2nd element) is zero, it will be determined according to your data (default: automatically) |
+| *custom_categories* | `boolean` | false | Set to true if you want to use custom category |
+| *is_date_only_format* | `boolean` | false | Check if the date is with date only ( will set Automatically) |
+| *show_y_title* | `boolean` | true | If you set to fale, reminder to set properly margin and padding left |
+| *date_in_utc* | `boolean` | true | Set truo or false in bae of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script|
+
+### 3.3.1. Margin
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *top* | `number` | 65 | Number express in px |
+| *bottom* | `number` | 40 | Number express in px |
+| *right* | `number` | 20 | Number express in px |
+| *left* | `number` | 100 | Number express in px |
+
+###  Padding
+| Name | Type | Default | Description|
+| ---- |------| ------- | ---------- |
+| *top* | `number` | -50 | Number express in px |
+| *bottom* | `number` | 10 | Number express in px (not used at the moment)|
+| *right* | `number` | 0 | Number express in px (not used at the moment)|
+| *left* | `number` |- 100 | Number express in px, used for move the y title on the left |
+
+### 3.3.2. Example Usage
+In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
+```javascript
+var options = {
+	id_div_container: "visavail_container",
+	id_div_graph: "visavail_graph",
+
+	icon: {
+		class_has_data: 'fas fa-fw fa-check',
+		class_has_no_data: 'fas fa-fw fa-exclamation-circle'
+	},
+	zoom:{
+		enabled:true,
+	},
+	responsive:{
+		enabled:true,
+	}
+};
+```
+
+## 3.4. Implementation
 To use the chart in your project, follow these steps:
 
 1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project.
@@ -181,21 +270,21 @@ To use the chart in your project, follow these steps:
 	```
 
 
-Download
+# 4. Download
 --------
 An archive with the library can be downloaded from the [releases page](https://github.com/flrs/visavail/releases).
 
-Dependencies
+# 5. Dependencies
 ------------
 Visavail.js depends on a couple of libraries:
 * [D3.js JavaScript library](https://d3js.org/) as a visualization framework,
 * [Moment.js](http://momentjs.com/) for formatting dates in tooltips and
 * [Font Awesome](http://fontawesome.io) for icons in the tooltips.
 
-Contribution
+# 6. Contribution
 ------------
 I am happy about any contribution or feedback. Please let me know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues).
 
-License
+# 7. License
 -------
 The Visavail.js library is distributed under the [MIT License (MIT)](https://github.com/flrs/visavail/blob/master/LICENSE.md). Please also take note of the licenses of the dependencies.
