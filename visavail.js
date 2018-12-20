@@ -867,8 +867,9 @@
 					
 					return xScale(d[0]);
 				}
+				
 				function widthForRect(d, xScale){
-					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[1]) < 0))
+					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[0]) < 0))
 						return 0;
 					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
 						if(xScale(d[0]) < 0)
