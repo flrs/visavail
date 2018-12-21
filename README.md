@@ -1,13 +1,43 @@
-Visavail.js - A Time Data Availability Chart
-=============================
+<!-- omit in toc -->Visavail.js - A Time Data Availability Chart
+=============================================
+
 This library visualizes the availability of time-dependent data with a chart on a website.
 This is a fork of the Visavail original library [https://github.com/flrs/visavail](https://github.com/flrs/visavail).
 
 I modify the structure of library and implement new functionality for a better and dynamic library.
 
-Table of contents
-----
-<!-- TOC -->autoauto- [1. Description](#1-description)auto- [2. Demo](#2-demo)auto- [3. Usage](#3-usage)auto	- [3.1. Input Data Format](#31-input-data-format)auto		- [3.1.1. Continuous Data](#311-continuous-data)auto		- [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)auto		- [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)auto		- [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)auto		- [3.1.5. Linking Measure Labels](#315-linking-measure-labels)auto		- [3.1.6. Measure Labels with HTML](#316-measure-labels-with-html)auto	- [3.2. Display Style](#32-display-style)auto		- [3.2.1. Type of Chart](#321-type-of-chart)auto	- [3.3. Options](#33-options)auto		- [3.3.1. Margin](#331-margin)auto		- [3.3.2. Padding](#332-padding)auto		- [3.3.3. Tooltip](#333-tooltip)auto		- [3.3.4. Legend](#334-legend)auto		- [3.3.5. Title](#335-title)auto		- [3.3.6. Sub Title](#336-sub-title)auto		- [3.3.7. Icon](#337-icon)auto		- [3.3.8. Graph](#338-graph)auto		- [3.3.9. Responsive](#339-responsive)auto		- [3.3.10. Zoom](#3310-zoom)auto		- [3.3.11. Example Usage](#3311-example-usage)auto	- [3.4. Implementation](#34-implementation)auto- [4. Download](#4-download)auto- [5. Dependencies](#5-dependencies)auto- [6. Contribution](#6-contribution)auto- [7. License](#7-license)autoauto<!-- /TOC -->
+<!-- omit in toc -->Table of contents
+-------------------------------------------
+
+- [# 1. Description](#1-description)
+- [# 2. Demo](#2-demo)
+- [# 3. Usage](#3-usage)
+- [## 3.1. Input Data Format](#31-input-data-format)
+	- [3.1.1. Continuous Data](#311-continuous-data)
+	- [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
+	- [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
+	- [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
+	- [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
+	- [3.1.6. Measure Labels with HTML](#316-measure-labels-with-html)
+- [## 3.2. Display Style](#32-display-style)
+	- [3.2.1. Type of Chart](#321-type-of-chart)
+- [## 3.3. Options](#33-options)
+	- [3.3.1. Margin](#331-margin)
+	- [3.3.2. Padding](#332-padding)
+	- [3.3.3. Tooltip](#333-tooltip)
+	- [3.3.4. Legend](#334-legend)
+	- [3.3.5. Title](#335-title)
+	- [3.3.6. Sub Title](#336-sub-title)
+	- [3.3.7. Icon](#337-icon)
+	- [3.3.8. Graph](#338-graph)
+	- [3.3.9. Responsive](#339-responsive)
+	- [3.3.10. Zoom](#3310-zoom)
+	- [3.3.11. Example Usage](#3311-example-usage)
+- [## 3.4. Implementation](#34-implementation)
+- [# 4. Download](#4-download)
+- [# 5. Dependencies](#5-dependencies)
+- [# 6. Contribution](#6-contribution)
+- [# 7. License](#7-license)
 
 # 1. Description
 -----------
