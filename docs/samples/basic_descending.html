@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Visavail.js Example: Complex Chart</title>
+	<title>Visavail.js Example: Basic Configuration</title>
 
 	<!-- Visavail.js style -->
 	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
@@ -26,7 +26,7 @@
 <body>
 	<div class="container">
 		<div class="col-md-12">
-			<h1>Visavail.js Complex Chart</h1>
+			<h1>Visavail.js Basic Example</h1>
 		</div>	
 		<div class="col-md-12">
 			<div style="overflow: hidden;" class="visavail" id="visavail_container">
@@ -42,6 +42,7 @@
 
 	<script src="../lib/js/d3.min.js" ></script>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script> -->
+
 	<script src="../../visavail.js"></script>
 	<!-- <script src="../visavail/js/visavail.min.js"></script> -->
 
@@ -1176,7 +1177,7 @@
         ]
     }];
 		
-		var options_1 = {
+	var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "visavail_graph",
 			
@@ -1184,77 +1185,10 @@
 				class_has_data: 'fas fa-fw fa-check',
 				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
 			},
-			zoom:{
-				enabled:true
-			},
-			responsive:{
-				enabled:true
-			},
-			legend: {
-				enabled: false
-			},
-			title: {
-				enabled: false
-			},
-			sub_title: {
-				enabled: false
-			}
-			
+			date_is_descending: true
 		};
 		
-		var chart = visavail.generate(options_1, dataset)
-
-		setTimeout(function(){
-			chart.destroy();
-			var options_2 = {
-				id_div_container: "visavail_container",
-				id_div_graph: "visavail_graph",
-				
-				icon: {
-					class_has_data: 'fas fa-fw fa-check',
-					class_has_no_data: 'fas fa-fw fa-exclamation-circle'
-				},
-				zoom:{
-					enabled:true,
-					onZoom: function(d){
-						console.log("onzoom:", d)
-					},
-					onZoomEnd: function(d,i){
-						console.log("onzoomend:", d,i)
-					},
-					onZoomStart: function(d,i){
-						console.log("onZoomStart:", d)
-					}
-					
-				},
-				responsive:{
-					enabled:true
-				},
-				legend: {
-					enabled: true,
-					has_no_data_text: 'Error',
-					has_data_text: 'Ok'
-				},
-				title: {
-					enabled: true,
-					text : "Test Change default text"
-				},
-				sub_title: {
-					enabled: true,
-					from_text: 'from',
-					to_text: 'to',
-				},
-				tooltip:{
-					position: "overlay",
-					left_spacing: 20
-				},
-				onClickBlock: function(d,i){
-					console.log(d,i,e)
-				}		
-			};
-			chart = visavail.generate(options_2, dataset)
-
-		},2000)
+		var chart = visavail.generate(options, dataset)
 
 	</script>
 

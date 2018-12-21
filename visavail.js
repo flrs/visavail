@@ -56,6 +56,7 @@
 			custom_categories: false,
 			is_date_only_format: true,
 			date_in_utc: true,
+			date_is_descending: false,
 			// if false remeber to set the padding and margin
 			show_y_title: true,
 			defined_blocks: false,
@@ -151,6 +152,7 @@
 				}).join('');
 			return strftime;
 		}
+
 		function periodInLocal(){
 			if (date_format_local.LTS.indexOf('a') > -1 ||  date_format_local.LTS.indexOf('A') > -1)
 				return ["AM", "PM"];
@@ -208,7 +210,7 @@
 			: d3.timeYear(date) < date ? d3.timeFormat(options.customTimeFormat.formatMonth)
 			: d3.timeFormat(options.customTimeFormat.formatYear))(date);
 		}
-
+		
 		// global div for tooltip
 		var div = d3.select('body').append('div')
 			.attr('class', "visavail-tooltip " + options.id)
@@ -216,7 +218,6 @@
 			.append('div')
 			.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
 			.style('opacity', 0);
-		
 		function chart(selection) {
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
@@ -329,12 +330,12 @@
 										tmpData.push(d);
 									}
 								} else {
+									
 									tmpData[tmpData.length - 1][2] = d[2];
 									tmpData[tmpData.length - 1][3] = 1;
 								}
 							} else {
 								// the value has changed since the last date
-								d[3] = 0;
 								if (!options.defined_blocks) {
 									// extend last block until new block starts
 									tmpData[tmpData.length - 1][2] = d[0];
@@ -348,20 +349,20 @@
 					});
 					dataset[seriesI].disp_data = tmpData;
 				});
-
 				
 				// determine start and end dates among all nested datasets
-
 				if(options.display_date_range[0] != 0)
 					startDate = moment(options.display_date_range[0]);
 				if(options.display_date_range[1] != 0)
 					endDate = moment(options.display_date_range[1])
 				// define scales
 				var xScale = d3.scaleTime()
-					.domain([startDate, endDate])
+					.domain([startDate, endDate])	
 					.range([0, width])
 
-					// define axes
+				if(options.date_is_descending)
+					xScale.domain([endDate, startDate])
+				// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
 					//.tickFormat(multiFormat);
@@ -560,10 +561,10 @@
 					.enter()
 					.append('rect')
 					.attr('x', function (d) {
-						return xForRect(d, xScale)
+						return xForPoint(d, xScale)
 					})
 					.attr('width', function (d) {
-						return widthForRect(d, xScale)
+						return widthForPoint(d, xScale)
 					})
 					.attr('y', options.line_spacing)
 					.attr('height', options.graph.height)
@@ -628,18 +629,30 @@
 									}
 								}
 								if (options.is_date_only_format) {
+
 									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+										if(options.date_is_descending)
+											return output + moment(d[2]).format('l') +
+											' - ' + moment(d[0]).format('l');
 										return output + moment(d[0]).format('l') +
 											' - ' + moment(d[2]).format('l');
 									}
 									return output + moment(d[0]).format('l');
 								} else {
 									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+										if(options.date_is_descending)
+											return output + moment(d[2]).format('l') + ' ' +
+											moment(d[2]).format('LTS') + ' - ' +
+											moment(d[0]).format('l') + ' ' +
+											moment(d[0]).format('LTS');
 										return output + moment(d[0]).format('l') + ' ' +
 											moment(d[0]).format('LTS') + ' - ' +
 											moment(d[2]).format('l') + ' ' +
 											moment(d[2]).format('LTS');
 									}
+									if(options.date_is_descending)
+										return output + moment(d[2]).format('LTS') + ' - ' +
+										moment(d[0]).format('LTS');
 									return output + moment(d[0]).format('LTS') + ' - ' +
 										moment(d[2]).format('LTS');
 								}
@@ -835,10 +848,10 @@
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
-								return xForRect(d, options.xScale);
+								return xForPoint(d, options.xScale);
 							})
 							.attr('width', function (d) {
-								return widthForRect(d, options.xScale);
+								return widthForPoint(d, options.xScale);
 							})
 							.attr('transform',  function (d) {
 								return transformForTypeOfGraph(d, options.xScale)
@@ -859,35 +872,53 @@
 				if(options.scale)
 					svg.call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 
-				function xForRect(d, xScale){
-					if(xScale(d[0]) < 0)
+				function xForPoint(d, xScale){
+					var x_scale = xScale(d[0])
+					if(options.date_is_descending)
+						x_scale = xScale(d[2])
+					if(x_scale < 0)
 						return 0
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
 						return xScale(d[0]) - options.graph.width/2
 					
-					return xScale(d[0]);
+					return x_scale;
 				}
 				
-				function widthForRect(d, xScale){
-					if ((xScale(d[2]) - xScale(d[0]))  < 0 || (xScale(d[2]) < 0 && xScale(d[0]) < 0))
+				function widthForPoint(d, xScale){
+					
+					var x_scale_d0 = xScale(d[0]);
+					var x_scale_d2 = xScale(d[2]);
+					
+					if(options.date_is_descending) {
+						x_scale_d0 = xScale(d[2]);
+						x_scale_d2 =  xScale(d[0]);
+					}
+					
+					if((!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 < 0 && x_scale_d0 < 0)
 						return 0;
+					if(options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0)
+						return (-1*(x_scale_d2 - x_scale_d0))
 					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
-						if(xScale(d[0]) < 0)
+						if(x_scale_d0 < 0)
 							return 0
 						return options.graph.width;
 					}
 
-					if (xScale(d[0]) < 0 && xScale(d[2]) > 0)
-						return xScale(d[2])
-					if (xScale(d[2]) < 0 && xScale(d[1]) > 0)
-						return xScale(d[1])
-					return ((xScale(d[2]) - xScale(d[0])));
+					if (x_scale_d0 < 0 && x_scale_d2 > 0)
+						return x_scale_d2
+					if (x_scale_d2 < 0 && x_scale_d0 > 0)
+						return x_scale_d0
+					
+					return ((x_scale_d2 - x_scale_d0));
 				}
 
 				function transformForTypeOfGraph(d, xScale){
-					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& xScale(d[0]) > 0 )
-						return  'rotate(45 '+ xScale(d[0]) + "  " + (options.graph.height/2 + options.line_spacing)+")"
-					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && xScale(d[0]) <= 0 )
+					var x_scale = xScale(d[0])
+					// if(options.date_is_descending)
+					// 	x_scale = xScale(d[2]);
+					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 )
+						return  'rotate(45 '+ x_scale + "  " + (options.graph.height/2 + options.line_spacing)+")"
+					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 )
 						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing) +')'
 				}
 
