@@ -189,6 +189,7 @@ Eight examples are provided with Visavail.js.
 ### Public Projects With Visavail.js
 
 - [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
+- [GanttLab Live](https://gitlab.com/ganttlab/ganttlab-live) uses Visavail.js to present Gitlab and Github issues in a Gantt chart
 
 Download
 --------
