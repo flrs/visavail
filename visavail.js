@@ -12,6 +12,13 @@
 			   isFinite(value) && 
 			   Math.floor(value) === value;
 	};
+	Element.prototype.remove =  Element.prototype.remove || function() {
+			if (this.parentNode) {
+				this.parentNode.removeChild(this);
+			}
+		};
+
+
 	function visavailChart(custom_options, dataset) {
 		var d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
 		var moment = window.moment ? window.moment : typeof require !== 'undefined' ? require("moment") : undefined;
@@ -887,7 +894,7 @@
 					var x_scale = xScale(d[0])
 					if(options.date_is_descending)
 						x_scale = xScale(d[2])
-					if(x_scale < 0)
+					if(isNaN(x_scale) || x_scale < 0)
 						return 0
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
 						return xScale(d[0]) - options.graph.width/2
@@ -905,10 +912,12 @@
 						x_scale_d2 =  xScale(d[0]);
 					}
 					
-					if((!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 < 0 && x_scale_d0 < 0)
+					if(isNaN(x_scale_d0) || isNaN(x_scale_d2) || (!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 < 0 && x_scale_d0 < 0 ) 
 						return 0;
+
 					if(options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0)
 						return (-1*(x_scale_d2 - x_scale_d0))
+
 					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
 						if(x_scale_d0 < 0)
 							return 0
@@ -916,11 +925,16 @@
 					}
 
 					if (x_scale_d0 < 0 && x_scale_d2 > 0)
-						return x_scale_d2
+						return x_scale_d2 > width ? width : x_scale_d2
+
 					if (x_scale_d2 < 0 && x_scale_d0 > 0)
-						return x_scale_d0
+						return x_scale_d0 > width ? width : x_scale_d0
 					
-					return ((x_scale_d2 - x_scale_d0));
+					if (x_scale_d2 > width)
+						return width - x_scale_d0 < 0 ? 0 : (width - x_scale_d0);
+					else
+						return x_scale_d2 - x_scale_d0;
+					
 				}
 
 				function transformForTypeOfGraph(d, xScale){
