@@ -48,7 +48,7 @@
 
 	<script>
 		var dataset = [{
-        "measure_html": "Balance",
+        "measure": "Balance",
         "interval_s": 3 * 30.5 * 24 * 60 * 60,
         "data": [
             ["2015-03-31", 0],
@@ -68,7 +68,7 @@
             ["2018-09-30", 1]
         ]
     }, {
-        "measure_html": "Closing Price",
+        "measure": "Closing Price",
         "interval_s": 24 * 60 * 60,
         "data": [
             ["2016-01-01", 1],
@@ -705,7 +705,9 @@
         ]
     }, {
         "measure_html": "<a href='http://github.com/flrs/visavail/' target='_blank' class='ytitle.link'>Weekly Report</a>",
-        "interval_s": 7 * 24 * 60 * 60,
+		"measure": "Weekly Report",
+		"measure_url": "http://github.com/flrs/visavail/",
+		"interval_s": 7 * 24 * 60 * 60,
         "data": [
             ["2014-07-07", 1],
             ["2014-07-14", 1],
@@ -934,7 +936,7 @@
             ["2018-10-22", 0]
         ]
     }, {
-        "measure_html": "Analyst Data",
+        "measure": "Analyst Data",
         "interval_s": 7 * 24 * 60 * 60,
         "data": [
             ["2014-06-28", 1],

@@ -18,7 +18,7 @@ I modify the structure of library and implement new functionality for a better a
 	- [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
 	- [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
 	- [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
-	- [3.1.6. Measure Labels with HTML](#316-measure-labels-with-html)
+	- [~~3.1.6. Measure Labels with HTML~~](#316-measure-labels-with-html)
 - [## 3.2. Display Style](#32-display-style)
 	- [3.2.1. Type of Chart](#321-type-of-chart)
 - [## 3.3. Options](#33-options)
@@ -38,6 +38,7 @@ I modify the structure of library and implement new functionality for a better a
 - [# 5. Dependencies](#5-dependencies)
 - [# 6. Contribution](#6-contribution)
 - [# 7. License](#7-license)
+	
 
 # 1. Description
 -----------
@@ -151,8 +152,10 @@ var dataset = [{
 }];
 ```
 
-### 3.1.6. Measure Labels with HTML
-Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:
+### ~~3.1.6. Measure Labels with HTML~~
+~~Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:~~
+**_At the moment this type of labels is suspended due incompatibility with IE11 and wrapping text_**
+
 ```javascript
 var dataset = [{
     "measure_html": "<span title='Price of security at end of day'>&#x1F6AA; Closing Price</span>", // HTML code
@@ -163,7 +166,7 @@ var dataset = [{
         ["2017-01-01", 1],
         ["2018-01-01", 1]
     ]
-}];
+}]; 
 ```
 
 ## 3.2. Display Style

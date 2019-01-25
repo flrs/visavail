@@ -6,7 +6,7 @@
 	var visavail = {};
 
 	//ie11 fixing 
-	
+
 	Number.isInteger = Number.isInteger || function(value) {
 		return typeof value === "number" && 
 			   isFinite(value) && 
@@ -450,9 +450,10 @@
 						.attr('x', options.padding.left)
 						.attr('y', options.line_spacing + options.graph.height / 2)
 						.text(function (d) {
-							if (!(d.measure_html != null)) {
+							return d.measure || d.measure_html;
+							/*if (!(d.measure_html != null)) {
 								return d.measure;
-							}
+							}*/
 						})
 						.each(wrap)
 						.attr('transform', function (d, i) {
@@ -474,8 +475,9 @@
 
 					
 
-					svg.select('#yAxis').selectAll("g")
-						.insert('foreignObject', ':first-child')
+					/*svg.select('#yAxis').selectAll("g")
+						.insert('text', ':first-child')
+						
 						.attr('x', options.padding.left)
 						.attr('y', options.line_spacing)
 						.attr('transform', function (d, i) {
@@ -484,12 +486,13 @@
 						.attr('width', -1 * options.padding.left)
 						.attr('height', options.graph.height)
 						.attr('class', 'ytitle')
+						.append("xhtml:div")
 						.html(function (d) {
 							if (d.measure_html != null) {
 								return d.measure_html;
 							}
 						});
-
+					*/
                     function wrap() {
                         var self = d3.select(this),
                             textLength = self.node().getComputedTextLength(),
