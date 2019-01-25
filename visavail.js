@@ -4,6 +4,14 @@
 		(global.visavail = factory());
 }(this, (function () {
 	var visavail = {};
+
+	//ie11 fixing 
+	
+	Number.isInteger = Number.isInteger || function(value) {
+		return typeof value === "number" && 
+			   isFinite(value) && 
+			   Math.floor(value) === value;
+	};
 	function visavailChart(custom_options, dataset) {
 		var d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
 		var moment = window.moment ? window.moment : typeof require !== 'undefined' ? require("moment") : undefined;
