@@ -340,14 +340,14 @@
 									if (tmpData[tmpData.length - 1][2].getTime() === d[0].getTime()) {
 										// end of old and start of new block are the same
 										tmpData[tmpData.length - 1][2] = d[2];
-										tmpData[tmpData.length - 1][3] = 1;
+										tmpData[tmpData.length - 1][3] = d[1];
 									} else {
 										tmpData.push(d);
 									}
 								} else {
 									
 									tmpData[tmpData.length - 1][2] = d[2];
-									tmpData[tmpData.length - 1][3] = 1;
+									tmpData[tmpData.length - 1][3] = d[1];
 								}
 							} else {
 								// the value has changed since the last date
@@ -358,7 +358,7 @@
 								tmpData.push(d);
 							}
 						} else if (i === 0) {
-							d[3] = 0;
+							d[3] =  d[1];
 							tmpData.push(d);
 						}
 					});

@@ -1,13 +1,14 @@
 {
   "name": "visavail",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This library visualizes the availability of time-dependent data with a chart on a website.",
   "main": "visavail.js",
   "directories": {
     "doc": "docs"
   },
   "dependencies": {
-    "d3": "5.8.0"
+	"d3": "5.8.0",
+	"moment": "2.24.0"
   },
   "devDependencies": {},
   "scripts": {
