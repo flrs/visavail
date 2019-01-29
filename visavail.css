@@ -31,6 +31,15 @@
 	border-radius: 4px;
 }
 
+.visavail-tooltip .tooltip_has_data {
+    /* color of symbol in tooltip if there is data */
+    color: #449d44;
+}
+
+.visavail-tooltip .tooltip_has_no_data {
+    /* color of symbol in tooltip if there is no data */
+    color: #c9302c;
+}
 
 .visavail .rect_has_data {
     /* blocks that have data */
@@ -48,16 +57,6 @@
 
 .visavail .rect_has_no_data:hover {
     fill: #c9302c;
-}
-
-.visavail-tooltip .tooltip_has_data {
-    /* color of symbol in tooltip if there is data */
-    color: #449d44;
-}
-
-.visavail-tooltip .tooltip_has_no_data {
-    /* color of symbol in tooltip if there is no data */
-    color: #c9302c;
 }
 
 

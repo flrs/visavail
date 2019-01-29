@@ -266,7 +266,7 @@
 						options.tooltip.description = true;
 					if (dataset[i].data[0] != null && dataset[i].data[0].length == 3 ){
 						options.defined_blocks = true
-						if(!Number.isInteger(dataset[i].data[0][1])) 
+						if(!options.custom_categories && !Number.isInteger(dataset[i].data[0][1])) 
 							options.custom_categories = true;
 						break;
 					}
@@ -676,7 +676,7 @@
 								}
 							})
 							.style('left', function () {
-								if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth' + options.tooltip.left_spacing)))
+								if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 									return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 								return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
 							})
@@ -686,7 +686,8 @@
 								return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
 							})
 							.style('height', options.graph.height + options.tooltip.height + 'px')
-							if((width + options.margin.right) < (d3.event.pageX + div.property('offsetWidth'))){
+							
+							if((width - options.margin.right) < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
 									.style('border-left', "none");
 							} else {
@@ -708,7 +709,6 @@
 						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
-
 						div.style('left',  function () {
 							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
