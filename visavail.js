@@ -44,7 +44,7 @@
 				left: 100,
 			},
 			width: 960,
-
+			moment_locale: window.navigator.userLanguage || window.navigator.language,
             reduce_space_wrap: 35,
 			line_spacing: 16,
 			padding:{
@@ -125,7 +125,7 @@
 			responsive: {
 				enabled: false,
 				onresize: function onresize(){},
-			}
+			},
 			
 			//copy the correct format from https://github.com/d3/d3-time-format/tree/master/locale
 			// locale: {
@@ -139,29 +139,33 @@
 			// 	"shortMonths": moment.monthsShort()
 			// },
 			//use custom time format (for infomation about symbol visit: http://pubs.opengroup.org/onlinepubs/009604599/utilities/date.html)
-			// customTimeFormat : {
-			// 	formatMillisecond : ".%L",
-			// 	formatSecond : ":%S",
-			// 	formatMinute : "%H:%M",
-			// 	formatHour : "%H",
-			// 	formatDay : "%a %d",
-			// 	formatWeek : "%b %d",
-			// 	formatMonth : "%B",
-			// 	formatYear : "%Y"
+			// custom_time_format : {
+			// 	format_millisecond : ".%L",
+			// 	format_second : ":%S",
+			// 	format_minute : "%H:%M",
+			// 	format_hour : "%H",
+			// 	format_day : "%a %d",
+			// 	format_week : "%b %d",
+			// 	format_month : "%B",
+			// 	format_year : "%Y"
 			// },
 		}
 		var date_format_local = moment().creationData().locale._longDateFormat;
-
+		
 		function convertMomentToStrftime(momentFormat){
-			var replacements =  {"ddd":"a","dddd":"A","MMM":"b","MMMM":"B","lll":"c","DD":"d","D":"e","YYYY-MM-DD":"F","HH":"H","H":"k","hh":"I","h":"l","DDDD":"j","DDD":"-j","MM":"m","M":"-m","mm":"M","m":"-M","A":"p","a":"P","ss":"S","s":"-S","E":"u","d":"w","WW":"W","ll":"x","LTS":"X","YY":"y","YYYY":"Y","ZZ":"z","z":"Z","SSS":"f","%":"%"}
-			var tokens = momentFormat.split(/( |\/|:)/);
+			var replacements =  {"ddd":"a","dddd":"A","MMM":"b","MMMM":"B","lll":"c","DD":"d","D":"e","YYYY-MM-DD":"F","HH":"H","H":"H","hh":"I","h":"I","DDDD":"j","DDD":"-j","MM":"m","M":"-m","mm":"M","m":"-M","A":"p","a":"P","ss":"S","s":"-S","E":"u","d":"w","WW":"W","ll":"x","LTS":"X","YY":"y","YYYY":"Y","ZZ":"z","z":"Z","SSS":"L","%":"%"}
+			var tokens = momentFormat.split(/( |\/|:|,|\]|\[|\.)/);
+			
 			var strftime = tokens.map(function (token) {
 				// Replace strftime tokens with moment formats
-				if(token[0] == ":" || token[0] == "/" || token[0] == " ")
+				if(token[0] == ":" || token[0] == "/" || token[0] == " " || token[0] == ",")
 					return token
 				else 
-					if (replacements.hasOwnProperty(token))
-						return "%" + replacements[token];
+					if (token[0] == "[" || token[0] == "]")
+						return
+					else 
+						if (replacements.hasOwnProperty(token))
+							return "%" + replacements[token];				
 				// Escape non-token strings to avoid accidental formatting
 				return token.length > 0 ? '[' + token + ']' : token;
 				}).join('');
@@ -170,32 +174,10 @@
 
 		function periodInLocal(){
 			if (date_format_local.LTS.indexOf('a') > -1 ||  date_format_local.LTS.indexOf('A') > -1)
-				return ["AM", "PM"];
-			return [];
+				return true;
+			return false;
 			
 		}
-
-		options.locale = {
-			"dateTime": convertMomentToStrftime(date_format_local.LLLL),
-			"date": convertMomentToStrftime(date_format_local.L),
-			"time": convertMomentToStrftime(date_format_local.LTS),
-			"periods": periodInLocal(),
-			"days": moment.weekdays(),
-			"shortDays": moment.weekdaysShort(),
-			"months": moment.months(),
-			"shortMonths": moment.monthsShort()
-		};
-
-		options.customTimeFormat = {
-			formatMillisecond : ".%L",
-			formatSecond : ":%S",
-			formatMinute : "%H:%M",
-			formatHour : "%H",
-			formatDay : "%a %d",
-			formatWeek : "%b %d",
-			formatMonth : "%B",
-			formatYear : "%Y"
-		};
 
 		if (custom_options != null) {
 			for (var key in custom_options) {
@@ -211,19 +193,46 @@
 			}
 		}
 
+		moment.locale(options.moment_locale);
+		options.locale = {
+			"dateTime": convertMomentToStrftime(date_format_local.LLLL),
+			"date": convertMomentToStrftime(date_format_local.L),
+			"time": convertMomentToStrftime(date_format_local.LTS),
+			"periods": ["AM", "PM"],
+			"days": moment.weekdays(),
+			"shortDays": moment.weekdaysShort(),
+			"months": moment.months(),
+			"shortMonths": moment.monthsShort()
+		};
+
+		if (!options.custom_time_format){
+			options.custom_time_format = {
+				format_millisecond : convertMomentToStrftime("SSS"),
+				format_second : convertMomentToStrftime(":ss"),
+				format_minute : convertMomentToStrftime(date_format_local.LT),
+				format_hour : convertMomentToStrftime(date_format_local.LT.substring(0,1) + (periodInLocal()? " " + date_format_local.LT.slice(-1): "") ),
+				format_day : convertMomentToStrftime("ddd DD"), 
+				format_week : convertMomentToStrftime("MMM DD"),
+				format_month : convertMomentToStrftime("MMMM"),
+				format_year : convertMomentToStrftime("YYYY")
+			};
+		};
+
 		if(!custom_options.hasOwnProperty("width"))
 			options.width = document.getElementById(options.id_div_container).offsetWidth;
 
 		options.id = "visavail-" + Math.random().toString(36).substring(7);
+
 		//function for custom tick format of x axis
 		function multiFormat(date) {
-			return (d3.timeSecond(date) < date ? d3.timeFormat(options.customTimeFormat.formatMillisecond)
-			: d3.timeMinute(date) < date ? d3.timeFormat(options.customTimeFormat.formatSecond)
-			: d3.timeHour(date) < date ? d3.timeFormat(options.customTimeFormat.formatMinute)
-			: d3.timeDay(date) < date ? d3.timeFormat(options.customTimeFormat.formatHour)
-			: d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? d3.timeFormat(options.customTimeFormat.formatDay) : d3.timeFormat(options.customTimeFormat.formatWeek))
-			: d3.timeYear(date) < date ? d3.timeFormat(options.customTimeFormat.formatMonth)
-			: d3.timeFormat(options.customTimeFormat.formatYear))(date);
+			return (d3.timeSecond(date) < date ? d3.timeFormat(options.custom_time_format.format_millisecond)
+			: d3.timeMinute(date) < date ? d3.timeFormat(options.custom_time_format.format_second)
+			: d3.timeHour(date) < date ? d3.timeFormat(options.custom_time_format.format_minute)
+			: d3.timeDay(date) < date ? d3.timeFormat(options.custom_time_format.format_hour)
+			: d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? d3.timeFormat(options.custom_time_format.format_day) 
+			: d3.timeFormat(options.custom_time_format.format_week))
+			: d3.timeYear(date) < date ? d3.timeFormat(options.custom_time_format.format_month)
+			: d3.timeFormat(options.custom_time_format.format_year))(date);
 		}
 		
 		// global div for tooltip
@@ -380,7 +389,7 @@
 				// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
-					//.tickFormat(multiFormat);
+					.tickFormat(multiFormat);
 
 				// create SVG element
 				var svg = d3.select(this).append('svg')

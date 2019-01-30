@@ -32,7 +32,8 @@ I modify the structure of library and implement new functionality for a better a
 	- [3.3.8. Graph](#338-graph)
 	- [3.3.9. Responsive](#339-responsive)
 	- [3.3.10. Zoom](#3310-zoom)
-	- [3.3.11. Example Usage](#3311-example-usage)
+	- [3.3.11. Custom Tick Format](#3311-custom-tick-format)
+	- [3.3.12. Example Usage](#3312-example-usage)
 - [## 3.4. Implementation](#34-implementation)
 - [# 4. Download](#4-download)
 - [# 5. Dependencies](#5-dependencies)
@@ -199,7 +200,7 @@ You can pass the JSON Object to library with custom settings
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *id_div_container* | `string` | **visavail_container** | Id of div that contain the graph tag |
-| *id_div_graph* | `string` | **example** | Id of div that contain the graph |
+| *moment_locale* | `string` | autodetect | The lib autodetect language browser and set the moment library automatically. You can change this parameter with a string contained into locale moment.js lib. if you set to null moment use "en" format as default (see moment.js library)|
 | *margin* | `Object{}` | **[more info](#331-margin)** | Json Object that contain margin of graphs include title, legent etc. |
 | *padding* | `Object{}` | **[more info](#331-padding)** | Json Object that contain padding of graphs |
 | *width* | `number` | **960** | Width of the graph, this option was ignored if option resposive is enabled |
@@ -225,6 +226,7 @@ You can pass the JSON Object to library with custom settings
 | *graph* | `Object{}` | **[more info](#338-graph)** | Json Object that contain option for custom type of graph |
 | *responsive* | `Object{}` | **[more info](#339-responsive)** | Json Object that contain option for responsive layout of graph |
 | *zoom* | `Object{}` | **[more info](#3310-zoom)** | Json Object that contain option for zoom in the graph |
+| *custom_time_format* | `Object{}` | **[more info](#3311-custom-tick-format)** | Json Object that contain option for customize the x-axes tick into graph |
 
 ### 3.3.1. Margin
 
@@ -312,7 +314,25 @@ You can pass the JSON Object to library with custom settings
 | *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
-### 3.3.11. Example Usage
+### 3.3.11. Custom Tick Format
+
+This library use moment.js to customize and convert the date format/language in base of moment.locale() function (we autodetect the browser language!). If you what change manually the tick format you can customize with this option.
+
+With set this option you override the automatic tick format execute by library for a specific locale. 
+
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *format_millisecond* | `string` | moment convertion | custom format for millisecond |
+| *format_second* | `string` | moment convertion | custom format for second |
+| *format_minute* | `string` | moment convertion | custom format for minute |
+| *format_hour* | `string` | moment convertion | custom format for hour |
+| *format_day* | `string` | moment convertion | custom format for day |
+| *format_week* | `string` | moment convertion | custom format for week |
+| *format_month* | `string` | moment convertion | custom format for month |
+| *format_year* | `string` | moment convertion | custom format for year |
+
+
+### 3.3.12. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
