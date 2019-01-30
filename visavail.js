@@ -480,8 +480,6 @@
 							return null;
 						});
 
-					
-
 					/*svg.select('#yAxis').selectAll("g")
 						.insert('text', ':first-child')
 						
