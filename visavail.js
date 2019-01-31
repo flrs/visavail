@@ -56,6 +56,7 @@
 			// year ticks to be emphasized or not
 			emphasize_year_ticks: true,
 			emphasize_month_ticks: true,
+			ticks_for_graph: 6,
 			// define chart pagination
 			// max. no. of datasets that is displayed, 0: all
 			max_display_datasets: 0,
@@ -139,19 +140,17 @@
 			// 	"shortMonths": moment.monthsShort()
 			// },
 			//use custom time format (for infomation about symbol visit: http://pubs.opengroup.org/onlinepubs/009604599/utilities/date.html)
-			// custom_time_format : {
-			// 	format_millisecond : ".%L",
-			// 	format_second : ":%S",
-			// 	format_minute : "%H:%M",
-			// 	format_hour : "%H",
-			// 	format_day : "%a %d",
-			// 	format_week : "%b %d",
-			// 	format_month : "%B",
-			// 	format_year : "%Y"
-			// },
+			custom_time_format : {
+				format_millisecond : ".%L",
+				format_second : ":%S",
+				format_minute : "%H:%M",
+				format_hour : "%H",
+				format_day : "%a %d",
+				format_week : "%b %d",
+				format_month : "%B",
+				format_year : "%Y"
+			},
 		}
-		var date_format_local = moment().creationData().locale._longDateFormat;
-		
 		function convertMomentToStrftime(momentFormat){
 			var replacements =  {"ddd":"a","dddd":"A","MMM":"b","MMMM":"B","lll":"c","DD":"d","D":"e","YYYY-MM-DD":"F","HH":"H","H":"H","hh":"I","h":"I","DDDD":"j","DDD":"-j","MM":"m","M":"-m","mm":"M","m":"-M","A":"p","a":"P","ss":"S","s":"-S","E":"u","d":"w","WW":"W","ll":"x","LTS":"X","YY":"y","YYYY":"Y","ZZ":"z","z":"Z","SSS":"L","%":"%"}
 			var tokens = momentFormat.split(/( |\/|:|,|\]|\[|\.)/);
@@ -194,6 +193,8 @@
 		}
 
 		moment.locale(options.moment_locale);
+		var date_format_local = moment().creationData().locale._longDateFormat;
+		
 		options.locale = {
 			"dateTime": convertMomentToStrftime(date_format_local.LLLL),
 			"date": convertMomentToStrftime(date_format_local.L),
@@ -389,6 +390,7 @@
 				// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
+					.ticks(options.ticks_for_graph)
 					.tickFormat(multiFormat);
 
 				// create SVG element
@@ -525,7 +527,7 @@
 				function createVGrid(scale){
 					svg.select('#vGrid')
 						.selectAll('line.vert_grid')
-						.data(scale.ticks())
+						.data(scale.ticks(options.ticks_for_graph))
 						.enter()
 						.append('line')
 						.attr('x1', function (d) {
@@ -747,7 +749,7 @@
 				// year emphasis
 				// ensure year emphasis is only active if years are the biggest clustering unit
 				function emphasize(scale){
-					var xTicks = scale.ticks();
+					var xTicks = scale.ticks(options.ticks_for_graph);
 					var isYearTick = xTicks.map(isYear);
 					var isMonthTick = xTicks.map(isMonth);
 
@@ -901,7 +903,7 @@
 					var x_scale = xScale(d[0])
 					if(options.date_is_descending)
 						x_scale = xScale(d[2])
-					if(isNaN(x_scale) || x_scale < 0)
+					if(isNaN(x_scale) || x_scale < 0 || x_scale > width)
 						return 0
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
 						return xScale(d[0]) - options.graph.width/2

@@ -209,6 +209,7 @@ You can pass the JSON Object to library with custom settings
 | *emphasize_year_ticks* | `boolean` | **true** | Emphasize the year when the range of data cover one more year |
 | *emphasize_month_ticks* | `boolean` | **true** | Emphasize the month when the range of data cover one more month and not exceed the year |
 | *max_display_datasets* | `number` | **0** | max. no. of datasets that is displayed, 0: all (is the same option of original library) |
+| *ticks_for_graph* | `number` | **6** | number of ticks that is displayed, null: max enter in the tick (may cause overlap problem). N.B the ticks are controlled by d3.js lib. in some case this value will be ignored but help you for prevent overlap xaxis top |
 | *cur_display_first_dataset* | `number` | **0** | current first dataset to display (is the same option of original library) |
 | *display_date_range* | `Array[]` | **[0,0]** | range of dates that will be shown. If from-date (1st element) or to-date (2nd element) is zero, it will be determined according to your data (default: automatically) |
 | *custom_categories* | `boolean` | **false** | Set to true if you want to use custom category |
