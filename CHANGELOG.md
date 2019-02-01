@@ -1,6 +1,11 @@
+# VISAVAIL V 1.0.5
+
+* Fix tooltip change and redraw when update graph
+
+
 # VISAVAIL V 1.0.4
 
-* Adding option for density of tick for prevent the overlap of text in x axis top
+* Adding option for density of tick for prevent the overlap of text in x
 * Fix moment.locale autodetect, change and override
 * Update documentation
 

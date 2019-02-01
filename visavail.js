@@ -236,17 +236,19 @@
 			: d3.timeFormat(options.custom_time_format.format_year))(date);
 		}
 		
-		// global div for tooltip
-		var div = d3.select('body').append('div')
-			.attr('class', "visavail-tooltip " + options.id)
-			.attr('id', options.id)
-			.append('div')
-			.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
-			.style('opacity', 0);
+
+
 		function chart(selection) {
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
 				d3.timeFormatDefaultLocale(options.locale);
+				// global div for tooltip
+				var div = d3.select('body').append('div')
+					.attr('class', "visavail-tooltip " + options.id)
+					.attr('id', options.id)
+					.append('div')
+					.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
+					.style('opacity', 0);
 				var width = options.width - options.margin.left - options.margin.right;
 				var maxPages = 0;
 				var startSet;
@@ -696,7 +698,7 @@
 							})
 							.style('height', options.graph.height + options.tooltip.height + 'px')
 							
-							if((width - options.margin.right) < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
 									.style('border-left', "none");
 							} else {
@@ -725,7 +727,7 @@
 						});
 
 						if(options.tooltip.position === "top"){
-							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth'))){
+							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
 									.style('border-left', "none");
 							} else {
@@ -1018,6 +1020,8 @@
 		chart.updateGraph = function(dataset){
 			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != "" ){
 				document.getElementById(options.id_div_graph).innerHTML = "";
+				if(document.getElementById(options.id))
+					document.getElementById(options.id).remove();
 				if(dataset){
 					return chart.createGraph(dataset)
 				}
