@@ -1,7 +1,12 @@
+
+# VISAVAIL V 1.0.6
+
+* Fix displayDateRange function and now integrate dataset (for change dataset)
+
+
 # VISAVAIL V 1.0.5
 
 * Fix tooltip change and redraw when update graph
-
 
 # VISAVAIL V 1.0.4
 

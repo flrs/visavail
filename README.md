@@ -202,7 +202,7 @@ You can pass the JSON Object to library with custom settings
 | *id_div_container* | `string` | **visavail_container** | Id of div that contain the graph tag |
 | *moment_locale* | `string` | autodetect | The lib autodetect language browser and set the moment library automatically. You can change this parameter with a string contained into locale moment.js lib. if you set to null moment use "en" format as default (see moment.js library)|
 | *margin* | `Object{}` | **[more info](#331-margin)** | Json Object that contain margin of graphs include title, legent etc. |
-| *padding* | `Object{}` | **[more info](#331-padding)** | Json Object that contain padding of graphs |
+| *padding* | `Object{}` | **[more info](#332-padding)** | Json Object that contain padding of graphs |
 | *width* | `number` | **960** | Width of the graph, this option was ignored if option resposive is enabled |
 | *reduce_space_wrap* | `number` | **36** | Space for three dots when you use a simple title of mesurment |
 | *line_spacing* | `number` | **16** | Space between two row of dataset |

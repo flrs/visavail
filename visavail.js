@@ -1002,13 +1002,13 @@
 		};
 
 
-		chart.displayDateRange = function (date_range) {
+		chart.displayDateRange = function (date_range, dataset) {
 			if (!arguments.length) return  options.display_date_range;
 			options.display_date_range = date_range ;
 			if(!document.getElementById(options.id_div_graph) ){
                 return chart;
             }
-            return chart.updateGraph()
+            return chart.updateGraph(dataset)
 		};
 
 
