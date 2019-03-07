@@ -25,6 +25,7 @@ I modify the structure of library and implement new functionality for a better a
 	- [3.3.1. Margin](#331-margin)
 	- [3.3.2. Padding](#332-padding)
 	- [3.3.3. Tooltip](#333-tooltip)
+		- [3.3.3.1 Hover Zoom Option](#3331-hover-zoom-option)
 	- [3.3.4. Legend](#334-legend)
 	- [3.3.5. Title](#335-title)
 	- [3.3.6. Sub Title](#336-sub-title)
@@ -255,6 +256,15 @@ You can pass the JSON Object to library with custom settings
 | *height* | `number` | 10 | height of tooltip , correspond to line-height of class tooltip from css) |
 | *position* | `string` | top | Two type of tooltip:  "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height |
 | *left_spacing* | `number` | 0 | Left space from tooltip and mouse |
+| *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
+| *hover_zoom* | `Object{}` |**[more info](#3331-hover-zoom-option)**|option for zoom block on hover |
+
+#### 3.3.3.1 Hover Zoom Option
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | Enable block zoom whe mouse hover |
+| *ratio* | `number` | 0.4 | Number from 0 to 1 that incrase the block size. It will be multiplied with option line_spacing |
+
 
 ### 3.3.4. Legend
 

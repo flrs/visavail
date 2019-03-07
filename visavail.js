@@ -46,7 +46,7 @@
 			width: 960,
 			moment_locale: window.navigator.userLanguage || window.navigator.language,
             reduce_space_wrap: 35,
-			line_spacing: 16,
+			line_spacing: 26,
 			padding:{
 				top: -49,
 				bottom: 0,
@@ -82,7 +82,12 @@
 				height: 11,
 				//position: "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height
 				position: "top",
-				left_spacing: 0
+				left_spacing: 0,
+				duration: 150,
+				hover_zoom: {
+					enabled: false,
+					ratio: .4,
+				}
 			},
 			legend: {
 				enabled: true,
@@ -121,7 +126,8 @@
 			graph:{
 				type: "bar" ,
 				width: 20,
-				height:18
+				height:18,
+				hover_zoom: 5
 			},
 			responsive: {
 				enabled: false,
@@ -242,6 +248,7 @@
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
 				d3.timeFormatDefaultLocale(options.locale);
+				
 				// global div for tooltip
 				var div = d3.select('body').append('div')
 					.attr('class', "visavail-tooltip " + options.id)
@@ -386,9 +393,11 @@
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])	
 					.range([0, width])
+				options.xScale = xScale;
 
 				if(options.date_is_descending)
 					xScale.domain([endDate, startDate])
+					
 				// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
@@ -590,15 +599,15 @@
 					.enter()
 					.append('rect')
 					.attr('x', function (d) {
-						return xForPoint(d, xScale)
+						return xForPoint(d, xScale, 0)
 					})
 					.attr('width', function (d) {
-						return widthForPoint(d, xScale)
+						return widthForPoint(d, xScale, 0)
 					})
 					.attr('y', options.line_spacing)
 					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
-						return transformForTypeOfGraph(d, xScale)
+						return transformForTypeOfGraph(d, xScale, 0)
 					})
 					.attr('rx',  function (d) {
 						return roundedRect()
@@ -628,10 +637,30 @@
 						}
 					})
 					.on('mouseover', function (d, i) {
+
+						if(options.tooltip.hover_zoom.enabled){
+							d3.select(this).transition()
+								.duration(options.tooltip.duration)
+								.attr('x', function (d) {
+									if(options.graph.type == "rhombus" || options.graph.type == "circle")
+										return xForPoint(d, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio*2)
+									return xForPoint(d,  options.xScale, 0)	
+								})
+								.attr('width', function (d) {
+									if(options.graph.type == "rhombus" || options.graph.type == "circle")
+										return widthForPoint(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+									return widthForPoint(d,  options.xScale, 0)
+								})
+								.attr('y', options.line_spacing - options.line_spacing*options.tooltip.hover_zoom.ratio/2)
+								.attr('height', options.graph.height+options.line_spacing*options.tooltip.hover_zoom.ratio)
+								.attr('transform',  function (d) {
+									return transformForTypeOfGraph(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+								})
+						}
 						var matrix = this.getScreenCTM().translate(+this.getAttribute('x'), +this.getAttribute('y'));
 						div.transition()
-							.duration(200)
-							.style('opacity', 0.9);
+							.duration(options.tooltip.duration)
+							.style('opacity', );
 						div.html(function () {
 
 								var output = '';
@@ -694,9 +723,16 @@
 
 						if(options.tooltip.position === "top"){
 							div.style('top', function () {
+								if(options.tooltip.hover_zoom.enabled)
+									return window.pageYOffset + matrix.f - options.tooltip.height - options.tooltip.hover_zoom.ratio*options.line_spacing + 'px';
 								return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
 							})
-							.style('height', options.graph.height + options.tooltip.height + 'px')
+							.style('height', 
+								function(){
+									if(options.tooltip.hover_zoom.enabled)
+										return	options.tooltip.hover_zoom.ratio*options.line_spacing + options.graph.height + options.tooltip.height + 'px'
+									return	options.graph.height + options.tooltip.height + 'px'
+								})
 							
 							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 								div.style('border-right', "solid thin rgb(0, 0, 0)")
@@ -712,6 +748,22 @@
 						}
 					})
 					.on('mouseout', function () {
+
+						if(options.tooltip.hover_zoom.enabled){
+							d3.select(this).transition()
+								.duration(options.tooltip.duration)
+								.attr('x', function (d) {
+									return xForPoint(d,  options.xScale, 0)
+								})
+								.attr('width', function (d) {
+									return widthForPoint(d,  options.xScale, 0)
+								})
+								.attr('y', options.line_spacing)
+								.attr('height', options.graph.height)
+								.attr('transform',  function (d) {
+									return transformForTypeOfGraph(d,  options.xScale, 0)
+								})
+						}
 						div.transition()
 							.duration(500)
 							.style('opacity', 0);
@@ -877,13 +929,13 @@
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
-								return xForPoint(d, options.xScale);
+								return xForPoint(d, options.xScale, 0);
 							})
 							.attr('width', function (d) {
-								return widthForPoint(d, options.xScale);
+								return widthForPoint(d, options.xScale, 0);
 							})
 							.attr('transform',  function (d) {
-								return transformForTypeOfGraph(d, options.xScale)
+								return transformForTypeOfGraph(d, options.xScale, 0)
 							})
 
 						//change label x axis
@@ -901,26 +953,26 @@
 				if(options.scale)
 					svg.call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 
-				function xForPoint(d, xScale){
-					var x_scale = xScale(d[0])
+				function xForPoint(d, xScale, ratio){
+					var x_scale = xScale(d[0]) - ratio;
 					if(options.date_is_descending)
-						x_scale = xScale(d[2])
-					if(isNaN(x_scale) || x_scale < 0 || x_scale > width)
-						return 0
+						x_scale = xScale(d[2]) - ratio;
+					if(isNaN(x_scale) || x_scale < 0 || x_scale + ratio > width)
+						return 0 - ratio/2
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
-						return xScale(d[0]) - options.graph.width/2
+						return xScale(d[0]) - options.graph.width/2 
 					
 					return x_scale;
 				}
 				
-				function widthForPoint(d, xScale){
+				function widthForPoint(d, xScale, ratio){
 					
-					var x_scale_d0 = xScale(d[0]);
-					var x_scale_d2 = xScale(d[2]);
+					var x_scale_d0 = xScale(d[0]) - ratio;
+					var x_scale_d2 = xScale(d[2]) + ratio;
 					
 					if(options.date_is_descending) {
-						x_scale_d0 = xScale(d[2]);
-						x_scale_d2 =  xScale(d[0]);
+						x_scale_d0 = xScale(d[2]) - ratio;
+						x_scale_d2 =  xScale(d[0]) + ratio;
 					}
 					
 					if(isNaN(x_scale_d0) || isNaN(x_scale_d2) || (!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 < 0 && x_scale_d0 < 0 ) 
@@ -930,32 +982,32 @@
 						return (-1*(x_scale_d2 - x_scale_d0))
 
 					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
-						if(x_scale_d0 < 0)
-							return 0
-						return options.graph.width;
+						if(x_scale_d0 + ratio < 0)
+							return 0 - ratio
+						return options.graph.width + ratio;
 					}
 
 					if (x_scale_d0 < 0 && x_scale_d2 > 0)
-						return x_scale_d2 > width ? width : x_scale_d2
+						return x_scale_d2 > width ? width : x_scale_d2 - ratio
 
 					if (x_scale_d2 < 0 && x_scale_d0 > 0)
-						return x_scale_d0 > width ? width : x_scale_d0
+						return x_scale_d0 > width ? width  : x_scale_d0 - ratio
 					
 					if (x_scale_d2 > width)
-						return width - x_scale_d0 < 0 ? 0 : (width - x_scale_d0);
+						return width - x_scale_d0 < 0 ? 0 : (width - x_scale_d0 + ratio);
 					else
 						return x_scale_d2 - x_scale_d0;
 					
 				}
 
-				function transformForTypeOfGraph(d, xScale){
-					var x_scale = xScale(d[0])
+				function transformForTypeOfGraph(d, xScale, ratio){
+					var x_scale = xScale(d[0]);
 					// if(options.date_is_descending)
 					// 	x_scale = xScale(d[2]);
 					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 )
-						return  'rotate(45 '+ x_scale + "  " + (options.graph.height/2 + options.line_spacing)+")"
+						return  'rotate(45 '+ (x_scale) + "  " + (options.graph.height/2 + options.line_spacing-ratio)+")"
 					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 )
-						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing) +')'
+						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing-ratio) +')'
 				}
 
 				function roundedRect(){

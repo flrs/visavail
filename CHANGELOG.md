@@ -1,4 +1,9 @@
 
+# VISAVAIL V 1.0.7
+
+* Adding new option and animation for hover tooltip. Now you can zoom the block when hover whit mouse.
+
+
 # VISAVAIL V 1.0.6
 
 * Fix displayDateRange function and now integrate dataset (for change dataset)
