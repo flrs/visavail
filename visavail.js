@@ -927,6 +927,7 @@
 					if(d3.event.transform.k || d3.event.transform.x){
 						options.xScale = d3.event.transform.rescaleX(xScale);
 						//position of tooltip when zooming or translate
+						console.log(d3.event)
 						if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
 							div.style('left', (d3.event.pageX) + 'px')
 
