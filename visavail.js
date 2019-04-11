@@ -425,7 +425,7 @@
 						.on("zoom", zoomed)
 						.on("start", function () {
 							var e = d3.event;
-							
+							console.log(e)
 							if (e && e.type === "brush") {
 								return;
 							}
@@ -435,6 +435,7 @@
 						})
 						.on('end', function () {
 							var e = d3.event;
+							console.log(e)
 							// if(e == null)
 							// 	zoomed();
 							if (e && e.type === "brush") {
