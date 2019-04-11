@@ -919,9 +919,7 @@
 				}
 
 				// function for zoomed
-				function zoomed() {
-					console.log(d3.event)
-						
+				function zoomed() {	
 					//prevent event null for type != zooming
 					if ((d3.event.sourceEvent == null || d3.event.type !== "zoom"))
 						return
@@ -951,6 +949,8 @@
 						emphasize(options.xScale);
 
 						options.zoom.onZoom.call(this, options.xScale.domain())
+					} else {
+						return
 					}
 
 				}
