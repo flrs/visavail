@@ -445,8 +445,11 @@
 							if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
 								return;
 							}
-							options["scale"] = d3.zoomTransform(svg.node())
-							options.zoom.onZoomEnd.call(this, xScale.domain());
+							
+							if(e && (e.transform.k || e.transform.x)){
+								options["scale"] = d3.zoomTransform(svg.node())
+								options.zoom.onZoomEnd.call(this, xScale.domain());
+							}
 						});
 
 					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
@@ -921,7 +924,7 @@
 				// function for zoomed
 				function zoomed() {	
 					//prevent event null for type != zooming
-					if ((d3.event.sourceEvent == null || d3.event.type !== "zoom"))
+					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
 						return
 					
 					if(d3.event.transform.k || d3.event.transform.x){
