@@ -421,9 +421,11 @@
 						.scaleExtent([1,Infinity])
 						.translateExtent([[0,0],[width, options.height]])
 						.extent([[0, 0], [width, options.height]])
+						
 						.on("zoom", zoomed)
 						.on("start", function () {
 							var e = d3.event;
+							
 							if (e && e.type === "brush") {
 								return;
 							}
@@ -432,7 +434,7 @@
 							options.zoom.onZoomStart.call(this, e);
 						})
 						.on('end', function () {
-							var e = d3.event.sourceEvent;
+							var e = d3.event;
 							// if(e == null)
 							// 	zoomed();
 							if (e && e.type === "brush") {
@@ -917,10 +919,10 @@
 
 				// function for zoomed
 				function zoomed() {
-
 					//prevent event null for type != zooming
 					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
 						return
+					
 					if(d3.event.transform.k || d3.event.transform.x){
 						options.xScale = d3.event.transform.rescaleX(xScale);
 						//position of tooltip when zooming or translate
