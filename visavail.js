@@ -459,7 +459,7 @@
 // 								console.log("enter to click")
 // 								return;
 // 							}
-														
+							
 							if(e.transform.k || e.transform.x){
 								console.log("entrato nell'options.scale con x end")
 								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
@@ -802,25 +802,29 @@
 					})
 					.on("mousemove", function(){
 						console.log("mouse move")
-						div.style('left',  function () {
-							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
-								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
-							return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
-						});
-
-						if(options.tooltip.position === "top"){
-							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
-								div.style('border-right', "solid thin rgb(0, 0, 0)")
-									.style('border-left', "none");
-							} else {
-								div.style('border-left', "solid thin rgb(0, 0, 0)")
-									.style('border-right', "none");
-							}
-						}
-						if(options.tooltip.position === "overlay"){
-							div.style('top', (d3.event.pageY) + 'px')
-						}
+						redrawTooltipWhenMoved(d3.event)
 					});
+				
+				function redrawTooltipWhenMoved(d3_event){
+					div.style('left',  function () {
+						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+							return ((d3_event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+						return (d3_event.pageX + options.tooltip.left_spacing)+ 'px';
+					});
+
+					if(options.tooltip.position === "top"){
+						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+							div.style('border-right', "solid thin rgb(0, 0, 0)")
+								.style('border-left', "none");
+						} else {
+							div.style('border-left', "solid thin rgb(0, 0, 0)")
+								.style('border-right', "none");
+						}
+					}
+					if(options.tooltip.position === "overlay"){
+						div.style('top', (d3_event.pageY) + 'px')
+					}
+				}
 				// rework ticks and grid for better visual structure
 				function isYear(t) {
 					return +t === +(new Date(t.getFullYear(), 0, 1, 0, 0, 0));
@@ -959,8 +963,8 @@
 					
 						options.xScale = e.transform.rescaleX(xScale);
 						
-						//disable tooltip
-						div.style('opacity', 0);
+						//redraw tooltip
+						redrawTooltipWhenMoved(e.sourceEvent)
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
