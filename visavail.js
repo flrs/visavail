@@ -666,142 +666,25 @@
 						}
 					})
 					.on('mouseover', function (d, i) {
-
-						if(options.tooltip.hover_zoom.enabled){
-							d3.select(this).transition()
-								.duration(options.tooltip.duration)
-								.attr('x', function (d) {
-									if(options.graph.type == "rhombus" || options.graph.type == "circle")
-										return xForPoint(d, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio*2)
-									return xForPoint(d,  options.xScale, 0)	
-								})
-								.attr('width', function (d) {
-									if(options.graph.type == "rhombus" || options.graph.type == "circle")
-										return widthForPoint(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
-									return widthForPoint(d,  options.xScale, 0)
-								})
-								.attr('y', options.line_spacing - options.line_spacing*options.tooltip.hover_zoom.ratio/2)
-								.attr('height', options.graph.height+options.line_spacing*options.tooltip.hover_zoom.ratio)
-								.attr('transform',  function (d) {
-									return transformForTypeOfGraph(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
-								})
-						}
-						var matrix = this.getScreenCTM().translate(+this.getAttribute('x'), +this.getAttribute('y'));
-						div.transition()
-							.duration(options.tooltip.duration)
-							.style('opacity', 1);
-						div.html(function () {
-
-								var output = '';
-								if (options.custom_categories) {
-									// custom categories: display category name
-									output = '&nbsp;' + d[1] + '&nbsp;';
-								} else {
-									if (d[1] === 1) {
-										// checkmark icon
-										output = '<i class=" '+ options.icon.class_has_data +' tooltip_has_data"></i>';
-									} else {
-										// cross icon
-										output = '<i class=" '+ options.icon.class_has_no_data + ' tooltip_has_no_data"></i>';
-									}
-								}
-								if(options.tooltip.description){
-									var series = dataset.filter(
-										function (series) {
-											return series.disp_data.indexOf(d) >= 0;
-										}
-									)[0];
-									if (series && series.description && series.description[i]) {
-										output += ' ' + series.description[i] + ' ';
-									}
-								}
-								if (options.is_date_only_format) {
-
-									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
-										if(options.date_is_descending)
-											return output + moment(d[2]).format('l') +
-											' - ' + moment(d[0]).format('l');
-										return output + moment(d[0]).format('l') +
-											' - ' + moment(d[2]).format('l');
-									}
-									return output + moment(d[0]).format('l');
-								} else {
-									if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
-										if(options.date_is_descending)
-											return output + moment(d[2]).format('l') + ' ' +
-											moment(d[2]).format('LTS') + ' - ' +
-											moment(d[0]).format('l') + ' ' +
-											moment(d[0]).format('LTS');
-										return output + moment(d[0]).format('l') + ' ' +
-											moment(d[0]).format('LTS') + ' - ' +
-											moment(d[2]).format('l') + ' ' +
-											moment(d[2]).format('LTS');
-									}
-									if(options.date_is_descending)
-										return output + moment(d[2]).format('LTS') + ' - ' +
-										moment(d[0]).format('LTS');
-									return output + moment(d[0]).format('LTS') + ' - ' +
-										moment(d[2]).format('LTS');
-								}
-							})
-							.style('left', function () {
-								if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
-									return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
-								return (d3.event.pageX + options.tooltip.left_spacing)+ 'px';
-							})
-
-						if(options.tooltip.position === "top"){
-							div.style('top', function () {
-								if(options.tooltip.hover_zoom.enabled)
-									return window.pageYOffset + matrix.f - options.tooltip.height - options.tooltip.hover_zoom.ratio*options.line_spacing + 'px';
-								return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
-							})
-							.style('height', 
-								function(){
-									if(options.tooltip.hover_zoom.enabled)
-										return	options.tooltip.hover_zoom.ratio*options.line_spacing + options.graph.height + options.tooltip.height + 'px'
-									return	options.graph.height + options.tooltip.height + 'px'
-								})
-							
-							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
-								div.style('border-right', "solid thin rgb(0, 0, 0)")
-									.style('border-left', "none");
-							} else {
-								div.style('border-left', "solid thin rgb(0, 0, 0)")
-									.style('border-right', "none");
-							}
-
-						}
-						if(options.tooltip.position === "overlay"){
-							div.style('top', (d3.event.pageY) + 'px')
-						}
+						redrawTooltipWhenOver(this, dataset, d3.event, d, i);
+					})
+					.on("touchstart", function (d, i) {
+						redrawTooltipWhenOver(this, dataset, d3.event, d, i);
 					})
 					.on('mouseout', function () {
-
-						if(options.tooltip.hover_zoom.enabled){
-							d3.select(this).transition()
-								.duration(options.tooltip.duration)
-								.attr('x', function (d) {
-									return xForPoint(d,  options.xScale, 0)
-								})
-								.attr('width', function (d) {
-									return widthForPoint(d,  options.xScale, 0)
-								})
-								.attr('y', options.line_spacing)
-								.attr('height', options.graph.height)
-								.attr('transform',  function (d) {
-									return transformForTypeOfGraph(d,  options.xScale, 0)
-								})
-						}
-						div.transition()
-							.duration(options.tooltip.duration)
-							.style('opacity', 0);
+						redrawTooltipWhenOut(this)
+					})
+					.on("touchleave", function () {
+						redrawTooltipWhenOut(this)
 					})
 					.on('click', function(d,i){
 						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
 						console.log("mouse move")
+						redrawTooltipWhenMoved(d3.event)
+					})
+					.on("touchmove", function () {
 						redrawTooltipWhenMoved(d3.event)
 					});
 				
@@ -825,6 +708,140 @@
 						div.style('top', (d3_event.pageY) + 'px')
 					}
 				}
+
+				function redrawTooltipWhenOut(obj){
+					if(options.tooltip.hover_zoom.enabled){
+						d3.select(obj).transition()
+							.duration(options.tooltip.duration)
+							.attr('x', function (d) {
+								return xForPoint(d,  options.xScale, 0)
+							})
+							.attr('width', function (d) {
+								return widthForPoint(d,  options.xScale, 0)
+							})
+							.attr('y', options.line_spacing)
+							.attr('height', options.graph.height)
+							.attr('transform',  function (d) {
+								return transformForTypeOfGraph(d,  options.xScale, 0)
+							})
+					}
+					div.transition()
+						.duration(options.tooltip.duration)
+						.style('opacity', 0);
+				}
+				
+				function redrawTooltipWhenOver(obj, dataset, d3_event, d, i){
+					if(options.tooltip.hover_zoom.enabled){
+						d3.select(obj).transition()
+							.duration(options.tooltip.duration)
+							.attr('x', function (d) {
+								if(options.graph.type == "rhombus" || options.graph.type == "circle")
+									return xForPoint(d, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio*2)
+								return xForPoint(d,  options.xScale, 0)	
+							})
+							.attr('width', function (d) {
+								if(options.graph.type == "rhombus" || options.graph.type == "circle")
+									return widthForPoint(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+								return widthForPoint(d,  options.xScale, 0)
+							})
+							.attr('y', options.line_spacing - options.line_spacing*options.tooltip.hover_zoom.ratio/2)
+							.attr('height', options.graph.height+options.line_spacing*options.tooltip.hover_zoom.ratio)
+							.attr('transform',  function (d) {
+								return transformForTypeOfGraph(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+							})
+					}
+					var matrix = obj.getScreenCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
+					div.transition()
+						.duration(options.tooltip.duration)
+						.style('opacity', 1);
+					div.html(function () {
+
+							var output = '';
+							if (options.custom_categories) {
+								// custom categories: display category name
+								output = '&nbsp;' + d[1] + '&nbsp;';
+							} else {
+								if (d[1] === 1) {
+									// checkmark icon
+									output = '<i class=" '+ options.icon.class_has_data +' tooltip_has_data"></i>';
+								} else {
+									// cross icon
+									output = '<i class=" '+ options.icon.class_has_no_data + ' tooltip_has_no_data"></i>';
+								}
+							}
+							if(options.tooltip.description){
+								var series = dataset.filter(
+									function (series) {
+										return series.disp_data.indexOf(d) >= 0;
+									}
+								)[0];
+								if (series && series.description && series.description[i]) {
+									output += ' ' + series.description[i] + ' ';
+								}
+							}
+							if (options.is_date_only_format) {
+
+								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+									if(options.date_is_descending)
+										return output + moment(d[2]).format('l') +
+										' - ' + moment(d[0]).format('l');
+									return output + moment(d[0]).format('l') +
+										' - ' + moment(d[2]).format('l');
+								}
+								return output + moment(d[0]).format('l');
+							} else {
+								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+									if(options.date_is_descending)
+										return output + moment(d[2]).format('l') + ' ' +
+										moment(d[2]).format('LTS') + ' - ' +
+										moment(d[0]).format('l') + ' ' +
+										moment(d[0]).format('LTS');
+									return output + moment(d[0]).format('l') + ' ' +
+										moment(d[0]).format('LTS') + ' - ' +
+										moment(d[2]).format('l') + ' ' +
+										moment(d[2]).format('LTS');
+								}
+								if(options.date_is_descending)
+									return output + moment(d[2]).format('LTS') + ' - ' +
+									moment(d[0]).format('LTS');
+								return output + moment(d[0]).format('LTS') + ' - ' +
+									moment(d[2]).format('LTS');
+							}
+						})
+						.style('left', function () {
+							if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+								return ((d3_event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+							return (d3_event.pageX + options.tooltip.left_spacing)+ 'px';
+						})
+
+					if(options.tooltip.position === "top"){
+						div.style('top', function () {
+							if(options.tooltip.hover_zoom.enabled)
+								return window.pageYOffset + matrix.f - options.tooltip.height - options.tooltip.hover_zoom.ratio*options.line_spacing + 'px';
+							return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
+						})
+						.style('height', 
+							function(){
+								if(options.tooltip.hover_zoom.enabled)
+									return	options.tooltip.hover_zoom.ratio*options.line_spacing + options.graph.height + options.tooltip.height + 'px'
+								return	options.graph.height + options.tooltip.height + 'px'
+							})
+						
+						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+							div.style('border-right', "solid thin rgb(0, 0, 0)")
+								.style('border-left', "none");
+						} else {
+							div.style('border-left', "solid thin rgb(0, 0, 0)")
+								.style('border-right', "none");
+						}
+
+					}
+					if(options.tooltip.position === "overlay"){
+						div.style('top', (d3_event.pageY) + 'px')
+					}
+
+				}
+
 				// rework ticks and grid for better visual structure
 				function isYear(t) {
 					return +t === +(new Date(t.getFullYear(), 0, 1, 0, 0, 0));
@@ -964,7 +981,8 @@
 						options.xScale = e.transform.rescaleX(xScale);
 						
 						//redraw tooltip
-						redrawTooltipWhenMoved(e.sourceEvent)
+						if(e.sourceEvent)
+							redrawTooltipWhenMoved(e.sourceEvent)
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
