@@ -423,10 +423,14 @@
 						
 						.on("start", function () {
 							var e = d3.event;
-							console.log(e.type, e.transform.k, e.transform.x)
+							console.log(e.type, e.transform.k, e.transform.x, e.sourceEvent)
 														
 							if (e.sourceEvent && e.sourceEvent.type === "brush") {
 								return;
+							}
+							if( e.sourceEvent && e.sourceEvent.type === "touchstart" && e.sourceEvent.cancelable){
+								event.preventDefault();
+								event.stopImmediatePropagation();
 							}
 							//define startEvent for fix error in click
 							if(e.transform.k || e.transform.x){
@@ -439,17 +443,22 @@
 						
 						.on('end', function () {
 							var e = d3.event;
-							console.log( e.type, e.transform.k, e.transform.x)
+							console.log( e.type, e.transform.k, e.transform.x, e.sourceEvent)
 							if(e == null)
 								return
 							if (e.sourceEvent && e.sourceEvent.type === "brush") {
 								return;
 							}
+							if(e.sourceEvent && e.sourceEvent.type === "touchend" && e.sourceEvent.cancelable){
+								event.preventDefault();
+	  							event.stopImmediatePropagation();
+							}
 							// if click, do nothing. otherwise, click interaction will be canceled.
-							// if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
-							// 	console.log("enter to click")
-							// 	return;
-							// }
+// 							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.type === "touchend"&&  
+// 								start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
+// 								console.log("enter to click")
+// 								return;
+// 							}
 														
 							if(e.transform.k || e.transform.x){
 								console.log("entrato nell'options.scale con x end")
