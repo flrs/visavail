@@ -425,28 +425,38 @@
 						.on("zoom", zoomed)
 						.on("start", function () {
 							var e = d3.event;
-							console.log(e)
+							console.log(e.type, e.transform.k, e.transform.x)
+														
 							if (e && e.type === "brush") {
 								return;
 							}
 							//define startEvent for fix error in click
-							startEvent = e;
+							start_event = e;
 							options.zoom.onZoomStart.call(this, e);
 						})
 						.on('end', function () {
 							var e = d3.event;
-							console.log(e)
-							// if(e == null)
-							// 	zoomed();
-							if (e && e.type === "brush") {
+							console.log( e.type, e.transform.k, e.transform.x)
+							if(e == null)
+								return
+							if (e.type === "brush") {
 								return;
 							}
 							// if click, do nothing. otherwise, click interaction will be canceled.
-							if (e && startEvent.clientX === e.clientX && startEvent.clientY === e.clientY) {
+							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
+								console.log("enter to click")
 								return;
 							}
-							
-							if(e && (e.transform.k || e.transform.x)){
+														
+							if(e.transform.k || e.transform.x){
+								console.log("entrato nell'options.scale con x end")
+								options["scale"] = d3.zoomTransform(svg.node())
+								options.zoom.onZoomEnd.call(this, xScale.domain());
+							} else {
+								console.log("entrato nell'options.scale con x start")
+								
+								e.transform.k = start_event.transform.k;
+								e.transform.x = start_event.transform.x;
 								options["scale"] = d3.zoomTransform(svg.node())
 								options.zoom.onZoomEnd.call(this, xScale.domain());
 							}
@@ -924,14 +934,19 @@
 				// function for zoomed
 				function zoomed() {	
 					//prevent event null for type != zooming
-					if ((d3.event.sourceEvent == null && d3.event.type !== "zoom"))
+					var e = d3.event
+					console.log(e.type, e.transform.k, e.transform.x)
+							
+					if ((e.sourceEvent == null && e.type !== "zoom"))
 						return
 					
-					if(d3.event.transform.k || d3.event.transform.x){
-						options.xScale = d3.event.transform.rescaleX(xScale);
+					if(e.transform.k || e.transform.x){
+						console.log("rescale", e.transform.k, e.transform.x)
+					
+						options.xScale = e.transform.rescaleX(xScale);
 						//position of tooltip when zooming or translate
-						if (d3.event.sourceEvent !== null && d3.event.type == "zoom")
-							div.style('left', (d3.event.pageX) + 'px')
+						if (e.sourceEvent !== null && e.type == "zoom")
+							div.style('left', (e.pageX) + 'px')
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
@@ -952,14 +967,16 @@
 						emphasize(options.xScale);
 
 						options.zoom.onZoom.call(this, options.xScale.domain())
-					} else {
-						return
 					}
 
 				}
+				
 				//restore to previous zoom
-				if(options.scale)
+				if(options.scale){
+					console.log("reste zooom", options.scale)
 					svg.call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
+					
+				}
 
 				function xForPoint(d, xScale, ratio){
 					var x_scale = xScale(d[0]) - ratio;
