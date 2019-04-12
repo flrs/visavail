@@ -414,7 +414,6 @@
 				// create basic element groups
 				svg.append('g').attr('id', 'g_title');
 				svg.append('g').attr('id', 'g_axis');
-				var start_event;
 				if (options.zoom.enabled) {
 					//implement zooming
 					options.zoomed = d3.zoom()
@@ -447,28 +446,29 @@
 								return;
 							}
 							// if click, do nothing. otherwise, click interaction will be canceled.
-							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
-								console.log("enter to click")
-								return;
-							}
+							// if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
+							// 	console.log("enter to click")
+							// 	return;
+							// }
 														
 							if(e.transform.k || e.transform.x){
 								console.log("entrato nell'options.scale con x end")
-								options["scale"] = d3.zoomTransform(svg.node())
+								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
 								options.zoom.onZoomEnd.call(this, xScale.domain());
 							} else {
 								console.log("entrato nell'options.scale con x start")
 								
 								e.transform.k = start_event.transform.k;
 								e.transform.x = start_event.transform.x;
-								options["scale"] = d3.zoomTransform(svg.node())
+								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
 								options.zoom.onZoomEnd.call(this, xScale.domain());
 							}
 						});
-
-					// this rect acts as a layer so that zooming works anywhere in the svg. otherwise,
-					// if zoom is called on just svg, zoom functionality will only work when the pointer is over a block.
-					svg.append('rect')
+						
+				}
+				svg.append('g')
+				.attr('id', 'g_data')
+				.append('rect')
 						.attr('id', 'zoom')
 						.attr('width', width)
 						.attr('height', height)
@@ -476,10 +476,10 @@
 						.attr('cursor', "ew-resize")
 						.attr('x', 0)
 						.attr('y', 0)
-					svg.call(options.zoomed)
+				if (options.zoom.enabled)
+					svg.select("#g_data").call(options.zoomed)
 
-				}
-				svg.append('g').attr('id', 'g_data');
+				//.call(options.zoomed);
 
 				if (options.show_y_title) {
 					// create y axis labels
@@ -942,7 +942,7 @@
 					var e = d3.event
 					console.log(e.type, e.sourceEvent, e.transform.k, e.transform.x)
 							
-					if (e.sourceEvent && e.sourceEvent.type !== "zoom")
+					if (e && e.type !== "zoom")
 						return
 
 					if(e.transform.k || e.transform.x){
@@ -979,7 +979,7 @@
 				//restore to previous zoom
 				if(options.scale){
 					console.log("reste zooom", options.scale)
-					svg.call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
+					svg.select("#g_data").call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 					
 				}
 
