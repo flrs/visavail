@@ -676,7 +676,7 @@
 						var matrix = this.getScreenCTM().translate(+this.getAttribute('x'), +this.getAttribute('y'));
 						div.transition()
 							.duration(options.tooltip.duration)
-							.style('opacity', );
+							.style('opacity', 1);
 						div.html(function () {
 
 								var output = '';
@@ -781,13 +781,14 @@
 								})
 						}
 						div.transition()
-							.duration(500)
+							.duration(options.tooltip.duration)
 							.style('opacity', 0);
 					})
 					.on('click', function(d,i){
 						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
+						console.log("mouse move")
 						div.style('left',  function () {
 							if(document.body.clientWidth < (d3.event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 								return ((d3.event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
@@ -935,18 +936,24 @@
 				function zoomed() {	
 					//prevent event null for type != zooming
 					var e = d3.event
-					console.log(e.type, e.transform.k, e.transform.x)
+					console.log(e.type, e.sourceEvent, e.transform.k, e.transform.x)
 							
 					if ((e.sourceEvent == null && e.type !== "zoom"))
 						return
+						
+					if(e.sourceEvent && !e.sourceEvent.cancelable){
+						console.log("stopImmediatePropagation")
+						e.preventdefault();
+						e.stopImmediatePropagation()
+					}
 					
 					if(e.transform.k || e.transform.x){
 						console.log("rescale", e.transform.k, e.transform.x)
 					
 						options.xScale = e.transform.rescaleX(xScale);
-						//position of tooltip when zooming or translate
-						if (e.sourceEvent !== null && e.type == "zoom")
-							div.style('left', (e.pageX) + 'px')
+						
+						//disable tooltip
+						div.style('opacity', 0);
 
 						g.selectAll('rect')
 							.attr('x', function (d) {
