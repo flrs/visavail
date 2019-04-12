@@ -940,10 +940,10 @@
 							
 					if ((e.sourceEvent == null && e.type !== "zoom"))
 						return
-						
+
 					if(e.sourceEvent && !e.sourceEvent.cancelable){
 						console.log("stopImmediatePropagation")
-						e.preventdefault();
+						e.preventDefault();
 						e.stopImmediatePropagation()
 					}
 					
