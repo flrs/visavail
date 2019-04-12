@@ -443,10 +443,10 @@
 								return;
 							}
 							// if click, do nothing. otherwise, click interaction will be canceled.
-							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
-								console.log("enter to click")
-								return;
-							}
+							// if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
+							// 	console.log("enter to click")
+							// 	return;
+							// }
 														
 							if(e.transform.k || e.transform.x){
 								console.log("entrato nell'options.scale con x end")
