@@ -941,12 +941,6 @@
 					if ((e.sourceEvent == null && e.type !== "zoom"))
 						return
 
-					if(e.sourceEvent && !e.sourceEvent.cancelable){
-						console.log("stopImmediatePropagation")
-						e.preventDefault();
-						e.stopImmediatePropagation()
-					}
-					
 					if(e.transform.k || e.transform.x){
 						console.log("rescale", e.transform.k, e.transform.x)
 					
