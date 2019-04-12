@@ -414,7 +414,7 @@
 				// create basic element groups
 				svg.append('g').attr('id', 'g_title');
 				svg.append('g').attr('id', 'g_axis');
-
+				var start_event;
 				if (options.zoom.enabled) {
 					//implement zooming
 					options.zoomed = d3.zoom()
@@ -431,8 +431,11 @@
 								return;
 							}
 							//define startEvent for fix error in click
-							start_event = e;
-							options.zoom.onZoomStart.call(this, e);
+							if(e.transform.k || e.transform.x){
+								start_event = e;
+								options.zoom.onZoomStart.call(this, e);
+							}
+							
 						})
 						.on('end', function () {
 							var e = d3.event;
