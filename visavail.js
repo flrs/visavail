@@ -422,12 +422,11 @@
 						.translateExtent([[0,0],[width, options.height]])
 						.extent([[0, 0], [width, options.height]])
 						
-						.on("zoom", zoomed)
 						.on("start", function () {
 							var e = d3.event;
 							console.log(e.type, e.transform.k, e.transform.x)
 														
-							if (e && e.type === "brush") {
+							if (e.sourceEvent && e.sourceEvent.type === "brush") {
 								return;
 							}
 							//define startEvent for fix error in click
@@ -437,19 +436,21 @@
 							}
 							
 						})
+						.on("zoom", zoomed)
+						
 						.on('end', function () {
 							var e = d3.event;
 							console.log( e.type, e.transform.k, e.transform.x)
 							if(e == null)
 								return
-							if (e.type === "brush") {
+							if (e.sourceEvent && e.sourceEvent.type === "brush") {
 								return;
 							}
 							// if click, do nothing. otherwise, click interaction will be canceled.
-							// if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
-							// 	console.log("enter to click")
-							// 	return;
-							// }
+							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
+								console.log("enter to click")
+								return;
+							}
 														
 							if(e.transform.k || e.transform.x){
 								console.log("entrato nell'options.scale con x end")
@@ -941,7 +942,7 @@
 					var e = d3.event
 					console.log(e.type, e.sourceEvent, e.transform.k, e.transform.x)
 							
-					if ((e.sourceEvent == null && e.type !== "zoom"))
+					if (e.sourceEvent && e.sourceEvent.type !== "zoom")
 						return
 
 					if(e.transform.k || e.transform.x){
