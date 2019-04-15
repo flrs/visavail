@@ -256,6 +256,7 @@ You can pass the JSON Object to library with custom settings
 | *height* | `number` | 10 | height of tooltip , correspond to line-height of class tooltip from css) |
 | *position* | `string` | top | Two type of tooltip:  "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height |
 | *left_spacing* | `number` | 0 | Left space from tooltip and mouse |
+| *date_plus_time* | `boolean` | false | enable date and time on tooltip |
 | *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
 | *hover_zoom* | `Object{}` |**[more info](#3331-hover-zoom-option)**|option for zoom block on hover |
 

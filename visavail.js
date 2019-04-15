@@ -71,6 +71,7 @@
 			//if true reminder to use the correct data format for d3
 			custom_categories: false,
 			is_date_only_format: true,
+		
 			date_in_utc: true,
 			date_is_descending: false,
 			// if false remeber to set the padding and margin
@@ -83,6 +84,7 @@
 				//position: "top" is a div before bar follow the mouse only left, "overlay" follow the mouse left and height
 				position: "top",
 				left_spacing: 0,
+				date_plus_time: false,
 				duration: 150,
 				hover_zoom: {
 					enabled: false,
@@ -423,7 +425,7 @@
 						
 						.on("start", function () {
 							var e = d3.event;
-							console.log(e.type, e.transform.k, e.transform.x, e.sourceEvent)
+							//console.log(e.type, e.transform.k, e.transform.x, e.sourceEvent)
 														
 							if (e.sourceEvent && e.sourceEvent.type === "brush") {
 								return;
@@ -443,7 +445,7 @@
 						
 						.on('end', function () {
 							var e = d3.event;
-							console.log( e.type, e.transform.k, e.transform.x, e.sourceEvent)
+							//console.log( e.type, e.transform.k, e.transform.x, e.sourceEvent)
 							if(e == null)
 								return
 							if (e.sourceEvent && e.sourceEvent.type === "brush") {
@@ -461,11 +463,11 @@
 // 							}
 							
 							if(e.transform.k || e.transform.x){
-								console.log("entrato nell'options.scale con x end")
+								//console.log("entrato nell'options.scale con x end")
 								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
 								options.zoom.onZoomEnd.call(this, xScale.domain());
 							} else {
-								console.log("entrato nell'options.scale con x start")
+								//console.log("entrato nell'options.scale con x start")
 								
 								e.transform.k = start_event.transform.k;
 								e.transform.x = start_event.transform.x;
@@ -666,10 +668,10 @@
 						}
 					})
 					.on('mouseover', function (d, i) {
-						redrawTooltipWhenOver(this, dataset, d3.event, d, i);
+						redrawTooltipWhenOver(this, dataset, d3.event.pageX, d3.event.pageX, d, i);
 					})
 					.on("touchstart", function (d, i) {
-						redrawTooltipWhenOver(this, dataset, d3.event, d, i);
+						redrawTooltipWhenOver(this, dataset, d3.event.touches[0].pageX, d3.event.touches[0].pageY, d, i);
 					})
 					.on('mouseout', function () {
 						redrawTooltipWhenOut(this)
@@ -677,26 +679,31 @@
 					.on("touchleave", function () {
 						redrawTooltipWhenOut(this)
 					})
+					.on("touchcancel", function () {
+						redrawTooltipWhenOut(this)
+					})
 					.on('click', function(d,i){
 						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
-						console.log("mouse move")
-						redrawTooltipWhenMoved(d3.event)
+						//console.log("mouse move")
+						redrawTooltipWhenMoved(d3.event.pageX, d3.event.pageY)
 					})
 					.on("touchmove", function () {
-						redrawTooltipWhenMoved(d3.event)
+						redrawTooltipWhenMoved(d3.event.touches[0].pageX, d3.event.touches[0].pageY)
 					});
 				
-				function redrawTooltipWhenMoved(d3_event){
+
+				
+				function redrawTooltipWhenMoved(pageX, pageY){
 					div.style('left',  function () {
-						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
-							return ((d3_event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
-						return (d3_event.pageX + options.tooltip.left_spacing)+ 'px';
+						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+							return ((pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+						return (pageX + options.tooltip.left_spacing)+ 'px';
 					});
 
 					if(options.tooltip.position === "top"){
-						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 							div.style('border-right', "solid thin rgb(0, 0, 0)")
 								.style('border-left', "none");
 						} else {
@@ -705,7 +712,7 @@
 						}
 					}
 					if(options.tooltip.position === "overlay"){
-						div.style('top', (d3_event.pageY) + 'px')
+						div.style('top', (pageY) + 'px')
 					}
 				}
 
@@ -730,7 +737,7 @@
 						.style('opacity', 0);
 				}
 				
-				function redrawTooltipWhenOver(obj, dataset, d3_event, d, i){
+				function redrawTooltipWhenOver(obj, dataset, pageX, pageY, d, i){
 					if(options.tooltip.hover_zoom.enabled){
 						d3.select(obj).transition()
 							.duration(options.tooltip.duration)
@@ -790,7 +797,7 @@
 								}
 								return output + moment(d[0]).format('l');
 							} else {
-								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+								if (d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time) {
 									if(options.date_is_descending)
 										return output + moment(d[2]).format('l') + ' ' +
 										moment(d[2]).format('LTS') + ' - ' +
@@ -809,9 +816,9 @@
 							}
 						})
 						.style('left', function () {
-							if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
-								return ((d3_event.pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
-							return (d3_event.pageX + options.tooltip.left_spacing)+ 'px';
+							if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+								return ((pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
+							return (pageX + options.tooltip.left_spacing)+ 'px';
 						})
 
 					if(options.tooltip.position === "top"){
@@ -827,7 +834,7 @@
 								return	options.graph.height + options.tooltip.height + 'px'
 							})
 						
-						if(document.body.clientWidth < (d3_event.pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 							div.style('border-right', "solid thin rgb(0, 0, 0)")
 								.style('border-left', "none");
 						} else {
@@ -837,7 +844,7 @@
 
 					}
 					if(options.tooltip.position === "overlay"){
-						div.style('top', (d3_event.pageY) + 'px')
+						div.style('top', (pageY) + 'px')
 					}
 
 				}
@@ -981,9 +988,11 @@
 						options.xScale = e.transform.rescaleX(xScale);
 						
 						//redraw tooltip
-						if(e.sourceEvent)
-							redrawTooltipWhenMoved(e.sourceEvent)
-
+						if(e.sourceEvent && e.sourceEvent== "touchmove")
+							redrawTooltipWhenMoved(e.sourceEvent.touches[0].pageX, e.sourceEvent.touches[0].pageY)
+						else if(e.sourceEvent)
+								redrawTooltipWhenMoved(e.sourceEvent.pageX, e.sourceEvent.pageY)
+							
 						g.selectAll('rect')
 							.attr('x', function (d) {
 								return xForPoint(d, options.xScale, 0);

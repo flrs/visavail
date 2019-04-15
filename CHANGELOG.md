@@ -1,4 +1,9 @@
 
+# VISAVAIL V 1.0.8
+
+* Adding new option for date and time on tooltip
+* fix some bugs on mobile and other
+  
 # VISAVAIL V 1.0.7
 
 * Adding new option and animation for hover tooltip. Now you can zoom the block when hover whit mouse.
