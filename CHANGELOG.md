@@ -1,4 +1,4 @@
-# VISAVAIL V 1.0.9
+# VISAVAIL V 1.0.10
 
 * move tooltip inside graph container
 * fix some bug (css&js) on position of tooltip when move
