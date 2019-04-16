@@ -696,7 +696,6 @@
 				
 				function redrawTooltipWhenMoved(pageX, pageY, obj){
 					div.style('left',  function () {
-						console.log(div.property('offsetWidth'))
 						if(options.width < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 							return ((pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 						return (pageX + options.tooltip.left_spacing)+ 'px';
