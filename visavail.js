@@ -711,7 +711,10 @@
 						}
 					}
 					if(options.tooltip.position === "overlay"){
-						div.style('top', (pageY) + 'px')
+						if(document.getElementById(options.id_div_graph).offsetHeight < pageY+ div.property('offsetHeight'))
+							div.style('top', (document.getElementById(options.id_div_graph).offsetHeight - div.property('offsetHeight')) + 'px')
+						else
+							div.style('top', (pageY) + 'px')
 					}
 				}
 
