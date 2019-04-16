@@ -228,7 +228,7 @@
 		};
 
 		if(!custom_options.hasOwnProperty("width"))
-			options.width = document.getElementById(options.id_div_container).offsetWidth;
+			options.width = document.getElementById(options.id_div_graph).offsetWidth;
 
 		options.id = "visavail-" + Math.random().toString(36).substring(7);
 
@@ -252,7 +252,7 @@
 				d3.timeFormatDefaultLocale(options.locale);
 				
 				// global div for tooltip
-				var div = d3.select('body').append('div')
+				var div = d3.select('#'+options.id_div_container).append('div')
 					.attr('class', "visavail-tooltip " + options.id)
 					.attr('id', options.id)
 					.append('div')
@@ -668,10 +668,10 @@
 						}
 					})
 					.on('mouseover', function (d, i) {
-						redrawTooltipWhenOver(this, dataset, d3.event.pageX, d3.event.pageX, d, i);
+						redrawTooltipWhenOver(this, dataset, d3.event.layerX, d3.event.layerY, d, i);
 					})
 					.on("touchstart", function (d, i) {
-						redrawTooltipWhenOver(this, dataset, d3.event.touches[0].pageX, d3.event.touches[0].pageY, d, i);
+						redrawTooltipWhenOver(this, dataset, d3.event.touches[0].layerX, d3.event.touches[0].layerY, d, i);
 					})
 					.on('mouseout', function () {
 						redrawTooltipWhenOut(this)
@@ -686,24 +686,24 @@
 						options.onClickBlock.call(this, d,i);
 					})
 					.on("mousemove", function(){
-						//console.log("mouse move")
-						redrawTooltipWhenMoved(d3.event.pageX, d3.event.pageY)
+						redrawTooltipWhenMoved(d3.event.layerX, d3.event.layerY, this)
 					})
 					.on("touchmove", function () {
-						redrawTooltipWhenMoved(d3.event.touches[0].pageX, d3.event.touches[0].pageY)
+						redrawTooltipWhenMoved(d3.event.touches[0].layerX, d3.event.touches[0].layerY)
 					});
 				
 
 				
-				function redrawTooltipWhenMoved(pageX, pageY){
+				function redrawTooltipWhenMoved(pageX, pageY, obj){
 					div.style('left',  function () {
-						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+						console.log(div.property('offsetWidth'))
+						if(options.width < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 							return ((pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 						return (pageX + options.tooltip.left_spacing)+ 'px';
 					});
 
 					if(options.tooltip.position === "top"){
-						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+						if(options.width < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 							div.style('border-right', "solid thin rgb(0, 0, 0)")
 								.style('border-left', "none");
 						} else {
@@ -757,7 +757,7 @@
 								return transformForTypeOfGraph(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
 							})
 					}
-					var matrix = obj.getScreenCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
+					var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
 					div.transition()
 						.duration(options.tooltip.duration)
 						.style('opacity', 1);
@@ -816,7 +816,7 @@
 							}
 						})
 						.style('left', function () {
-							if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
+							if(options.width < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing))
 								return ((pageX - div.property('offsetWidth')) - options.tooltip.left_spacing)+ 'px';
 							return (pageX + options.tooltip.left_spacing)+ 'px';
 						})
@@ -825,7 +825,7 @@
 						div.style('top', function () {
 							if(options.tooltip.hover_zoom.enabled)
 								return window.pageYOffset + matrix.f - options.tooltip.height - options.tooltip.hover_zoom.ratio*options.line_spacing + 'px';
-							return window.pageYOffset + matrix.f - options.tooltip.height + 'px';
+							return window.pageYOffset + matrix.f  - options.tooltip.height + 'px';
 						})
 						.style('height', 
 							function(){
@@ -834,7 +834,7 @@
 								return	options.graph.height + options.tooltip.height + 'px'
 							})
 						
-						if(document.body.clientWidth < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
+						if(options.width < (pageX + div.property('offsetWidth') + options.tooltip.left_spacing)){
 							div.style('border-right', "solid thin rgb(0, 0, 0)")
 								.style('border-left', "none");
 						} else {
@@ -976,22 +976,18 @@
 				// function for zoomed
 				function zoomed() {	
 					//prevent event null for type != zooming
-					var e = d3.event
-					console.log(e.type, e.sourceEvent, e.transform.k, e.transform.x)
-							
+					var e = d3.event		
 					if (e && e.type !== "zoom")
 						return
 
 					if(e.transform.k || e.transform.x){
-						console.log("rescale", e.transform.k, e.transform.x)
-					
 						options.xScale = e.transform.rescaleX(xScale);
 						
 						//redraw tooltip
 						if(e.sourceEvent && e.sourceEvent== "touchmove")
-							redrawTooltipWhenMoved(e.sourceEvent.touches[0].pageX, e.sourceEvent.touches[0].pageY)
+							redrawTooltipWhenMoved(e.sourceEvent.touches[0].layerX, e.sourceEvent.touches[0].layerY)
 						else if(e.sourceEvent)
-								redrawTooltipWhenMoved(e.sourceEvent.pageX, e.sourceEvent.pageY)
+								redrawTooltipWhenMoved(e.sourceEvent.layerX, e.sourceEvent.layerY)
 							
 						g.selectAll('rect')
 							.attr('x', function (d) {
@@ -1018,7 +1014,6 @@
 				
 				//restore to previous zoom
 				if(options.scale){
-					console.log("reste zooom", options.scale)
 					svg.select("#g_data").call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 					
 				}
@@ -1175,7 +1170,7 @@
             if (!options.id_div_container || !document.getElementById(options.id_div_graph) || document.getElementById(options.id_div_graph).innerHTML == "" ) {
                 return;
             }
-           chart.resizeWidth(document.getElementById(options.id_div_container).offsetWidth);
+           chart.resizeWidth(document.getElementById(options.id_div_graph).offsetWidth);
 		}
 
 		if(options.responsive.enabled){

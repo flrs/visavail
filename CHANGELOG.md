@@ -1,4 +1,8 @@
+# VISAVAIL V 1.0.9
 
+* move tooltip inside graph container
+* fix some bug (css&js) on position of tooltip when move
+  
 # VISAVAIL V 1.0.8
 
 * Adding new option for date and time on tooltip

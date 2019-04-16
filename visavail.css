@@ -1,6 +1,9 @@
 /* style for visavail.js */
 
- .visavail-tooltip div.tooltip-top {
+.visavail{
+	position: relative;
+}
+.visavail-tooltip div.tooltip-top {
     position: absolute;
     text-align: left;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
