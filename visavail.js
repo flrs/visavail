@@ -85,6 +85,7 @@
 				position: "top",
 				left_spacing: 0,
 				date_plus_time: false,
+				only_first_date: false,
 				duration: 150,
 				hover_zoom: {
 					enabled: false,
@@ -778,6 +779,7 @@
 									output = '<i class=" '+ options.icon.class_has_no_data + ' tooltip_has_no_data"></i>';
 								}
 							}
+
 							if(options.tooltip.description){
 								var series = dataset.filter(
 									function (series) {
@@ -788,33 +790,49 @@
 									output += ' ' + series.description[i] + ' ';
 								}
 							}
-							if (options.is_date_only_format) {
-
-								if (d[2] > d3.timeSecond.offset(d[0], 86400)) {
+							
+							if (options.is_date_only_format && !options.tooltip.date_plus_time) {
+								if (d[2] > d3.timeSecond.offset(d[0], 86400) && !options.tooltip.only_first_date) {
 									if(options.date_is_descending)
 										return output + moment(d[2]).format('l') +
 										' - ' + moment(d[0]).format('l');
 									return output + moment(d[0]).format('l') +
 										' - ' + moment(d[2]).format('l');
 								}
+								if(options.date_is_descending)
+									return output + moment(d[2]).format('l');
 								return output + moment(d[0]).format('l');
 							} else {
-								if (d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time) {
+								if(!options.tooltip.only_first_date){
+									if ((d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time)) {
+										if(options.date_is_descending)
+											return output + moment(d[2]).format('l') + ' ' +
+												moment(d[2]).format('LTS') + ' - ' +
+												moment(d[0]).format('l') + ' ' +
+												moment(d[0]).format('LTS');
+										return output + moment(d[0]).format('l') + ' ' +
+											moment(d[0]).format('LTS') + ' - ' +
+											moment(d[2]).format('l') + ' ' +
+											moment(d[2]).format('LTS');
+									}
 									if(options.date_is_descending)
-										return output + moment(d[2]).format('l') + ' ' +
-										moment(d[2]).format('LTS') + ' - ' +
-										moment(d[0]).format('l') + ' ' +
+										return output + moment(d[2]).format('LTS') + ' - ' +
 										moment(d[0]).format('LTS');
-									return output + moment(d[0]).format('l') + ' ' +
-										moment(d[0]).format('LTS') + ' - ' +
-										moment(d[2]).format('l') + ' ' +
+									return output + moment(d[0]).format('LTS') + ' - ' +
 										moment(d[2]).format('LTS');
-								}
-								if(options.date_is_descending)
-									return output + moment(d[2]).format('LTS') + ' - ' +
-									moment(d[0]).format('LTS');
-								return output + moment(d[0]).format('LTS') + ' - ' +
-									moment(d[2]).format('LTS');
+								} else {
+									console.log("entrato nell'esle")
+									if (d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time) {
+										if(options.date_is_descending)
+											return output + moment(d[2]).format('l') + ' ' +
+												moment(d[2]).format('LTS');
+										return output + moment(d[0]).format('l') + ' ' +
+											moment(d[0]).format('LTS');
+									}
+									if(options.date_is_descending)
+										return output + moment(d[2]).format('LTS');
+									return output + moment(d[0]).format('LTS');
+								}								
 							}
 						})
 						.style('left', function () {

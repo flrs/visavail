@@ -1,3 +1,8 @@
+# VISAVAIL V 1.0.12
+
+* add option tooltip for display only first date
+* fix bugs on date_plus_time option on tooltip ( now this option override the is_date_only_format calculated automatically)
+  
 # VISAVAIL V 1.0.11
 
 * move tooltip inside graph container
