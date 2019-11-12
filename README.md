@@ -400,6 +400,8 @@ To use the chart in your project, follow these steps:
     </script>
 	```
 
+- [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
+- [GanttLab Live](https://gitlab.com/ganttlab/ganttlab-live) uses Visavail.js to present Gitlab and Github issues in a Gantt chart
 
 # 4. Download
 --------
