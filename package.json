@@ -1,6 +1,6 @@
 {
   "name": "visavail",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "This library visualizes the availability of time-dependent data with a chart on a website.",
   "main": "visavail.js",
   "files": [
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tanganellilore/visavail.git"
+    "url": "git+https://github.com/flrs/visavail"
   },
   "keywords": [
     "availability chart",
@@ -35,7 +35,7 @@
   "author": "Lorenzo Tanganelli  -  Florian Roscheck",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tanganellilore/visavail/issues"
+    "url": "https://github.com/flrs/visavail/issues"
   },
-  "homepage": "https://github.com/tanganellilore/visavail#readme"
+  "homepage": "https://github.com/flrs/visavail#readme"
 }
