@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Visavail.js Example: Basic Configuration</title>
+
+	<!-- Visavail.js style -->
+	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+	<link href='../../visavail.css' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="../lib/css/bootstrap.min.css">
+		
+<!-- font-awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+
+
+	<!-- body style for this example -->
+	<style>
+		body {
+			font-family: "Muli", "Helvetica", Arial, sans-serif;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="col-md-12">
+			<h1>Visavail.js - Update Chart with new point or nwe dataset</h1>
+		</div>	
+		<div class="col-md-12">
+			<div style="overflow: hidden;" class="visavail" id="visavail_container">
+				<p id="visavail_graph">
+					<!-- Visavail.js chart will be placed here -->
+				</p>
+				
+			</div>
+			
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment-with-locales.js" type="text/javascript"></script>
+
+	<script src="../lib/js/d3.min.js" ></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script> -->
+
+	<script src="../../visavail.js"></script>
+	<!-- <script src="../visavail/js/visavail.min.js"></script> -->
+
+	<script>
+ 	 var dataset = [{
+        "measure": "Fat Bike",
+        "data": [
+            ["2016-01-01 12:00:00", 0, "2016-01-01 13:00:00"],
+            ["2016-01-01 14:22:51", 0, "2016-01-01 16:14:12"],
+            ["2016-01-01 16:14:12", 1, "2016-01-01 17:14:12"],
+            ["2016-01-01 19:20:05", 0, "2016-01-01 20:30:00"],
+		]
+    }];
+	var options = {
+			id_div_container: "visavail_container",
+			id_div_graph: "visavail_graph",
+			
+			icon: {
+				class_has_data: 'fas fa-fw fa-check',
+				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
+			}
+		};
+		
+		var chart = visavail.generate(options, dataset);
+
+		setTimeout(function(){
+			dataset[0].data.push(["2016-01-01 21:20:05", 1, "2016-01-01 22:30:00"]);
+			chart.updateGraph(dataset);
+		},1000)
+		setTimeout(function(){
+			dataset[0].data.push(["2016-01-01 23:20:05", 0, "2016-01-01 23:30:00"]);
+			chart.updateGraph(dataset);
+		},2000)
+
+	</script>
+
+</body>
+
+</html>
