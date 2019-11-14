@@ -49,8 +49,8 @@ An example use case is the visualization of a dataset that contains time-depende
 The Visavail.js library takes single data points with dates and information about data availability as inputs, combines them into time blocks, and visualizes these blocks.
 
 ## 2. Demo
-Some example of Visavail.js in action is displayed at [Demo](https://tanganellilore.github.io/visavail/docs/index.html). 
-The source code of the a basic demo is shown in the file [basic.html](https://github.com/tanganellilore/visavail/blob/master/docs/samples/basic.html).
+Some example of Visavail.js in action is displayed at [Demo](https://flrs.github.io/visavail/docs/index.html). 
+The source code of the a basic demo is shown in the file [basic.html](https://github.com/flrs/visavail/blob/master/docs/samples/basic.html).
 
 ## 3. Usage
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
@@ -164,7 +164,7 @@ var dataset = [{
 
 ### 3.2. Display Style
 
-The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/tanganellilore/visavail/blob/master/visavail.css) are self-explanatory.
+The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/flrs/visavail/blob/master/visavail.css) are self-explanatory.
 
 #### 3.2.1. Type of Chart
 
