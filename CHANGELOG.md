@@ -1,3 +1,7 @@
+# VISAVAIL V 1.0.14
+
+* update readme and fix some links
+
 # VISAVAIL V 1.0.12
 
 * add option tooltip for display only first date
