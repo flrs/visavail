@@ -821,7 +821,7 @@
 									return output + moment(d[0]).format('LTS') + ' - ' +
 										moment(d[2]).format('LTS');
 								} else {
-									console.log("entrato nell'esle")
+									//console.log("entrato nell'esle")
 									if (d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time) {
 										if(options.date_is_descending)
 											return output + moment(d[2]).format('l') + ' ' +
