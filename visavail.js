@@ -46,7 +46,7 @@
 			width: 960,
 			moment_locale: window.navigator.userLanguage || window.navigator.language,
             reduce_space_wrap: 35,
-			line_spacing: 26,
+			line_spacing: 35,
 			padding:{
 				top: -49,
 				bottom: 0,
@@ -77,6 +77,14 @@
 			// if false remeber to set the padding and margin
 			show_y_title: true,
 			defined_blocks: false,
+			y_title_tooltip: {
+				enabled: false,
+				class: 'y-tooltip',
+				type: 'right',
+				spacing:{left: 15, right:15, top: 15,bottom:10},
+				fixed: false,
+				duration: 150,
+			},
 			tooltip: {
 				class: 'tooltip',
 				//height of tooltip , correspond to line-height of class tooltip from css
@@ -259,6 +267,14 @@
 					.append('div')
 					.attr('class', (options.tooltip.class+"-"+options.tooltip.position ))
 					.style('opacity', 0);
+				
+				var yTitlediv = d3.select('#'+options.id_div_container).append('div')
+					.attr('class', "visavail-ytitle-tooltip " + options.id)
+					.attr('id', options.id)
+					.append('div')
+					.attr('class', (options.y_title_tooltip.class))
+					.style('opacity', 0);
+					
 				var width = options.width - options.margin.left - options.margin.right;
 				var maxPages = 0;
 				var startSet;
@@ -495,21 +511,22 @@
 
 				if (options.show_y_title) {
 					// create y axis labels
-					svg.select('#g_axis').append('g').attr('id', 'yAxis').selectAll('text')
+					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yAxis');
+					y_axis_title.selectAll('text')
 						.data(dataset.slice(startSet, endSet))
 						.enter()
 						.append('g')
 						.attr('id', function (d,i) {
 							return i;
-						})
-						.append('title')
-                        .text(function (d) {
-                                 return d.measure;
 						});
-
-					svg.select('#yAxis').selectAll("g").append('text')
+						
+					
+					y_axis_title.selectAll("g").append('text')
 						.attr('x', options.padding.left)
-						.attr('y', options.line_spacing + options.graph.height / 2)
+						.attr('y', function (d,i){
+							return ((options.line_spacing + options.graph.height) * i) + options.line_spacing + (options.graph.height) / 2;
+						})
+						.attr('dy', "0.5ex")
 						.text(function (d) {
 							return d.measure || d.measure_html;
 							/*if (!(d.measure_html != null)) {
@@ -517,9 +534,6 @@
 							}*/
 						})
 						.each(wrap)
-						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
-						})
 						.attr('class', function (d) {
 							var returnCSSClass = 'ytitle';
 							if (d.measure_url != null) {
@@ -532,37 +546,101 @@
 								return window.open(d.measure_url);
 							}
 							return null;
-						});
-
-					/*svg.select('#yAxis').selectAll("g")
-						.insert('text', ':first-child')
-						
-						.attr('x', options.padding.left)
-						.attr('y', options.line_spacing)
-						.attr('transform', function (d, i) {
-							return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
 						})
-						.attr('width', -1 * options.padding.left)
-						.attr('height', options.graph.height)
-						.attr('class', 'ytitle')
-						.append("xhtml:div")
-						.html(function (d) {
-							if (d.measure_html != null) {
-								return d.measure_html;
-							}
-						});
-					*/
-                    function wrap() {
-                        var self = d3.select(this),
-                            textLength = self.node().getComputedTextLength(),
+
+					function wrap() {
+						var self = d3.select(this),
+							textLength = self.node().getComputedTextLength(),
 							text = self.text();
 						
-						 while (textLength > (-1 * options.padding.left + options.reduce_space_wrap) && text.length > 0) {
-                            text = text.slice(0, -1);
-                            self.text(text + '...');
-                            textLength = self.node().getComputedTextLength();
+							while (textLength > (-1 * options.padding.left + options.reduce_space_wrap) && text.length > 0) {
+							text = text.slice(0, -1);
+							self.text(text + '...');
+							textLength = self.node().getComputedTextLength();
 						}
 					}
+					
+					if(options.y_title_tooltip.enabled){	
+						y_axis_title.selectAll("g").selectAll('text').on('mouseover', function (d, i) {
+							drawTitleTooltipWhenOver(this, dataset, d, i);
+						})
+						.on("touchstart", function (d, i) {
+							drawTitleTooltipWhenOver(this, d, i);
+						})
+						.on('mouseout', function () {
+							hideTitleTooltipWhenOver()
+						})
+						.on("touchleave", function () {
+							hideTitleTooltipWhenOver()
+						})
+						.on("touchcancel", function () {
+							hideTitleTooltipWhenOver()
+						});
+
+						function drawTitleTooltipWhenOver(obj, dataset, d, i){
+						
+							var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
+							yTitlediv.transition()
+								.duration(options.y_title_tooltip.duration)
+								.style('opacity', 1);
+
+							yTitlediv.html(function () {
+									var output = d.measure_description  || "";
+									return output;
+								})
+
+							if(options.y_title_tooltip.type == "right"){
+								yTitlediv.style('left', function(){
+									if(options.y_title_tooltip.fixed)
+										return -1 * options.padding.right + 'px';
+									return options.y_title_tooltip.spacing.right + d3.select(obj).node().getComputedTextLength() + 'px';
+								})
+								.classed(options.y_title_tooltip.type, true)
+								.style('top',  matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + ((options.line_spacing + options.graph.height) * i))/2 + 'px')
+							}
+
+							if(options.y_title_tooltip.type == "top"){
+								yTitlediv.style('left', '0px')
+								.style("top", matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + options.y_title_tooltip.spacing.top)  + 'px')
+								.classed(options.y_title_tooltip.type, true)
+							}
+							if(options.y_title_tooltip.type == "bottom"){
+								yTitlediv.style('left', '0px')
+								.style("top", matrix.f + options.y_title_tooltip.spacing.bottom  + 'px')
+								.classed(options.y_title_tooltip.type, true)
+							}
+							
+						}
+						function hideTitleTooltipWhenOver(){
+							yTitlediv.transition()
+								.duration(options.y_title_tooltip.duration)
+								.style('opacity', 0);
+						}
+					} else {
+						y_axis_title.selectAll("g").append('title')
+						.text(function (d) {
+								 return d.measure_description || d.measure;
+						});
+					}
+					/*svg.select('#yAxis').selectAll("g")
+							.insert('text', ':first-child')
+							
+							.attr('x', options.padding.left)
+							.attr('y', options.line_spacing)
+							.attr('transform', function (d, i) {
+								return 'translate(0,' + ((options.line_spacing + options.graph.height) * i) + ')';
+							})
+							.attr('width', -1 * options.padding.left)
+							.attr('height', options.graph.height)
+							.attr('class', 'ytitle')
+							.append("xhtml:div")
+							.html(function (d) {
+								if (d.measure_html != null) {
+									return d.measure_html;
+								}
+							});
+						*/
+                    
 				}
 				//xAxis
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
@@ -977,6 +1055,7 @@
 						.attr('x', width + options.margin.right - 150 + 20)
 						.attr('y', options.padding.top + options.legend.line_space - options.legend.offset/2)
 						.text(options.legend.has_data_text)
+						.attr('dy', "0.5ex")
 						.attr('class', 'legend');
 
 					legend.append('rect')
@@ -990,7 +1069,10 @@
 						.attr('x', width + options.margin.right - 150 + 20)
 						.attr('y', options.padding.top + options.legend.line_space * 2 +  options.legend.offset/2)
 						.text(options.legend.has_no_data_text)
+						.attr('dy', "0.5ex")
 						.attr('class', 'legend');
+
+					
 				}
 
 				// function for zoomed
@@ -1105,6 +1187,15 @@
 			});
 		};
 
+		
+		function removeElementsByClass(className){
+			var elements = document.getElementsByClassName(className);
+			while(elements.length > 0){
+				elements[0].parentNode.removeChild(elements[0]);
+			}
+		}
+		
+
 
 		chart.width = function (_) {
 			if (!arguments.length) return options.width;
@@ -1157,8 +1248,10 @@
 		chart.updateGraph = function(dataset){
 			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != "" ){
 				document.getElementById(options.id_div_graph).innerHTML = "";
-				if(document.getElementById(options.id))
-					document.getElementById(options.id).remove();
+				if(document.getElementById(options.id)){
+					removeElementsByClass(options.id);
+					//document.getElementsByClassName(options.id).remove();
+				}
 				if(dataset){
 					return chart.createGraph(dataset)
 				}
