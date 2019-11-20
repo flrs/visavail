@@ -592,7 +592,7 @@
 							if(options.y_title_tooltip.type == "right"){
 								yTitlediv.style('left', function(){
 									if(options.y_title_tooltip.fixed)
-										return -1 * options.padding.right + 'px';
+										return -1 * options.padding.left + 'px';
 									return options.y_title_tooltip.spacing.right + d3.select(obj).node().getComputedTextLength() + 'px';
 								})
 								.classed(options.y_title_tooltip.type, true)
@@ -604,6 +604,7 @@
 								.style("top", matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + options.y_title_tooltip.spacing.top)  + 'px')
 								.classed(options.y_title_tooltip.type, true)
 							}
+							
 							if(options.y_title_tooltip.type == "bottom"){
 								yTitlediv.style('left', '0px')
 								.style("top", matrix.f + options.y_title_tooltip.spacing.bottom  + 'px')
