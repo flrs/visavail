@@ -3,38 +3,42 @@ This library visualizes the availability of time-dependent data with a chart on 
 
 ## Table of Contents
 
-- [1. Description](#1-description)
-- [2. Demo](#2-demo)
-- [3. Usage](#3-usage)
-- [3.1. Input Data Format](#31-input-data-format)
-	- [3.1.1. Continuous Data](#311-continuous-data)
-	- [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
-	- [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
-	- [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
-	- [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
-	- [~~3.1.6. Measure Labels with HTML~~](#316-measure-labels-with-html)
-- [3.2. Display Style](#32-display-style)
-	- [3.2.1. Type of Chart](#321-type-of-chart)
-- [3.3. Options](#33-options)
-	- [3.3.1. Margin](#331-margin)
-	- [3.3.2. Padding](#332-padding)
-	- [3.3.3. Tooltip](#333-tooltip)
-		- [3.3.3.1 Hover Zoom Option](#3331-hover-zoom-option)
-	- [3.3.4. Legend](#334-legend)
-	- [3.3.5. Title](#335-title)
-	- [3.3.6. Sub Title](#336-sub-title)
-	- [3.3.7. Icon](#337-icon)
-	- [3.3.8. Graph](#338-graph)
-	- [3.3.9. Responsive](#339-responsive)
-	- [3.3.10. Zoom](#3310-zoom)
-	- [3.3.11. Custom Tick Format](#3311-custom-tick-format)
-	- [3.3.12. Example Usage](#3312-example-usage)
-- [3.4. Implementation](#34-implementation)
-- [3.5. Public Projects "ith Visavail.js](#35-public-projects-with-visavail.js)
-- [4. Download](#4-download)
-- [5. Dependencies](#5-dependencies)
-- [6. Contribution](#6-contribution)
-- [7. License](#7-license)
+- [Visavail.js - A Time Data Availability Chart](#visavailjs---a-time-data-availability-chart)
+  - [Table of Contents](#table-of-contents)
+  - [1. Description](#1-description)
+  - [2. Demo](#2-demo)
+  - [3. Usage](#3-usage)
+    - [3.1. Input Data Format](#31-input-data-format)
+      - [3.1.1. Continuous Data](#311-continuous-data)
+      - [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
+      - [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
+      - [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
+      - [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
+      - [~~3.1.6. Measure Labels with HTML~~](#316-measure-labels-with-html)
+    - [3.2. Display Style](#32-display-style)
+      - [3.2.1. Type of Chart](#321-type-of-chart)
+    - [3.3. Options](#33-options)
+      - [3.3.1. Margin](#331-margin)
+      - [3.3.2. Padding](#332-padding)
+      - [3.3.3. Y Title Tooltip](#333-y-title-tooltip)
+      - [3.3.4. Tooltip](#334-tooltip)
+        - [3.3.4.1 Hover Zoom Option](#3341-hover-zoom-option)
+      - [3.3.5. Legend](#335-legend)
+      - [3.3.6. Title](#336-title)
+      - [3.3.7. Sub Title](#337-sub-title)
+      - [3.3.8. Icon](#338-icon)
+      - [3.3.9. Graph](#339-graph)
+      - [3.3.10. Responsive](#3310-responsive)
+      - [3.3.11. Zoom](#3311-zoom)
+      - [3.3.12. Custom Tick Format](#3312-custom-tick-format)
+      - [3.3.13. Example Usage](#3313-example-usage)
+    - [3.4. Implementation](#34-implementation)
+      - [3.4.1 Integrate on Angular](#341-integrate-on-angular)
+    - [3.5 Public Projects With Visavail.js](#35-public-projects-with-visavailjs)
+  - [4. Download](#4-download)
+  - [5. Dependencies](#5-dependencies)
+  - [6. Contribution](#6-contribution)
+  - [## 7. License](#7-license)
 	
 
 ## 1. Description
@@ -65,6 +69,7 @@ The below code comments point out the elements that should be included in the in
 ```javascript
 var dataset = [{
     "measure": "Annual Report", // name of the data series, will become y-axis label
+    "measure_description": "Descripion of Annual Report" // description of y-axis label, visible with mouse over
     "interval_s": 365 * 24 * 60 * 60, // time period in seconds a single data point is expected to cover
     "data": [
         ["2015-01-01", 0], // data as arrays of period start data string and bit determining
@@ -75,6 +80,8 @@ var dataset = [{
     ]
 }];
 ```
+If you want to add some descpription regarding measure, you can add a `"measure_description"` key to single dataset.
+Without enable y_title_tooltip enablement you can see the description as a svg title (no html enablement), if you enable the tooltip funziton for y title you can use also html tag for tooltip.
 
 #### 3.1.2. Data With Time Gaps
 You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start and an end date, as shown in the code below. 
@@ -147,20 +154,10 @@ var dataset = [{
 
 #### ~~3.1.6. Measure Labels with HTML~~
 ~~Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:~~
-**_At the moment this type of labels are suspended due to incompatibility with IE11 and wrapping text_**
+_At the moment this type of labels are suspended due to incompatibility with IE11 and wrapping text_
 
-```javascript
-var dataset = [{
-    "measure_html": "<span title='Price of security at end of day'>&#x1F6AA; Closing Price</span>", // HTML code
-    "interval_s": 365 * 24 * 60 * 60,
-    "data": [
-        ["2015-01-01", 0], 
-        ["2016-01-01", 1],
-        ["2017-01-01", 1],
-        ["2018-01-01", 1]
-    ]
-}]; 
-```
+**WE HAVE INTRODUCED `measure_description` that in combination with `y_title_tooltip` can support html tag**
+
 
 ### 3.2. Display Style
 
@@ -179,7 +176,6 @@ var options = {
 	}
 };
 ```
-
 
 
 ### 3.3. Options
@@ -209,7 +205,8 @@ You can pass the JSON Object to library with custom settings
 | *date_is_descending* | `boolean` | **false** | Set true if you want display your dataset is descending version (from now to old). If false the data was diplayed in standard view N.B.: the data in dataset is in ascending order |
 | *defined_blocks* | `boolean` | **false** | If set to true the we ignore interval_s options in datasets and we use a block defined. This option is set automatically if in there is a date/time defined |
 | *onClickBlock* | `function(d,i)` | null | return "d" an arry with date and value precessed and "i" value of block clicked item |
-| *tooltip* | `Object{}` | **[more info](#333-tooltip)** | Json Object that contain tooltip option for the graph |
+| *y_title_tooltip* | `Object{}` | **[more info](#333-y-title-tooltip)** | Json Object that contain tooltip option for the graph. For the content of div we use  `"measure_description"` tag that can be contain also html tag|
+| *tooltip* | `Object{}` | **[more info](#334-tooltip)** | Json Object that contain tooltip option for the graph |
 | *legend* | `Object{}` | **[more info](#334-legend)** | Json Object that contain legend option for the graph |
 | *title* | `Object{}` | **[more info](#335-title)** | Json Object that contain title option for the graph |
 | *sub_title* | `Object{}` | **[more info](#336-sub-title)** | Json Object that contain sub-title option for the graph |
@@ -237,7 +234,18 @@ You can pass the JSON Object to library with custom settings
 | *right* | `number` | 0 | Number express in px (not used at the moment) |
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
-#### 3.3.3. Tooltip
+#### 3.3.3. Y Title Tooltip
+
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | enable possibility to activate tooltip over on Y lable |
+| *class* | `string` | y-tooltip | Set a custrom class if you want |
+| *type* | `string` | right | Three type of tooltip:  "top" is a div on top of y label, "bottom" is a div on bottom of y label,"right" is a div on right of y label, |
+| *spacing* | `Object{}` |```{left: 15, right:15, top: 15,bottom:10}``` | used to add space to tooltip in base of tooltip type selected |
+| *fixed* | `boolean` | false | Valid only on "left" tooltip type, if true fixed the tooltip all right of y lable |
+| *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
+
+#### 3.3.4. Tooltip
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -248,16 +256,16 @@ You can pass the JSON Object to library with custom settings
 | *date_plus_time* | `boolean` | false | enable date and time on tooltip (override the *is_date_only_format* option) |
 | *only_first_date* | `boolean` | false | show only first date on tooltip (we suggest to use this on rhombus or circle graph) |
 | *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
-| *hover_zoom* | `Object{}` |**[more info](#3331-hover-zoom-option)**|option for zoom block on hover |
+| *hover_zoom* | `Object{}` |**[more info](#3341-hover-zoom-option)**|option for zoom block on hover |
 
-##### 3.3.3.1 Hover Zoom Option
+##### 3.3.4.1 Hover Zoom Option
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable block zoom whe mouse hover |
 | *ratio* | `number` | 0.4 | Number from 0 to 1 that incrase the block size. It will be multiplied with option line_spacing |
 
 
-#### 3.3.4. Legend
+#### 3.3.5. Legend
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -267,7 +275,7 @@ You can pass the JSON Object to library with custom settings
 | *has_no_data_text* | `string` | No Data available | String for no data available |
 | *has_data_text* | `string` | Data available | String for no data available |
 
-#### 3.3.5. Title
+#### 3.3.6. Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -275,7 +283,7 @@ You can pass the JSON Object to library with custom settings
 | *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
 | *text* | `string` | Data Availability Plot | String Title |
 
-#### 3.3.6. Sub Title
+#### 3.3.7. Sub Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -284,14 +292,14 @@ You can pass the JSON Object to library with custom settings
 | *from_text* | `string` | from | String for from date |
 | *to_text* | `string` | to | String for to date  |
 
-#### 3.3.7. Icon
+#### 3.3.8. Icon
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class_has_data* | `string` | fas fa-fw fa-check | custom icon call (for example font awesome) |
 | *class_has_no_data* | `string` | fas fa-fw fa-times | custom icon call (for example font awesome)  |
 
-#### 3.3.8. Graph
+#### 3.3.9. Graph
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -299,7 +307,7 @@ You can pass the JSON Object to library with custom settings
 | *height* | `number` | 20 | height of type of graph |
 | *width* | `number` | 20 | width of type of graph, used only for rhombus type and circle type|
 
-#### 3.3.9. Responsive
+#### 3.3.10. Responsive
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -307,7 +315,7 @@ You can pass the JSON Object to library with custom settings
 | *onresize* | `function` | null | at the moment not supported |
 
 
-#### 3.3.10. Zoom
+#### 3.3.11. Zoom
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -316,7 +324,7 @@ You can pass the JSON Object to library with custom settings
 | *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
-#### 3.3.11. Custom Tick Format
+#### 3.3.12. Custom Tick Format
 
 This library use moment.js to customize and convert the date format/language in base of moment.locale() function (we autodetect the browser language!). If you what change manually the tick format you can customize with this option.
 
@@ -334,7 +342,7 @@ With set this option you override the automatic tick format execute by library f
 | *format_year* | `string` | moment convertion | custom format for year |
 
 
-#### 3.3.12. Example Usage
+#### 3.3.13. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
@@ -358,7 +366,7 @@ var options = {
 ### 3.4. Implementation
 To use the chart in your project, follow these steps:
 
-1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project.
+1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project (for minify version).
 
 2. Assuming that your website is in the *root folder*, add the following lines to the `<head>` of your website:
     ```html
@@ -387,6 +395,24 @@ To use the chart in your project, follow these steps:
 		var chart = visavail.generate(options, dataset)
     </script>
 	```
+#### 3.4.1 Integrate on Angular
+You can use this library in your Anular 2+ project (tested from 2 to 8 version). Follow this step to integrate it:
+
+1. Add to your `package.json` d3, moment and visaval packag with npm installation
+
+2. In your component in the import section insert this line
+    ```javascript 
+    import * as visavail from "visavail";
+    ```
+
+3.  Create JSON an object in your component class that can be contain the dataset, options and chart
+
+4.  Add the div in your html where you want to put the graph
+
+5.  Call visavail.generate(...) funtion to generate the graph
+
+An example of implementation, you can found [HERE](https://codesandbox.io/s/angular-o8gxt)
+
 
 ### 3.5 Public Projects With Visavail.js
 

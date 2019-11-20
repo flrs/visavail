@@ -34,6 +34,52 @@
 	border-radius: 4px;
 }
 
+.visavail-ytitle-tooltip div.y-tooltip {
+    position: absolute;
+    text-align: left;
+    font-family: "Muli", "Helvetica", Arial, sans-serif;
+    -moz-osx-font-smoothing: grayscale; 
+    font-size: 12px;
+    width: 190px;
+    border: 0;
+    pointer-events: none;
+    background: #5c5c5c;
+	padding: 10px;
+    color: #ffffff;
+}
+
+div.y-tooltip.right::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -7px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent #5c5c5c transparent transparent;
+}
+
+div.y-tooltip.top::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0%;
+    margin-top: 0px;
+    border-width: 7px;
+    border-style: solid;
+    border-color:  #5c5c5c transparent transparent transparent;
+}
+div.y-tooltip.bottom::after {
+    content: "";
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    margin-top: -14px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent transparent #5c5c5c transparent;
+}
+
 .visavail-tooltip .tooltip_has_data {
     /* color of symbol in tooltip if there is data */
     color: #449d44;
@@ -69,7 +115,6 @@
 
 .visavail .ytitle {
     /* y axis labels */
-    dominant-baseline: middle;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
 	font-size: 12px;
@@ -127,7 +172,6 @@
 }
 
 .visavail .legend {
-    dominant-baseline: middle;
     font-size: 12px;
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;

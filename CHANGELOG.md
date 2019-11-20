@@ -1,3 +1,13 @@
+# VISAVAIL V 1.1.0
+
+* bug fixing
+* add possibility to create and configure a tooltip on Y label (compatible with HTML)
+
+
+# VISAVAIL V 1.0.16
+
+* add measure_description into dataset to add some description on lable (see with mouse over)
+
 # VISAVAIL V 1.0.15
 
 * update readme and fix some links
