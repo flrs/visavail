@@ -119,6 +119,11 @@
 				to_text: 'to',
 				line_spacing: 16
 			},
+			sub_chart: {
+				enabled: false,
+				height: 0,
+				animation: true
+			},
 			//custom icon call (for example font awesome)
 			icon:{
 				class_has_data : 'fas fa-fw fa-check',
@@ -276,6 +281,8 @@
 					.style('opacity', 0);
 					
 				var width = options.width - options.margin.left - options.margin.right;
+				if(!options.oldwidth)
+					options.oldwidth = width
 				var maxPages = 0;
 				var startSet;
 				var endSet;
@@ -292,6 +299,7 @@
 					endSet = dataset.length;
 				}
 
+				
 				// append data attribute in HTML for pagination interface
 				selection.attr('data-max-pages', maxPages);
 
@@ -412,100 +420,106 @@
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])	
 					.range([0, width])
-				options.xScale = xScale;
+				var xScale2 = d3.scaleTime()
+					.domain([startDate, endDate])	
+					.range([0, width])
 
-				if(options.date_is_descending)
+				options.xScale = xScale;
+				
+				if(options.date_is_descending){
 					xScale.domain([endDate, startDate])
-					
+					xScale2.domain([endDate, startDate])
+				}	
 				// define axes
 				var xAxis = d3.axisTop(xScale)
 					.scale(xScale)
 					.ticks(options.ticks_for_graph)
 					.tickFormat(multiFormat);
 
+				var subChartXAxis = d3.axisBottom(xScale2)
+									.scale(xScale2)
+									.ticks(options.ticks_for_graph)
+									.tickFormat(multiFormat);
 				// create SVG element
 				var svg = d3.select(this).append('svg')
 					.attr('width', width + options.margin.left + options.margin.right)
-					.attr('height', height + options.margin.top + options.margin.bottom)
+					.attr('height', options.sub_chart.height*2 + height + options.margin.top + options.margin.bottom)
 					.append('g')
 					.attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')');
 
 				// create basic element groups
 				svg.append('g').attr('id', 'g_title');
 				svg.append('g').attr('id', 'g_axis');
-				if (options.zoom.enabled) {
-					//implement zooming
-					options.zoomed = d3.zoom()
-						.scaleExtent([1,Infinity])
-						.translateExtent([[0,0],[width, options.height]])
-						.extent([[0, 0], [width, options.height]])
+				options.zoomed = d3.zoom()
+					.scaleExtent([1,Infinity])
+					.translateExtent([[0,0],[width, options.height]])
+					.extent([[0, 0], [width, options.height]])
+					
+					.on("start", function () {
+						var e = d3.event;
+						//console.log("start", e.transform, d3.zoomTransform(svg.select("#g_data").node()))
+													
+						if (e.sourceEvent && e.sourceEvent.type === "brush") {
+							return;
+						}
+						if( e.sourceEvent && e.sourceEvent.type === "touchstart" && e.sourceEvent.cancelable){
+							event.preventDefault();
+							event.stopImmediatePropagation();
+						}
+						//define startEvent for fix error in click
+						if(e.transform.k || e.transform.x){
+							start_event = e;
+							options.zoom.onZoomStart.call(this, e);
+						}
 						
-						.on("start", function () {
-							var e = d3.event;
-							//console.log(e.type, e.transform.k, e.transform.x, e.sourceEvent)
-														
-							if (e.sourceEvent && e.sourceEvent.type === "brush") {
-								return;
-							}
-							if( e.sourceEvent && e.sourceEvent.type === "touchstart" && e.sourceEvent.cancelable){
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							}
-							//define startEvent for fix error in click
-							if(e.transform.k || e.transform.x){
-								start_event = e;
-								options.zoom.onZoomStart.call(this, e);
-							}
-							
-						})
-						.on("zoom", zoomed)
-						
-						.on('end', function () {
-							var e = d3.event;
-							//console.log( e.type, e.transform.k, e.transform.x, e.sourceEvent)
-							if(e == null)
-								return
-							if (e.sourceEvent && e.sourceEvent.type === "brush") {
-								return;
-							}
-							if(e.sourceEvent && e.sourceEvent.type === "touchend" && e.sourceEvent.cancelable){
-								event.preventDefault();
-	  							event.stopImmediatePropagation();
-							}
-							// if click, do nothing. otherwise, click interaction will be canceled.
+					})
+					.on("zoom", zoomed)
+					
+					.on('end', function () {
+						var e = d3.event;
+						//console.log( e.type, e.transform.k, e.transform.x, e.sourceEvent)
+						if(e == null)
+							return
+						if (e.sourceEvent && e.sourceEvent.type === "brush") {
+							return;
+						}
+
+						if(e.sourceEvent && e.sourceEvent.type === "touchend" && e.sourceEvent.cancelable){
+							event.preventDefault();
+							event.stopImmediatePropagation();
+						}
+						// if click, do nothing. otherwise, click interaction will be canceled.
 // 							if (start_event.sourceEvent && e.sourceEvent && start_event.sourceEvent.type === "touchend"&&  
 // 								start_event.sourceEvent.clientX == e.sourceEvent.clientX && start_event.sourceEvent.clientY == e.sourceEvent.clientY) {
 // 								console.log("enter to click")
 // 								return;
 // 							}
-							
-							if(e.transform.k || e.transform.x){
-								//console.log("entrato nell'options.scale con x end")
-								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
-								options.zoom.onZoomEnd.call(this, xScale.domain());
-							} else {
-								//console.log("entrato nell'options.scale con x start")
-								
-								e.transform.k = start_event.transform.k;
-								e.transform.x = start_event.transform.x;
-								options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
-								options.zoom.onZoomEnd.call(this, xScale.domain());
-							}
-						});
 						
-				}
+						if(e.transform.k || e.transform.x){
+							options["scale"] = d3.zoomTransform(svg.select("#g_data").node())
+							options.zoom.onZoomEnd.call(this, options.xScale.domain());
+						} else {
+							e.transform.k = start_event.transform.k;
+							e.transform.x = start_event.transform.x;
+							
+							options["scale"] = d3.zoomIdentity.translate(e.transform.x, e.transform.y).scale(e.transform.k)
+							options.zoom.onZoomEnd.call(this, options.xScale.domain());
+						}
+					});
+
 				svg.append('g')
 				.attr('id', 'g_data')
 				.append('rect')
-						.attr('id', 'zoom')
-						.attr('width', width)
-						.attr('height', height)
-						.attr('fill-opacity', 0)
-						.attr('cursor', "ew-resize")
-						.attr('x', 0)
-						.attr('y', 0)
+				.attr('id', 'zoom')
+				.attr('width', width)
+				.attr('height', height)
+				.attr('fill-opacity', 0)
+				.attr('x', 0)
+				.attr('y', 0)
 				if (options.zoom.enabled)
-					svg.select("#g_data").call(options.zoomed)
+					svg.select("#g_data")
+					.call(options.zoomed)
+					.attr('cursor', "ew-resize")
 
 				//.call(options.zoomed);
 
@@ -710,15 +724,15 @@
 					.enter()
 					.append('rect')
 					.attr('x', function (d) {
-						return xForPoint(d, xScale, 0)
+						return xForPoint(d, options.xScale, 0)
 					})
 					.attr('width', function (d) {
-						return widthForPoint(d, xScale, 0)
+						return widthForPoint(d, options.xScale, 0)
 					})
 					.attr('y', options.line_spacing)
 					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
-						return transformForTypeOfGraph(d, xScale, 0)
+						return transformForTypeOfGraph(d, options.xScale, 0)
 					})
 					.attr('rx',  function (d) {
 						return roundedRect()
@@ -1075,22 +1089,29 @@
 
 					
 				}
+				
 
 				// function for zoomed
 				function zoomed() {	
 					//prevent event null for type != zooming
-					var e = d3.event		
-					if (e && e.type !== "zoom")
-						return
-
+					var e = d3.event
+					
+					if (e.sourceEvent && e.sourceEvent.type === "brush"){
+						if(!options.sub_chart.animation)
+							return	// ignore zoom-by-brush
+					}
+					
+					if (e && e.type !== "zoom")	return;
+					//if (!e)	return;
 					if(e.transform.k || e.transform.x){
-						options.xScale = e.transform.rescaleX(xScale);
 						
+						options.xScale = e.transform.rescaleX(xScale);
+					
 						//redraw tooltip
 						if(e.sourceEvent && e.sourceEvent== "touchmove")
 							redrawTooltipWhenMoved(e.sourceEvent.touches[0].layerX, e.sourceEvent.touches[0].layerY)
 						else if(e.sourceEvent)
-								redrawTooltipWhenMoved(e.sourceEvent.layerX, e.sourceEvent.layerY)
+							redrawTooltipWhenMoved(e.sourceEvent.layerX, e.sourceEvent.layerY)
 							
 						g.selectAll('rect')
 							.attr('x', function (d) {
@@ -1109,16 +1130,75 @@
 						svg.select('#vGrid').selectAll('line').remove();
 						createVGrid(options.xScale);
 						emphasize(options.xScale);
+						//reize brush
 
+						//var remap = options.xScale.range().map(e.transform.invertX, e.transform)
+						// console.log(remap, xScale.range(), (remap[1] - xScale.range()[1]))
+						// if(remap[1] >  xScale.range()[1]){
+						// 	console.log("remapped")
+						// 	//svg.select("#g_brush").call(brush.move, [(remap[0] - (remap[1] - xScale.range()[1])) , (remap[1] - (remap[1] - xScale.range()[1]))]);
+						// } else
+						if(options.sub_chart.enabled)
+							svg.select("#g_brush").call(brush.move, options.xScale.range().map(e.transform.invertX, e.transform));		
 						options.zoom.onZoom.call(this, options.xScale.domain())
+		
 					}
+				
 
 				}
+
+				//start brushing
+				if(options.sub_chart.enabled){
+					var brush = d3.brushX()
+								.extent([[0, 0], [width,  options.sub_chart.height]])
+								.on("brush end", brushed);
+
+					svg.append('g')
+						.attr("id", "g_sub")
+						.append('g')
+						.attr("class", "subchart-xAxis")
+						.attr("transform", 'translate( 0, '+ (options.sub_chart.height*2 + height) + ')')
+						.call(subChartXAxis)
+					svg.select('#g_sub')
+						.append("g")
+						.attr('id', 'g_brush')
+						.attr("class", "brush")
+						.attr('width', width)
+						.attr("transform", 'translate( 0, '+ (options.sub_chart.height + height) + ')')
+						.call(brush)
+						//.call(brush.move, options.xScale.range());
+
+					function brushed() {
+						if (d3.event && d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+						var s = d3.event.selection || xScale.range();
+						//options.xScale.domain(s.map(xScale.invert, xScale));		
+						//svg.select(".subchart-xAxis").call(subChartXAxis.scale(options.xScale));
+						
+						svg.select("#g_data")
+							.call(options.zoomed.transform, 
+								d3.zoomIdentity.scale((width) / (s[1] - s[0])).translate(-s[0], 0)
+								);
+					}
+				}
 				
-				//restore to previous zoom
+				//restore zoom and size when resize
+				
 				if(options.scale){
-					svg.select("#g_data").call(options.zoomed.transform, d3.zoomIdentity.translate(options.scale.x, options.scale.x).scale(options.scale.k))
 					
+					// var oldFullWidth = (options.oldwidth * options.scale.k);
+					// var newFullWidth = (width * options.scale.k);
+					var newX = -((width * options.scale.k) * ((options.scale.x * -1) / (options.oldwidth * options.scale.k)));
+					var new_translate = (newX - options.scale.x) / options.scale.k;
+
+					svg.select("#g_data")
+						.call(options.zoomed.transform, options.scale.translate(new_translate,0)
+						);
+					//restore width
+					options.oldwidth = width;
+							
+				} else {
+					if(options.sub_chart.enabled)
+						svg.select('#g_brush').call(brush.move, xScale.range());
 				}
 
 				function xForPoint(d, xScale, ratio){

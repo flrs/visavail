@@ -177,3 +177,14 @@ div.y-tooltip.bottom::after {
     -moz-osx-font-smoothing: grayscale;
     fill: #777;
 }
+
+.visavail .subchart-xAxis path,
+.visavail .subchart-xAxis line {
+    color: #777;
+}
+
+.visavail .subchart-xAxis text {
+    font-family: "Muli", "Helvetica", Arial, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    fill: #777;
+}

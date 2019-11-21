@@ -30,8 +30,9 @@ This library visualizes the availability of time-dependent data with a chart on 
       - [3.3.9. Graph](#339-graph)
       - [3.3.10. Responsive](#3310-responsive)
       - [3.3.11. Zoom](#3311-zoom)
-      - [3.3.12. Custom Tick Format](#3312-custom-tick-format)
-      - [3.3.13. Example Usage](#3313-example-usage)
+      - [3.3.12. Sub Chart](#3312-sub-chart)
+      - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
+      - [3.3.14. Example Usage](#3314-example-usage)
     - [3.4. Implementation](#34-implementation)
       - [3.4.1 Integrate on Angular](#341-integrate-on-angular)
     - [3.5 Public Projects With Visavail.js](#35-public-projects-with-visavailjs)
@@ -39,7 +40,7 @@ This library visualizes the availability of time-dependent data with a chart on 
   - [5. Dependencies](#5-dependencies)
   - [6. Contribution](#6-contribution)
   - [## 7. License](#7-license)
-	
+
 
 ## 1. Description
 The Visavail.js chart allows a quick insight into which periods of time a time-dependent dataset covers. It is visually similar to a Gantt chart and allows easy identification of missing pieces and gaps in large datasets. Missing periods of data are marked in red while blocks of complete periods of data are marked in green. The user discovers dates that define start and end of such periods by tooltips, as shown in the picture below.
@@ -207,14 +208,15 @@ You can pass the JSON Object to library with custom settings
 | *onClickBlock* | `function(d,i)` | null | return "d" an arry with date and value precessed and "i" value of block clicked item |
 | *y_title_tooltip* | `Object{}` | **[more info](#333-y-title-tooltip)** | Json Object that contain tooltip option for the graph. For the content of div we use  `"measure_description"` tag that can be contain also html tag|
 | *tooltip* | `Object{}` | **[more info](#334-tooltip)** | Json Object that contain tooltip option for the graph |
-| *legend* | `Object{}` | **[more info](#334-legend)** | Json Object that contain legend option for the graph |
-| *title* | `Object{}` | **[more info](#335-title)** | Json Object that contain title option for the graph |
-| *sub_title* | `Object{}` | **[more info](#336-sub-title)** | Json Object that contain sub-title option for the graph |
-| *icon* | `Object{}` | **[more info](#337-icon)** | Json Object that contain icon option for the graph |
-| *graph* | `Object{}` | **[more info](#338-graph)** | Json Object that contain option for custom type of graph |
-| *responsive* | `Object{}` | **[more info](#339-responsive)** | Json Object that contain option for responsive layout of graph |
-| *zoom* | `Object{}` | **[more info](#3310-zoom)** | Json Object that contain option for zoom in the graph |
-| *custom_time_format* | `Object{}` | **[more info](#3311-custom-tick-format)** | Json Object that contain option for customize the x-axes tick into graph |
+| *legend* | `Object{}` | **[more info](#335-legend)** | Json Object that contain legend option for the graph |
+| *title* | `Object{}` | **[more info](#336-title)** | Json Object that contain title option for the graph |
+| *sub_title* | `Object{}` | **[more info](#337-sub-title)** | Json Object that contain sub-title option for the graph |
+| *icon* | `Object{}` | **[more info](#338-icon)** | Json Object that contain icon option for the graph |
+| *graph* | `Object{}` | **[more info](#339-graph)** | Json Object that contain option for custom type of graph |
+| *responsive* | `Object{}` | **[more info](#3310-responsive)** | Json Object that contain option for responsive layout of graph |
+| *zoom* | `Object{}` | **[more info](#3311-zoom)** | Json Object that contain option for zoom in the graph |
+| *sub_chart* | `Object{}` | **[more info](#3312-sub-chart)** | Json Object that contain option for enable sub-chart in the graph |
+| *custom_time_format* | `Object{}` | **[more info](#3313-custom-tick-format)** | Json Object that contain option for customize the x-axes tick into graph |
 
 #### 3.3.1. Margin
 
@@ -324,7 +326,19 @@ You can pass the JSON Object to library with custom settings
 | *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
-#### 3.3.12. Custom Tick Format
+
+
+#### 3.3.12. Sub Chart
+
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | Enable the sub-chart under the chart. We can drag, move, zoom with this |
+| *onZoom* | `function(e)` | null | return a current array with current domain of current zoom in date format |
+| *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
+| *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
+
+
+#### 3.3.13. Custom Tick Format
 
 This library use moment.js to customize and convert the date format/language in base of moment.locale() function (we autodetect the browser language!). If you what change manually the tick format you can customize with this option.
 
@@ -342,14 +356,13 @@ With set this option you override the automatic tick format execute by library f
 | *format_year* | `string` | moment convertion | custom format for year |
 
 
-#### 3.3.13. Example Usage
+#### 3.3.14. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
 var options = {
 	id_div_container: "visavail_container",
 	id_div_graph: "visavail_graph",
-
 	icon: {
 		class_has_data: 'fas fa-fw fa-check',
 		class_has_no_data: 'fas fa-fw fa-exclamation-circle'
@@ -379,11 +392,11 @@ To use the chart in your project, follow these steps:
     <script src="./js/moment-with-locales.min.js" type="text/javascript"></script>
     <script src="./js/d3.min.js" charset="utf-8"></script>
     <script src="./visavail/js/visavail.js"></script>
-    
+
     <div style="overflow: hidden;" class="visavail" id="visavail_container">
 		<p id="visavail_graph"><!-- Visavail.js chart will be placed here --></p>
 	</div>
-    
+
 	<script type="text/javascript">
 		moment.locale("en");
 		var dataset = ... // see examples/example_basic.htm

@@ -1,3 +1,9 @@
+# VISAVAIL V 1.2.0
+
+* bug fixing
+* zoom bug fixing in responsive layout
+* integrate d3.js su b chart to zoom/select/move with a buttom bar 
+
 # VISAVAIL V 1.1.0
 
 * bug fixing
