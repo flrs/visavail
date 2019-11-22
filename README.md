@@ -202,7 +202,7 @@ You can pass the JSON Object to library with custom settings
 | *custom_categories* | `boolean` | **false** | Set to true if you want to use custom category |
 | *is_date_only_format* | `boolean` | **false** | Check if the date is with date only ( will set Automatically) |
 | *show_y_title* | `boolean` | **true** | If you set to fale, reminder to set properly margin and padding left |
-| *date_in_utc* | `boolean` | **true** | Set true or false in base of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script |
+| *date_in_utc* | `boolean` | **false** | Set true or false in base of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script. For improve the speed of graph we suggest to you to set this parameter to false and convert your dataset with moment before send to graph |
 | *date_is_descending* | `boolean` | **false** | Set true if you want display your dataset is descending version (from now to old). If false the data was diplayed in standard view N.B.: the data in dataset is in ascending order |
 | *defined_blocks* | `boolean` | **false** | If set to true the we ignore interval_s options in datasets and we use a block defined. This option is set automatically if in there is a date/time defined |
 | *onClickBlock* | `function(d,i)` | null | return "d" an arry with date and value precessed and "i" value of block clicked item |

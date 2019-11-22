@@ -23,6 +23,8 @@
 		var d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
 		var moment = window.moment ? window.moment : typeof require !== 'undefined' ? require("moment") : undefined;
 
+		var t0;
+			
 		if(!d3)
 			throw new Error('Require D3.js before visavail script');
 		if(!moment)
@@ -72,7 +74,7 @@
 			custom_categories: false,
 			is_date_only_format: true,
 		
-			date_in_utc: true,
+			date_in_utc: false,
 			date_is_descending: false,
 			// if false remeber to set the padding and margin
 			show_y_title: true,
@@ -109,7 +111,6 @@
 			},
 			// title of chart is drawn or not (default: true)
 			title: {
-				enabled: true,
 				text: 'Data Availability Plot',
 				line_spacing: 16
 			},
@@ -261,6 +262,7 @@
 
 
 		function chart(selection) {
+			t0 = performance.now();
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
 				d3.timeFormatDefaultLocale(options.locale);
@@ -321,17 +323,25 @@
 				// parse data text strings to JavaScript date stamps
 				// var parseDate = d3.timeParse('%Y-%m-%d');
 				// var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
+				// if(options.date_in_utc){
+				// 	var parseDate = function(date) {return moment.utc(date).toDate()};
+				// 	var parseDateTime =  function(date) {return moment.utc(date).toDate()};
+				// } else {
+				// 	var parseDate = function(date) {return moment(date).toDate()};
+				// 	var parseDateTime =  function(date) {return moment(date).toDate()};
+				// }
+
 				if(options.date_in_utc){
 					var parseDate = function(date) {return moment.utc(date).toDate()};
 					var parseDateTime =  function(date) {return moment.utc(date).toDate()};
 				} else {
-					var parseDate = function(date) {return moment(date).toDate()};
-					var parseDateTime =  function(date) {return moment(date).toDate()};
-					
+					var parseDate = function(date) {return new Date(date)};
+					var parseDateTime =  function(date) {return new Date(date)};	
 				}
 				
 				var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
 				var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+				var t4 = performance.now()
 
 				dataset.forEach(function (d) {
 					d.data.forEach(function (d1) {
@@ -366,19 +376,38 @@
 						}
 					});
 				});
-				var startDate = moment().year(2999),
-					endDate = moment().year(0);
+
+				console.log("Parse dataset to time " + ( performance.now() - t4) + " milliseconds.");
+				
+				var startDate = moment().year(2999).toDate(),
+					endDate = moment().year(0).toDate();
+
+				var t3 = performance.now()
 
 				// cluster data by dates to form time blocks
 				dataset.forEach(function (series, seriesI) {
 					var tmpData = [];
 					var dataLength = series.data.length;
 					series.data.forEach(function (d, i) {
-						if(moment(d[2]).isSameOrAfter(endDate))
+						// if(moment(d[2]).isSameOrAfter(endDate))
+						// 	endDate = d[2]
+						// if(moment(d[0]).isSameOrBefore(startDate))
+						// 	startDate = d[0]
+						
+						// var temp = [moment(d[0]).valueOf(), moment(d[2]).valueOf()]
+						// var temp2 = [moment(startDate).valueOf(), moment(endDate).valueOf()]
+						// if(temp[1] >= temp2[1])
+						// 	endDate = d[2]
+						// if(temp[0] <= temp2[0])
+						// 	startDate = d[0]
+
+						if(d[2] >= endDate)
 							endDate = d[2]
-						if(moment(d[0]).isSameOrBefore(startDate))
+						if(d[0] <= startDate)
 							startDate = d[0]
 						
+						
+						var t4 =performance.now()
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
@@ -409,7 +438,10 @@
 						}
 					});
 					dataset[seriesI].disp_data = tmpData;
+						
 				});
+				
+				console.log("Generate cluster data dataset " + ( performance.now() - t3) + " milliseconds.");
 				
 				// determine start and end dates among all nested datasets
 				if(options.display_date_range[0] != 0)
@@ -450,6 +482,7 @@
 				// create basic element groups
 				svg.append('g').attr('id', 'g_title');
 				svg.append('g').attr('id', 'g_axis');
+
 				options.zoomed = d3.zoom()
 					.scaleExtent([1,Infinity])
 					.translateExtent([[0,0],[width, options.height]])
@@ -516,12 +549,11 @@
 				.attr('fill-opacity', 0)
 				.attr('x', 0)
 				.attr('y', 0)
+
 				if (options.zoom.enabled)
 					svg.select("#g_data")
 					.call(options.zoomed)
 					.attr('cursor', "ew-resize")
-
-				//.call(options.zoomed);
 
 				if (options.show_y_title) {
 					// create y axis labels
@@ -575,7 +607,8 @@
 					}
 					
 					if(options.y_title_tooltip.enabled){	
-						y_axis_title.selectAll("g").selectAll('text').on('mouseover', function (d, i) {
+						y_axis_title.selectAll("g").selectAll('text')
+						.on('mouseover', function (d, i) {
 							drawTitleTooltipWhenOver(this, dataset, d, i);
 						})
 						.on("touchstart", function (d, i) {
@@ -657,6 +690,7 @@
 						*/
                     
 				}
+				
 				//xAxis
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
 
@@ -681,7 +715,7 @@
 				if (noOfDatasets) {
 					createVGrid(xScale)
 				}
-
+				
 				// create horizontal grid
 				svg.select('#g_axis').append('g').attr('id', 'hGrid').selectAll('line.horz_grid').data(dataset)
 					.enter()
@@ -703,7 +737,7 @@
 						.call(xAxis);
 				}
 
-
+					
 				// make y groups for different data series
 				var g = svg.select('#g_data').selectAll('.g_data')
 					.data(dataset.slice(startSet, endSet))
@@ -715,7 +749,9 @@
 					.attr('cursor', 'pointer')
 					.attr('class', 'dataset');
 
-
+				var t1 = performance.now();
+				var t6 = 0;
+					
 				// add data series
 				g.selectAll('rect')
 					.data(function (d) {
@@ -764,16 +800,7 @@
 					.on('mouseover', function (d, i) {
 						redrawTooltipWhenOver(this, dataset, d3.event.layerX, d3.event.layerY, d, i);
 					})
-					.on("touchstart", function (d, i) {
-						redrawTooltipWhenOver(this, dataset, d3.event.touches[0].layerX, d3.event.touches[0].layerY, d, i);
-					})
 					.on('mouseout', function () {
-						redrawTooltipWhenOut(this)
-					})
-					.on("touchleave", function () {
-						redrawTooltipWhenOut(this)
-					})
-					.on("touchcancel", function () {
 						redrawTooltipWhenOut(this)
 					})
 					.on('click', function(d,i){
@@ -782,11 +809,25 @@
 					.on("mousemove", function(){
 						redrawTooltipWhenMoved(d3.event.layerX, d3.event.layerY, this)
 					})
-					.on("touchmove", function () {
-						redrawTooltipWhenMoved(d3.event.touches[0].layerX, d3.event.touches[0].layerY)
-					});
+	
+					// .on("touchstart", function (d, i) {
+					// 	console.log("entrato",  d3.touches)
+					// 	redrawTooltipWhenOver(this, dataset, d3.event.touches[0].layerX, d3.event.touches[0].layerY, d, i);
+					// })
+					// // .on("touchmove", function () {
+					// // 	console.log(d3.event)
+					// // 	redrawTooltipWhenMoved(d3.event.touches[0].layerX, d3.event.touches[0].layerY)
+					// // })
+					// .on("touchleave", function () {
+					// 	redrawTooltipWhenOut(this)
+					// })
+					// .on("touchcancel", function () {
+					// 	redrawTooltipWhenOut(this)
+					// })
 				
-
+						
+					console.log("time of rect creation " + ( performance.now() - t1) + " milliseconds.");
+		
 				
 				function redrawTooltipWhenMoved(pageX, pageY, obj){
 					div.style('left',  function () {
@@ -959,7 +1000,6 @@
 					if(options.tooltip.position === "overlay"){
 						div.style('top', (pageY) + 'px')
 					}
-
 				}
 
 				// rework ticks and grid for better visual structure
@@ -1184,12 +1224,11 @@
 				//restore zoom and size when resize
 				
 				if(options.scale){
-					
 					// var oldFullWidth = (options.oldwidth * options.scale.k);
 					// var newFullWidth = (width * options.scale.k);
 					var newX = -((width * options.scale.k) * ((options.scale.x * -1) / (options.oldwidth * options.scale.k)));
 					var new_translate = (newX - options.scale.x) / options.scale.k;
-
+					
 					svg.select("#g_data")
 						.call(options.zoomed.transform, options.scale.translate(new_translate,0)
 						);
@@ -1202,6 +1241,7 @@
 				}
 
 				function xForPoint(d, xScale, ratio){
+					
 					var x_scale = xScale(d[0]) - ratio;
 					if(options.date_is_descending)
 						x_scale = xScale(d[2]) - ratio;
@@ -1252,10 +1292,11 @@
 					var x_scale = xScale(d[0]);
 					// if(options.date_is_descending)
 					// 	x_scale = xScale(d[2]);
-					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 )
+					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 ){
 						return  'rotate(45 '+ (x_scale) + "  " + (options.graph.height/2 + options.line_spacing-ratio)+")"
-					else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 )
+					} else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 ){
 						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing-ratio) +')'
+					}
 				}
 
 				function roundedRect(){
@@ -1265,7 +1306,9 @@
 				}
 				
 
-			});
+			}); 
+			console.log("Generating chart " + ( performance.now() - t0) + " milliseconds.");
+		
 		};
 
 		
@@ -1372,6 +1415,7 @@
 		}
 
 		chart.createGraph(dataset);
+		
 		return chart;
 
 	}
