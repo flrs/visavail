@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Visavail.js Example: Large Dataset randomly
+        
+    </title>
+	<meta 
+	name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+	<!-- Visavail.js style -->
+	<link href='https://fonts.googleapis.com/css?family=Muli' rel='stylesheet' type='text/css'>
+	<link href='../../visavail.css' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="../lib/css/bootstrap.min.css">
+		
+<!-- font-awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
+
+
+	<!-- body style for this example -->
+	<style>
+		body {
+			font-family: "Muli", "Helvetica", Arial, sans-serif;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div class="fluid">
+		<div class="col-md-12">
+			<h1>Visavail.js Complex Chart</h1>
+		</div>	
+		<div class="col-md-12">
+			<div style="overflow: hidden;" class="visavail" id="visavail_container">
+				<p id="visavail_graph">
+					<!-- Visavail.js chart will be placed here -->
+				</p>
+				
+			</div>
+			
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment-with-locales.js" type="text/javascript"></script>
+
+	<script src="../lib/js/d3.min.js" ></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script> -->
+	<script src="../../visavail.js"></script>
+	<!-- <script src="../visavail/js/visavail.min.js"></script> -->
+
+	<script>
+        var dataset = [];
+        for(var measure=0; measure<4;measure++){
+            dataset.push({"measure_html": "Balance-"+measure, "interval_s": 60 * 60, data:[]});
+            for(i=0; i <= 1000; i++ ){
+                single_data = ["",0]
+                if(i==0){
+                    single_data[0] = moment().format("YYYY-MM-DD");
+                    single_data[1] = 1
+                } else{
+                    var old_date = moment(dataset[measure].data[i-1][0])
+                    single_data[0] = old_date.add(Math.round(Math.random()*10), 'day').format("YYYY-MM-DD");
+                    if(dataset[measure].data[i-1][1] == 0)
+                        single_data[1] = 1
+                    else
+                        single_data[1] =  0
+                }
+                dataset[measure].data.push(single_data)
+                
+			}
+		}
+		var options_1 = {
+			id_div_container: "visavail_container",
+			id_div_graph: "visavail_graph",
+			
+			icon: {
+				class_has_data: 'fas fa-fw fa-check',
+				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
+			},
+			zoom:{
+				enabled:true
+			},
+			responsive:{
+				enabled:true
+			},
+			legend: {
+				enabled: false
+			},
+			title: {
+				enabled: false
+			},
+			sub_title: {
+				enabled: false
+			}
+			
+		};
+		
+		var chart = visavail.generate(options_1, dataset)
+
+	</script>
+
+</body>
+
+</html>

@@ -1,18 +1,17 @@
 # VISAVAIL V 1.2.1
 
-* bug fixing
-* zoom bug fixing in responsive layout
-* integrate d3.js su b chart to zoom/select/move with a buttom bar 
-  
+* bug fix for tooltip top position
+* Add new example with large dataset
+    
   BREAKING CHANGE
-* new default optiron for date_in_utc is FALSE due to increase the speed of graph (moment need a lot of ms to calculate UTC date) 
-
+* new default option for date_in_utc is FALSE due to increase the speed of graph (moment need a lot of ms to calculate UTC date, see README file) 
+* remove touch event captured due to performane iussue and compatibility with smartphone
 
 # VISAVAIL V 1.2.0
 
 * bug fixing
 * zoom bug fixing in responsive layout
-* integrate d3.js su b chart to zoom/select/move with a buttom bar 
+* integrate d3.js sub chart to zoom/select/move with a buttom bar 
 
 # VISAVAIL V 1.1.0
 

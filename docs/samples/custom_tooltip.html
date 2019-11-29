@@ -29,8 +29,14 @@
 			<h1>Visavail.js two chart with two tooltip configuration</h1>
 		</div>	
 		<div class="col-md-12">
-			<div style="overflow: hidden;" class="visavail" id="visavail_container">
-				<p id="visavail_graph">
+			<div style="overflow: hidden;" class="visavail" id="visavail_container1">
+				<p id="visavail_graph1">
+					<!-- Visavail.js chart will be placed here -->
+				</p>
+				
+            </div>
+            <div style="overflow: hidden;" class="visavail" id="visavail_container2">
+				<p id="visavail_graph2">
 					<!-- Visavail.js chart will be placed here -->
 				</p>
 				
@@ -1180,8 +1186,8 @@
     }];// draw Visavail.js chart
 		
 		var options_1 = {
-			id_div_container: "visavail_container",
-			id_div_graph: "visavail_graph",
+			id_div_container: "visavail_container1",
+			id_div_graph: "visavail_graph1",
 			
 			icon: {
 				class_has_data: 'fas fa-fw fa-check',
@@ -1190,8 +1196,8 @@
 			
 		};
 		var options_2 = {
-			id_div_container: "visavail_container",
-			id_div_graph: "visavail_graph",
+			id_div_container: "visavail_container2",
+			id_div_graph: "visavail_graph2",
 			
 			icon: {
 				class_has_data: 'fas fa-fw fa-check',
