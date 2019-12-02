@@ -2,6 +2,8 @@
 
 * bug fix for tooltip top position
 * Add new example with large dataset
+* Rewrite function to load custom options
+* Add option to create mini graph into sub_chart enablment (this increase laod time of graph in the first instance)
     
   BREAKING CHANGE
 * new default option for date_in_utc is FALSE due to increase the speed of graph (moment need a lot of ms to calculate UTC date, see README file) 

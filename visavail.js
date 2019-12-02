@@ -123,7 +123,14 @@
 			sub_chart: {
 				enabled: false,
 				height: 0,
-				animation: true
+				animation: true,
+				margin:{ top:20, bottom:0 },
+				graph: {
+					enabled: true,
+					width:7,
+					height:7,
+					line_spacing: 7
+				}
 			},
 			//custom icon call (for example font awesome)
 			icon:{
@@ -142,7 +149,7 @@
 			onClickBlock: function onclickblock(){},
 			graph:{
 				type: "bar" ,
-				width: 20,
+				width: 18,
 				height:18,
 				hover_zoom: 5
 			},
@@ -201,19 +208,44 @@
 			
 		}
 
-		if (custom_options != null) {
-			for (var key in custom_options) {
-				if (options.hasOwnProperty(key)) {
-					if (typeof options[key] == 'object') {
-						for (var sub_key in custom_options[key]) {
-							if (options[key].hasOwnProperty(sub_key))
-								options[key][sub_key] = custom_options[key][sub_key];
-						}
-					} else
-						options[key] = custom_options[key];
+		function loadConfig(default_option, custom_options){
+
+			Object.keys(custom_options).forEach(function (key) {
+				if(key in default_option){
+					if(typeof(default_option[key]) === 'object'){
+						//console.log("KEY => ", key, ", DEF_KEY => ", default_option[key],", CUST_KEY => ", custom_options[key])
+						loadConfig(default_option[key], custom_options[key])
+					} else {
+						//console.log("KEY => ", key, ", DEF_KEY => ", default_option[key],", CUST_KEY => ", custom_options[key], typeof custom_options[key]  == typeof default_option[key])
+						if(typeof custom_options[key]  == typeof default_option[key])
+							default_option[key] = custom_options[key];
+					}
 				}
-			}
+			});
 		}
+
+		loadConfig(options, custom_options)
+		
+		// if (custom_options != null) {
+		// 	for (var key in custom_options) {
+		// 		if (options.hasOwnProperty(key)) {
+		// 			if (typeof options[key] == 'object') {
+		// 				for (var sub_key in custom_options[key]) {
+		// 					if (options[key].hasOwnProperty(sub_key)){
+		// 						if (typeof options[key][sub_key] == 'object') {
+		// 							for (var sub_sub_key in custom_options[key][sub_key]) {
+		// 								if (options[key][sub_key].hasOwnProperty(sub_sub_key))
+		// 									options[key][sub_key][sub_sub_key] = custom_options[key][sub_key][sub_sub_key];
+		// 							}
+		// 						}else
+		// 							options[key][sub_key] = custom_options[key][sub_key];
+		// 					}
+		// 				}
+		// 			} else
+		// 				options[key] = custom_options[key];
+		// 		}
+		// 	}
+		// }
 
 		moment.locale(options.moment_locale);
 		var date_format_local = moment().creationData().locale._longDateFormat;
@@ -467,7 +499,7 @@
 				// create SVG element
 				var svg = d3.select(this).append('svg')
 					.attr('width', width + options.margin.left + options.margin.right)
-					.attr('height', options.sub_chart.height*2 + height + options.margin.top + options.margin.bottom)
+					.attr('height', height + options.margin.top + options.margin.bottom + options.sub_chart.height + options.sub_chart.margin.top + options.sub_chart.margin.bottom)
 					.append('g')
 					.attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')');
 
@@ -749,15 +781,15 @@
 					.enter()
 					.append('rect')
 					.attr('x', function (d) {
-						return xForPoint(d, options.xScale, 0)
+						return xForPoint(d, options.graph.width, options.xScale, 0)
 					})
 					.attr('width', function (d) {
-						return widthForPoint(d, options.xScale, 0)
+						return widthForPoint(d, options.graph.width, options.xScale, 0)
 					})
 					.attr('y', options.line_spacing)
 					.attr('height', options.graph.height)
 					.attr('transform',  function (d) {
-						return transformForTypeOfGraph(d, options.xScale, 0)
+						return transformForTypeOfGraph(d, options.xScale, options.graph.height, options.line_spacing, 0)
 					})
 					.attr('rx',  function (d) {
 						return roundedRect()
@@ -844,15 +876,15 @@
 						d3.select(obj).transition()
 							.duration(options.tooltip.duration)
 							.attr('x', function (d) {
-								return xForPoint(d,  options.xScale, 0)
+								return xForPoint(d, options.graph.width, options.xScale, 0)
 							})
 							.attr('width', function (d) {
-								return widthForPoint(d,  options.xScale, 0)
+								return widthForPoint(d, options.graph.width, options.xScale, 0)
 							})
 							.attr('y', options.line_spacing)
 							.attr('height', options.graph.height)
 							.attr('transform',  function (d) {
-								return transformForTypeOfGraph(d,  options.xScale, 0)
+								return transformForTypeOfGraph(d,  options.xScale, options.graph.height, options.line_spacing, 0)
 							})
 					}
 					div.transition()
@@ -866,18 +898,18 @@
 							.duration(options.tooltip.duration)
 							.attr('x', function (d) {
 								if(options.graph.type == "rhombus" || options.graph.type == "circle")
-									return xForPoint(d, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio*2)
-								return xForPoint(d,  options.xScale, 0)	
+									return xForPoint(d, options.graph.width, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio*2)
+								return xForPoint(d, options.graph.width, options.xScale, 0)	
 							})
 							.attr('width', function (d) {
 								if(options.graph.type == "rhombus" || options.graph.type == "circle")
-									return widthForPoint(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
-								return widthForPoint(d,  options.xScale, 0)
+									return widthForPoint(d, options.graph.width, options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+								return widthForPoint(d, options.graph.width, options.xScale, 0)
 							})
 							.attr('y', options.line_spacing - options.line_spacing*options.tooltip.hover_zoom.ratio/2)
 							.attr('height', options.graph.height+options.line_spacing*options.tooltip.hover_zoom.ratio)
 							.attr('transform',  function (d) {
-								return transformForTypeOfGraph(d,  options.xScale, options.line_spacing*options.tooltip.hover_zoom.ratio)
+								return transformForTypeOfGraph(d,  options.xScale, options.graph.height, options.line_spacing, options.line_spacing*options.tooltip.hover_zoom.ratio)
 							})
 					}
 					var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
@@ -1141,13 +1173,13 @@
 							
 						g.selectAll('rect')
 							.attr('x', function (d) {
-								return xForPoint(d, options.xScale, 0);
+								return xForPoint(d, options.graph.width, options.xScale, 0);
 							})
 							.attr('width', function (d) {
-								return widthForPoint(d, options.xScale, 0);
+								return widthForPoint(d, options.graph.width, options.xScale, 0);
 							})
 							.attr('transform',  function (d) {
-								return transformForTypeOfGraph(d, options.xScale, 0)
+								return transformForTypeOfGraph(d, options.xScale, options.graph.height, options.line_spacing, 0)
 							})
 
 						//change label x axis
@@ -1183,20 +1215,81 @@
 						.attr("id", "g_sub")
 						.append('g')
 						.attr("class", "subchart-xAxis")
-						.attr("transform", 'translate( 0, '+ (options.sub_chart.height*2 + height) + ')')
+						.attr("transform", 'translate( 0, '+ (options.sub_chart.margin.top + options.sub_chart.height + height) + ')')
 						.call(subChartXAxis)
+						.append('g')
+
+					svg.selectAll("#g_sub")
+						.append("g")
+						.attr("id", "g_sub_data")
+					
+					if(options.sub_chart.graph.enabled){
+						svg.selectAll("#g_sub_data").selectAll(".g_sub_data")
+							.data(dataset.slice(startSet, endSet))
+							.enter()
+							.append('g')
+							.attr('transform', function (d, i) {
+								return 'translate( 0, '+ (((options.sub_chart.graph.line_spacing + options.sub_chart.graph.height) * i) + options.sub_chart.margin.top + height) + ')'
+							})
+
+							.selectAll('rect')
+							.data(function (d) {
+								return d.disp_data;
+							})
+							.enter()
+							.append('rect')
+							.attr('x', function (d) {
+								return xForPoint(d, options.sub_chart.graph.width, xScale2, 0)
+							})
+							.attr('width', function (d) {
+								return widthForPoint(d, options.sub_chart.graph.width, xScale2, 0)
+							})
+							.attr('y', options.sub_chart.graph.line_spacing)
+							.attr('height', options.sub_chart.graph.height)
+							.attr('transform',  function (d) {
+								return transformForTypeOfGraph(d, xScale2, options.sub_chart.graph.height, options.sub_chart.graph.line_spacing, 0)
+							})
+							.attr('rx',  function (d) {
+								return roundedRect()
+							})
+							.attr('ry',  function (d) {
+								return roundedRect()
+							})
+							.attr('class', function (d) {
+								if (options.custom_categories) {
+									var series = dataset.filter(
+										function (series) {
+											return series.disp_data.indexOf(d) >= 0;
+										}
+									)[0];
+									if (series && series.categories) {
+										d3.select(this).attr('fill', series.categories[d[1]].color);
+										return '';
+									}
+								} else {
+									if (d[1] === 1) {
+										// data available
+										return 'rect_has_data';
+									} else {
+										// no data available
+										return 'rect_has_no_data';
+									}
+								}
+							})
+					}
+
 					svg.select('#g_sub')
 						.append("g")
 						.attr('id', 'g_brush')
 						.attr("class", "brush")
 						.attr('width', width)
-						.attr("transform", 'translate( 0, '+ (options.sub_chart.height + height) + ')')
+						.attr("transform", 'translate( 0, '+  (options.sub_chart.margin.top + height)  + ')')
 						.call(brush)
 						//.call(brush.move, options.xScale.range());
 
 					function brushed() {
 						if (d3.event && d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-						var s = d3.event.selection || xScale.range();
+						var s = d3.event.selection || xScale2.range();
 						//options.xScale.domain(s.map(xScale.invert, xScale));		
 						//svg.select(".subchart-xAxis").call(subChartXAxis.scale(options.xScale));
 						
@@ -1226,7 +1319,7 @@
 						svg.select('#g_brush').call(brush.move, xScale.range());
 				}
 
-				function xForPoint(d, xScale, ratio){
+				function xForPoint(d, graph_width, xScale, ratio){
 					
 					var x_scale = xScale(d[0]) - ratio;
 					if(options.date_is_descending)
@@ -1234,12 +1327,12 @@
 					if(isNaN(x_scale) || x_scale < 0 || x_scale + ratio > width)
 						return 0 - ratio/2
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
-						return xScale(d[0]) - options.graph.width/2 
+						return xScale(d[0]) - graph_width/2 
 					
 					return x_scale;
 				}
 				
-				function widthForPoint(d, xScale, ratio){
+				function widthForPoint(d, graph_width, xScale, ratio){
 					
 					var x_scale_d0 = xScale(d[0]) - ratio;
 					var x_scale_d2 = xScale(d[2]) + ratio;
@@ -1258,7 +1351,7 @@
 					if(options.graph.type == "rhombus" || options.graph.type == "circle" ){
 						if(x_scale_d0 + ratio < 0)
 							return 0 - ratio
-						return options.graph.width + ratio;
+						return graph_width + ratio;
 					}
 
 					if (x_scale_d0 < 0 && x_scale_d2 > 0)
@@ -1274,14 +1367,14 @@
 					
 				}
 
-				function transformForTypeOfGraph(d, xScale, ratio){
+				function transformForTypeOfGraph(d, xScale, graph_height, line_spacing, ratio){
 					var x_scale = xScale(d[0]);
 					// if(options.date_is_descending)
 					// 	x_scale = xScale(d[2]);
 					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 ){
-						return  'rotate(45 '+ (x_scale) + "  " + (options.graph.height/2 + options.line_spacing-ratio)+")"
+						return  'rotate(45 '+ (x_scale) + "  " + (graph_height/2 + line_spacing - ratio)+")"
 					} else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 ){
-						return  'rotate(45 0 '+ (options.graph.height/2 + options.line_spacing-ratio) +')'
+						return  'rotate(45 0 '+ (graph_height/2 + line_spacing - ratio) +')'
 					}
 				}
 

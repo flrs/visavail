@@ -31,6 +31,7 @@ This library visualizes the availability of time-dependent data with a chart on 
       - [3.3.10. Responsive](#3310-responsive)
       - [3.3.11. Zoom](#3311-zoom)
       - [3.3.12. Sub Chart](#3312-sub-chart)
+        - [3.3.12.1. Sub Chart Graph Option](#33121-sub-chart-graph-option)
       - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
       - [3.3.14. Example Usage](#3314-example-usage)
     - [3.4. Implementation](#34-implementation)
@@ -327,15 +328,25 @@ You can pass the JSON Object to library with custom settings
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
 
-
 #### 3.3.12. Sub Chart
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable the sub-chart under the chart. We can drag, move, zoom with this |
-| *onZoom* | `function(e)` | null | return a current array with current domain of current zoom in date format |
-| *onZoomStart* | `function(e)` | null | return a d3.event json object when zoom start |
-| *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
+| *height* | `number` | 0 | Height of bottom sub chart |
+| *animation* | `boolean` | true | Enable animation when you drag, move the sub_chart bar |
+| *margin* | `Object{}` |{top:20, bottom:0}|Integer value to add some space top or bottom after sub_chart |
+| *graph* | `Object{}` |**[more info](#33121-sub-chart-graph-option)**|option for zoom block on hover |
+
+
+##### 3.3.12.1. Sub Chart Graph Option
+
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | true | Create a mini chart into sub_chart bar (need to have a sufficient height to contain the graph) |
+| *width* | `number` | 7 | width of type of graph, used only for rhombus type and circle type |
+| *height* | `number` | 7 | height of type of graph into sub_chart|
+| *line_spacing* | `number` | 7 | Space between two row of dataset into sub_chart |
 
 
 #### 3.3.13. Custom Tick Format
