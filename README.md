@@ -36,7 +36,9 @@ This library visualizes the availability of time-dependent data with a chart on 
       - [3.3.14. Example Usage](#3314-example-usage)
     - [3.4. Implementation](#34-implementation)
       - [3.4.1 Integrate on Angular](#341-integrate-on-angular)
-    - [3.5 Public Projects With Visavail.js](#35-public-projects-with-visavailjs)
+      - [3.4.2 Integrate on React.js](#342-integrate-on-reactjs)
+    - [3.5 Visavail Function](#35-visavail-function)
+    - [3.6 Public Projects With Visavail.js](#36-public-projects-with-visavailjs)
   - [4. Download](#4-download)
   - [5. Dependencies](#5-dependencies)
   - [6. Contribution](#6-contribution)
@@ -419,10 +421,13 @@ To use the chart in your project, follow these steps:
 		var chart = visavail.generate(options, dataset)
     </script>
 	```
+
+  
 #### 3.4.1 Integrate on Angular
+
 You can use this library in your Anular 2+ project (tested from 2 to 8 version). Follow this step to integrate it:
 
-1. Add to your `package.json` d3, moment and visaval packag with npm installation
+1. Add to your `package.json` d3, moment and visaval package with npm installation
 
 2. In your component in the import section insert this line
     ```javascript 
@@ -438,7 +443,43 @@ You can use this library in your Anular 2+ project (tested from 2 to 8 version).
 An example of implementation, you can found [HERE](https://codesandbox.io/s/angular-o8gxt)
 
 
-### 3.5 Public Projects With Visavail.js
+#### 3.4.2 Integrate on React.js
+
+You can use this library in your React project (not compleated tested). Follow this step to integrate it:
+
+1. Add to your `package.json` d3, moment and visaval package with npm installation
+
+2. In your component in the import section insert this line
+    ```javascript 
+    import * as visavail from "visavail";
+    ```
+
+3.  Create JSON an object in your component class that can be contain the dataset, options and chart
+
+4.  Add the div in your render() function 
+
+5.  Call visavail.generate(...) funtion to generate the graph into componentDidMount()
+
+6.  If you want update the chart with new data, you can call the updateGraph(dataset) function into componentDidUpdate() react function
+
+An example of implementation, you can found [HERE](https://codesandbox.io/s/crazy-surf-9hpmg)
+
+
+### 3.5 Visavail Function
+
+The Visavail library have inside a series of function for update, change and delete the graph without using manual funtion.
+Below you can find a table that explain thi function.
+You can associate `chart = visavail.generate(.....)` and call `chart.someFunctio()` to change the graph
+
+| Name | Argument | Description |
+| ---- |------| ---------- |
+| *udpateGraph(options, dataset)* | options: JSON object with options, dataset: Array of JSON | With this function you can update the graph with new optiorn or new data or something related to dataset object. If you wnat mantain same oprion, you che put the first argument as null |
+| *resizeWidth(width)* | width: Number| With this function you can update manually the width of the graph |
+| *displayDateRange(date_range, dataset)* | date_range: [first date, second_date], dataset: Array of JSON | With this function you can update the date range of the graph to focus the graph in a specific time of period |
+| *destroy()* | empty | With this function you can delete the graph and all div generate by library |
+
+
+### 3.6 Public Projects With Visavail.js
 
 - [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
 - [GanttLab Live](https://gitlab.com/ganttlab/ganttlab-live) uses Visavail.js to present Gitlab and Github issues in a Gantt chart

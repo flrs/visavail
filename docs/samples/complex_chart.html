@@ -1208,8 +1208,8 @@
 		var chart = visavail.generate(options_1, dataset)
 
 		setTimeout(function(){
-			chart.destroy();
-			var options_2 = {
+            
+            var options_2 = {
 				id_div_container: "visavail_container",
 				id_div_graph: "visavail_graph",
 				
@@ -1250,12 +1250,18 @@
 				tooltip:{
 					position: "overlay",
 					left_spacing: 20
-				},
+                },
+                graph:{
+                    type: "circle" ,
+                    width: 18,
+                    height:18,
+                    hover_zoom: 5
+                },
 				onClickBlock: function(d,i){
 					console.log(d,i,e)
 				}		
 			};
-			chart = visavail.generate(options_2, dataset)
+			chart.updateOptions(options_2)
 
 		},2000)
 

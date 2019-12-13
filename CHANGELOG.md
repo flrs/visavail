@@ -1,3 +1,13 @@
+# VISAVAIL V 1.2.2
+
+* bug fix for title show
+* update doc with react.js integration
+* update doc with viasavail function available
+* add function to update options of graph
+
+  BREAKING CHANGE
+*updateGraph function now have two argument, first "custom_option" (if you don't want change options you put this to null) and second argument dataset. Before only dataset argument
+
 # VISAVAIL V 1.2.1
 
 * bug fix for tooltip top position

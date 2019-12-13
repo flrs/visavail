@@ -111,6 +111,7 @@
 			},
 			// title of chart is drawn or not (default: true)
 			title: {
+				enabled: true,
 				text: 'Data Availability Plot',
 				line_spacing: 16
 			},
@@ -1386,7 +1387,7 @@
 				
 			}); 
 			
-			console.log("Generating chart " + ( performance.now() - t0) + " milliseconds.");
+//			console.log("Generating chart " + ( performance.now() - t0) + " milliseconds.");
 		
 		};
 
@@ -1400,17 +1401,29 @@
 		
 
 
-		chart.width = function (_) {
-			if (!arguments.length) return options.width;
-			options.width = _;
-			return chart;
-		};
+		// chart.width = function (_) {
+		// 	if (!arguments.length) return options.width;
+		// 	options.width = _;
+		// 	return chart;
+		// };
 
-		chart.drawTitle = function (_) {
-			if (!arguments.length) return options.title.enabled;
-			options.title.enabled = _;
-			return chart;
-		};
+		// chart.drawTitle = function (_) {
+		// 	if (!arguments.length) return options.title.enabled;
+		// 	options.title.enabled = _;
+		// 	return chart;
+		// };
+
+		// chart.curDisplayFirstDataset = function (_) {
+		// 	if (!arguments.length) return  options.cur_display_first_dataset;
+		// 	options.cur_display_first_dataset = _;
+		// 	return chart;
+		// };
+
+		// chart.emphasizeYearTicks = function (_) {
+		// 	if (!arguments.length) return  options.emphasize_year_ticks;
+		// 	options.emphasize_year_ticks = _;
+		// 	return chart;
+		// };
 
 		chart.maxDisplayDatasets = function (_) {
 			if (!arguments.length) return  options.max_display_datasets;
@@ -1418,46 +1431,37 @@
 			return chart;
 		};
 
-		chart.curDisplayFirstDataset = function (_) {
-			if (!arguments.length) return  options.cur_display_first_dataset;
-			options.cur_display_first_dataset = _;
-			return chart;
-		};
-
-
-
-		chart.emphasizeYearTicks = function (_) {
-			if (!arguments.length) return  options.emphasize_year_ticks;
-			options.emphasize_year_ticks = _;
-			return chart;
-		};
-
-
 		chart.displayDateRange = function (date_range, dataset) {
 			if (!arguments.length) return  options.display_date_range;
 			options.display_date_range = date_range ;
 			if(!document.getElementById(options.id_div_graph) ){
                 return chart;
             }
-            return chart.updateGraph(dataset)
+            return chart.updateGraph(null, dataset)
 		};
 
+		chart.updateOptions = function (custom_options){
+			return chart.updateGraph(custom_options)
+		};
 
 		chart.resizeWidth = function(width){
 			options.width = width;
 			return chart.updateGraph()
 		};
 
-		chart.updateGraph = function(dataset){
+		chart.updateGraph = function(custom_option, dataset){
 			if(document.getElementById(options.id_div_graph) && document.getElementById(options.id_div_graph).innerHTML != "" ){
 				document.getElementById(options.id_div_graph).innerHTML = "";
 				if(document.getElementById(options.id)){
 					removeElementsByClass(options.id);
 					//document.getElementsByClassName(options.id).remove();
 				}
-				if(dataset){
+				if(custom_option)
+					loadConfig(options, custom_options)
+
+				if(dataset)
 					return chart.createGraph(dataset)
-				}
+	
                 d3.select('#' + options.id_div_graph)
 						.call(chart);
 			}
