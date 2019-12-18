@@ -69,7 +69,7 @@
 			// range of dates that will be shown
 			// if from-date (1st element) or to-date (2nd element) is zero,
 			// it will be determined according to your data (default: automatically)
-			display_date_range: [0, 0],
+			display_date_range: ["",""],
 			//if true reminder to use the correct data format for d3
 			custom_categories: false,
 			is_date_only_format: true,
@@ -218,36 +218,15 @@
 						loadConfig(default_option[key], custom_options[key])
 					} else {
 						//console.log("KEY => ", key, ", DEF_KEY => ", default_option[key],", CUST_KEY => ", custom_options[key], typeof custom_options[key]  == typeof default_option[key])
-						if(typeof custom_options[key]  == typeof default_option[key])
+						if(typeof custom_options[key] == typeof default_option[key]){
 							default_option[key] = custom_options[key];
+						}
 					}
 				}
 			});
 		}
 
 		loadConfig(options, custom_options)
-		
-		// if (custom_options != null) {
-		// 	for (var key in custom_options) {
-		// 		if (options.hasOwnProperty(key)) {
-		// 			if (typeof options[key] == 'object') {
-		// 				for (var sub_key in custom_options[key]) {
-		// 					if (options[key].hasOwnProperty(sub_key)){
-		// 						if (typeof options[key][sub_key] == 'object') {
-		// 							for (var sub_sub_key in custom_options[key][sub_key]) {
-		// 								if (options[key][sub_key].hasOwnProperty(sub_sub_key))
-		// 									options[key][sub_key][sub_sub_key] = custom_options[key][sub_key][sub_sub_key];
-		// 							}
-		// 						}else
-		// 							options[key][sub_key] = custom_options[key][sub_key];
-		// 					}
-		// 				}
-		// 			} else
-		// 				options[key] = custom_options[key];
-		// 		}
-		// 	}
-		// }
-
 		moment.locale(options.moment_locale);
 		var date_format_local = moment().creationData().locale._longDateFormat;
 		
@@ -409,8 +388,8 @@
 					});
 				});
 
-				var startDate = moment().year(2999).toDate(),
-					endDate = moment().year(0).toDate();
+				var startDate = moment().year(0).toDate(),
+					endDate = moment().year(2999).toDate();
 
 				// cluster data by dates to form time blocks
 				dataset.forEach(function (series, seriesI) {
@@ -466,12 +445,34 @@
 					dataset[seriesI].disp_data = tmpData;
 						
 				});
-				
 				// determine start and end dates among all nested datasets
-				if(options.display_date_range[0] != 0)
-					startDate = moment(options.display_date_range[0]);
-				if(options.display_date_range[1] != 0)
-					endDate = moment(options.display_date_range[1])
+				console.log(options.display_date_range[0],options.display_date_range[0])
+				
+				if(options.display_date_range && (options.display_date_range[0] || options.display_date_range[1])){
+					if(options.display_date_range[0]){
+						if (parseDateRegEx.test(options.display_date_range[0])) {
+							options.display_date_range[0] = parseDate(options.display_date_range[0]);
+						} else if (parseDateTimeRegEx.test(options.display_date_range[0])) {
+							options.display_date_range[0] = parseDateTime(options.display_date_range[0]);
+						} else {
+							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+								'\'YYYY-MM-DD HH:MM:SS\'.');
+						}
+						startDate = moment(options.display_date_range[0]);
+					}
+					if(options.display_date_range[1]){
+						if (parseDateRegEx.test(options.display_date_range[1])) {
+							options.display_date_range[1] = parseDate(options.display_date_range[1]);
+						} else if (parseDateTimeRegEx.test(options.display_date_range[1])) {
+							options.display_date_range[1] = parseDateTime(options.display_date_range[1]);
+						} else {
+							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+								'\'YYYY-MM-DD HH:MM:SS\'.');
+						}
+						endDate = moment(options.display_date_range[1]);
+					}
+				}
+				
 				// define scales
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])	

@@ -1,3 +1,7 @@
+# VISAVAIL V 1.2.3
+
+* bug fix for display_date_range
+
 # VISAVAIL V 1.2.2
 
 * bug fix for title show
