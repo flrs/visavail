@@ -450,24 +450,28 @@
 				
 				if(options.display_date_range && (options.display_date_range[0] || options.display_date_range[1])){
 					if(options.display_date_range[0]){
-						if (parseDateRegEx.test(options.display_date_range[0])) {
-							options.display_date_range[0] = parseDate(options.display_date_range[0]);
-						} else if (parseDateTimeRegEx.test(options.display_date_range[0])) {
-							options.display_date_range[0] = parseDateTime(options.display_date_range[0]);
-						} else {
-							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
-								'\'YYYY-MM-DD HH:MM:SS\'.');
+						if (!(options.display_date_range[0] instanceof Date)) {
+							if (parseDateRegEx.test(options.display_date_range[0])) {
+								options.display_date_range[0] = parseDate(options.display_date_range[0]);
+							} else if (parseDateTimeRegEx.test(options.display_date_range[0])) {
+								options.display_date_range[0] = parseDateTime(options.display_date_range[0]);
+							} else {
+								throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+									'\'YYYY-MM-DD HH:MM:SS\'.');
+							}
 						}
 						startDate = moment(options.display_date_range[0]);
 					}
 					if(options.display_date_range[1]){
-						if (parseDateRegEx.test(options.display_date_range[1])) {
-							options.display_date_range[1] = parseDate(options.display_date_range[1]);
-						} else if (parseDateTimeRegEx.test(options.display_date_range[1])) {
-							options.display_date_range[1] = parseDateTime(options.display_date_range[1]);
-						} else {
-							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
-								'\'YYYY-MM-DD HH:MM:SS\'.');
+						if (!(options.display_date_range[1] instanceof Date)) {
+							if (parseDateRegEx.test(options.display_date_range[1])) {
+								options.display_date_range[1] = parseDate(options.display_date_range[1]);
+							} else if (parseDateTimeRegEx.test(options.display_date_range[1])) {
+								options.display_date_range[1] = parseDateTime(options.display_date_range[1]);
+							} else {
+								throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+									'\'YYYY-MM-DD HH:MM:SS\'.');
+							}
 						}
 						endDate = moment(options.display_date_range[1]);
 					}
