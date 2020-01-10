@@ -274,7 +274,7 @@
 
 
 		function chart(selection) {
-			t0 = performance.now();
+			//t0 = performance.now();
 			selection.each(function drawGraph(dataset) {
 				//set to locale with moment
 				d3.timeFormatDefaultLocale(options.locale);
@@ -332,9 +332,10 @@
 					}
 				}
 
-				// parse data text strings to JavaScript date stamps
+				//parse data text strings to JavaScript date stamps
 				// var parseDate = d3.timeParse('%Y-%m-%d');
 				// var parseDateTime = d3.timeParse('%Y-%m-%d %H:%M:%S');
+				
 				// if(options.date_in_utc){
 				// 	var parseDate = function(date) {return moment.utc(date).toDate()};
 				// 	var parseDateTime =  function(date) {return moment.utc(date).toDate()};
@@ -342,18 +343,50 @@
 				// 	var parseDate = function(date) {return moment(date).toDate()};
 				// 	var parseDateTime =  function(date) {return moment(date).toDate()};
 				// }
+				// var format_utc = d3.utcParse('%Y-%m-%d');
 
-				if(options.date_in_utc){
-					var parseDate = function(date) {return moment.utc(date).toDate()};
-					var parseDateTime =  function(date) {return moment.utc(date).toDate()};
+				// if(options.date_in_utc){
+				// 	var parseDate = function(date) {return moment.utc(date).toDate()};
+				// 	var parseDateTime =  function(date) {return moment.utc(date).toDate()};
+				// } else {
+				// 	var parseDate = function(date) {
+				// 		var format = d3.timeParse('%Y-%m-%d');;
+				// 		var date_converted = new Date(date);
+				// 		var userTimezoneOffset = new Date(date).getTimezoneOffset()*60000
+				// 		return (format(date))
+				// 	};
+				// 	var parseDateTime =  function(date) {
+				// 		var format = d3.timeParse('%Y-%m-%d %H:%M:%S');;
+				
+				// 		var date_converted = new Date(date);
+				// 		var userTimezoneOffset = new Date(date).getTimezoneOffset()*60000
+				// 		return (format(date))
+				// 	};	
+				// }
+				var format = d3.timeParse("%Y-%m-%d");
+				var format_utc_time = d3.utcParse("%Y-%m-%d %H:%M:%S");
+				var format_utc= d3.utcParse("%Y-%m-%d");
+
+				if (options.date_in_utc) {
+					var parseDate = function(date) {
+						return format_utc(date);
+					};
+					var parseDateTime = function(date) {
+						return format_utc_time(date);
+					};
 				} else {
-					var parseDate = function(date) {return new Date(date)};
-					var parseDateTime =  function(date) {return new Date(date)};	
+					var parseDate = function(date) {
+						return format(date);
+					};
+					var parseDateTime = function(date) {
+						return new Date(date);
+					};
 				}
 				
 				var parseDateRegEx = new RegExp(/^\d{4}-\d{2}-\d{2}$/);
 				var parseDateTimeRegEx = new RegExp(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
 				
+				var t0 = performance.now()
 				dataset.forEach(function (d) {
 					d.data.forEach(function (d1) {
 						if (!(d1[0] instanceof Date)) {
@@ -368,28 +401,34 @@
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
 							}
+						}
+						if (!(d1[2] instanceof Date)) {
 							if (!options.defined_blocks) {
 								d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 							} else {
-								if (parseDateRegEx.test(d1[2])) {
-									// d1[2] is date without time data
-									d1[2] = parseDate(d1[2]);
-								} else if (parseDateTimeRegEx.test(d1[2])) {
-									// d1[2] is date with time data
-									d1[2] = parseDateTime(d1[2]);
-								} else {
-									d1[2] = d1[0];
-									if(options.graph.type != "rhombus")
-										console.error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
-										'\'YYYY-MM-DD HH:MM:SS\'.');
-								}
+								if(d1[2]){
+									if (parseDateRegEx.test(d1[2])) {
+										// d1[2] is date without time data
+										d1[2] = parseDate(d1[2]);
+									} else if (parseDateTimeRegEx.test(d1[2])) {
+										// d1[2] is date with time data
+										d1[2] = parseDateTime(d1[2]);
+									} else {
+										d1[2] = d1[0];
+										if(options.graph.type != "rhombus")
+											console.error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+											'\'YYYY-MM-DD HH:MM:SS\'.');
+									}
+								} else
+									throw new Error('Defined block true but dataset not correct');
 							}
 						}
 					});
 				});
-
-				var startDate = moment().year(0).toDate(),
-					endDate = moment().year(2999).toDate();
+				
+				//console.log(performance.now()-t0)
+				var startDate = moment().year(2999).toDate(),
+					endDate = moment().year(0).toDate();
 
 				// cluster data by dates to form time blocks
 				dataset.forEach(function (series, seriesI) {
@@ -446,30 +485,43 @@
 						
 				});
 				// determine start and end dates among all nested datasets
-				console.log(options.display_date_range[0],options.display_date_range[0])
-				
 				if(options.display_date_range && (options.display_date_range[0] || options.display_date_range[1])){
 					if(options.display_date_range[0]){
-						if (parseDateRegEx.test(options.display_date_range[0])) {
-							options.display_date_range[0] = parseDate(options.display_date_range[0]);
-						} else if (parseDateTimeRegEx.test(options.display_date_range[0])) {
-							options.display_date_range[0] = parseDateTime(options.display_date_range[0]);
+						if (!(options.display_date_range[0] instanceof Date)) {
+							if (parseDateRegEx.test(options.display_date_range[0])) {
+								options.display_date_range[0] = parseDate(options.display_date_range[0]);
+							} else if (parseDateTimeRegEx.test(options.display_date_range[0])) {
+								options.display_date_range[0] = parseDateTime(options.display_date_range[0]);
+							} else {
+								throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+									'\'YYYY-MM-DD HH:MM:SS\'.');
+							}
+							startDate = options.display_date_range[0];
 						} else {
-							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
-								'\'YYYY-MM-DD HH:MM:SS\'.');
-						}
-						startDate = moment(options.display_date_range[0]);
+							if(options.date_in_utc)
+								startDate = moment.utc(options.display_date_range[0]).toDate();
+							else
+								startDate = options.display_date_range[0];
+						}							
 					}
 					if(options.display_date_range[1]){
-						if (parseDateRegEx.test(options.display_date_range[1])) {
-							options.display_date_range[1] = parseDate(options.display_date_range[1]);
-						} else if (parseDateTimeRegEx.test(options.display_date_range[1])) {
-							options.display_date_range[1] = parseDateTime(options.display_date_range[1]);
+						if (!(options.display_date_range[1] instanceof Date)) {
+							if (parseDateRegEx.test(options.display_date_range[1])) {
+								options.display_date_range[1] = parseDate(options.display_date_range[1]);
+							} else if (parseDateTimeRegEx.test(options.display_date_range[1])) {
+								options.display_date_range[1] = parseDateTime(options.display_date_range[1]);
+							} else {
+								throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
+									'\'YYYY-MM-DD HH:MM:SS\'.');
+							}
+							startDate = options.display_date_range[1];
 						} else {
-							throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
-								'\'YYYY-MM-DD HH:MM:SS\'.');
+							if(options.date_in_utc)
+								endDate = moment.utc(options.display_date_range[1]).toDate();
+							else
+								endDate = options.display_date_range[1];
 						}
-						endDate = moment(options.display_date_range[1]);
+						
 					}
 				}
 				
@@ -481,15 +533,15 @@
 					.domain([startDate, endDate])	
 					.range([0, width])
 
-				options.xScale = xScale;
-				
 				if(options.date_is_descending){
 					xScale.domain([endDate, startDate])
 					xScale2.domain([endDate, startDate])
-				}	
+				}
+				options.xScale = xScale;
+					
 				// define axes
-				var xAxis = d3.axisTop(xScale)
-					.scale(xScale)
+				var xAxis = d3.axisTop(options.xScale)
+					.scale(options.xScale)
 					.ticks(options.ticks_for_graph)
 					.tickFormat(multiFormat);
 
@@ -739,7 +791,7 @@
 
 				// create vertical grid
 				if (noOfDatasets) {
-					createVGrid(xScale)
+					createVGrid(options.xScale)
 				}
 				
 				// create horizontal grid
@@ -975,7 +1027,6 @@
 									return output + moment(d[0]).format('LTS') + ' - ' +
 										moment(d[2]).format('LTS');
 								} else {
-									//console.log("entrato nell'esle")
 									if (d[2] > d3.timeSecond.offset(d[0], 86400) || options.tooltip.date_plus_time) {
 										if(options.date_is_descending)
 											return output + moment(d[2]).format('l') + ' ' +
@@ -1326,7 +1377,7 @@
 					var x_scale = xScale(d[0]) - ratio;
 					if(options.date_is_descending)
 						x_scale = xScale(d[2]) - ratio;
-					if(isNaN(x_scale) || x_scale < 0 || x_scale + ratio > width)
+					if(isNaN(x_scale) || x_scale <= 0 || x_scale + ratio > width)
 						return 0 - ratio/2
 					if(options.graph.type == "rhombus" || options.graph.type == "circle")
 						return xScale(d[0]) - graph_width/2 
@@ -1344,7 +1395,7 @@
 						x_scale_d2 =  xScale(d[0]) + ratio;
 					}
 					
-					if(isNaN(x_scale_d0) || isNaN(x_scale_d2) || (!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 < 0 && x_scale_d0 < 0 ) 
+					if(isNaN(x_scale_d0) || isNaN(x_scale_d2) || (!options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0) || x_scale_d2 <= 0 && x_scale_d0 <= 0 ) 
 						return 0;
 
 					if(options.date_is_descending && (x_scale_d2 - x_scale_d0) < 0)
@@ -1371,8 +1422,6 @@
 
 				function transformForTypeOfGraph(d, xScale, graph_height, line_spacing, ratio){
 					var x_scale = xScale(d[0]);
-					// if(options.date_is_descending)
-					// 	x_scale = xScale(d[2]);
 					if((options.graph.type == "rhombus" || options.graph.type == "circle" )&& x_scale > 0 ){
 						return  'rotate(45 '+ (x_scale) + "  " + (graph_height/2 + line_spacing - ratio)+")"
 					} else if((options.graph.type == "rhombus" || options.graph.type == "circle" ) && x_scale <= 0 ){

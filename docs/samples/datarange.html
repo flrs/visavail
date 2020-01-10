@@ -24,7 +24,7 @@
 </head>
 
 <body>
-	<div class="container">
+	<div class="fluid">
 		<div class="col-md-12">
 			<h1>Visavail.js Basic Example</h1>
 		</div>	
@@ -1182,20 +1182,26 @@
 		
 		var options = {
 			id_div_container: "visavail_container",
-			id_div_graph: "visavail_graph",
-			
-			icon: {
-				class_has_data: 'fas fa-fw fa-check',
-				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
-			},
-			display_date_range: []
+            id_div_graph: "visavail_graph",
+            
+            icon: {
+                class_has_data: 'fas fa-fw fa-check',
+                class_has_no_data: 'fas fa-fw fa-exclamation-circle'
+            },
+            responsive:{
+                enabled:true,
+            },
+            zoom:{
+                enabled:true,
+            },
+            date_in_utc: false
 		};
 		
 		var chart = visavail.generate(options, dataset)
 		
 		//call method for change display range in another date
 		setTimeout(function(){
-			chart.displayDateRange(['2018-01-15', '2018-01-30'])
+			chart.displayDateRange([new Date('2017-01-15'), new Date('2018-01-30')])
 		}, 2000)
 
 	</script>

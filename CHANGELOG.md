@@ -1,3 +1,9 @@
+# VISAVAIL V 1.3.0
+
+* bug fix for parsing date and utc
+* merge pull [#42](https://github.com/flrs/visavail/pull/42)
+* add new example with pure Data Object
+  
 # VISAVAIL V 1.2.3
 
 * bug fix for display_date_range
