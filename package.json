@@ -37,6 +37,5 @@
   "bugs": {
     "url": "https://github.com/flrs/visavail/issues"
   },
-  "homepage": "https://github.com/flrs/visavail#readme",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "homepage": "https://github.com/flrs/visavail#readme"
 }

@@ -1,4 +1,4 @@
-# VISAVAIL V 1.3.0
+# VISAVAIL V 1.3.1
 
 * bug fix for parsing date and utc
 * merge pull [#42](https://github.com/flrs/visavail/pull/42)

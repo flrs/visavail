@@ -514,7 +514,7 @@
 								throw new Error('Option of Display range Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
 							}
-							startDate = options.display_date_range[1];
+							endDate = options.display_date_range[1];
 						} else {
 							if(options.date_in_utc)
 								endDate = moment.utc(options.display_date_range[1]).toDate();
