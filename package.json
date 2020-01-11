@@ -1,6 +1,6 @@
 {
   "name": "visavail",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "This library visualizes the availability of time-dependent data with a chart on a website.",
   "main": "visavail.js",
   "files": [
@@ -37,6 +37,5 @@
   "bugs": {
     "url": "https://github.com/flrs/visavail/issues"
   },
-  "homepage": "https://github.com/flrs/visavail#readme",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "homepage": "https://github.com/flrs/visavail#readme"
 }
