@@ -1,3 +1,10 @@
+# VISAVAIL V 1.4.0
+
+* bug fix 
+* align new example for custom categories
+BREAKING CHANGE
+* custom categories now use classes
+  
 # VISAVAIL V 1.3.1
 
 * bug fix for parsing date and utc

@@ -46,13 +46,19 @@
 	<script src="../../visavail.js"></script>
 	<!-- <script src="../visavail/js/visavail.min.js"></script> -->
 
+	<style>
+		.rect_purple{fill: purple}
+		.tooltip_purple{color: purple}
+	</style>
 	<script>
  	 var dataset = [{
-        "measure": "Fat Bike",
+		"measure": "Fat Bike",
+		"interval_s": 60*60,
+       
         "categories": {
-            "0": { "color": "#377eb8" },
-            "1": { "color": "#ff7f00" },
-            "Zoe": { "color": "purple" },
+            "0": {class: "rect_has_no_data" },
+            "1": {class: "rect_has_data"},
+            "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
         },
         "data": [
             ["2016-01-01 12:00:00", 0, "2016-01-01 13:00:00"],

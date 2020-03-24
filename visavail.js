@@ -859,8 +859,7 @@
 								}
 							)[0];
 							if (series && series.categories) {
-								d3.select(this).attr('fill', series.categories[d[1]].color);
-								return '';
+								return series.categories[d[1]].class;
 							}
 						} else {
 							if (d[1] === 1) {
@@ -973,9 +972,17 @@
 					div.html(function () {
 
 							var output = '';
-							if (options.custom_categories) {
+							if (options.custom_categories && typeof d[1] !== 'number') {
 								// custom categories: display category name
-								output = '&nbsp;' + d[1] + '&nbsp;';
+								var series = dataset.filter(
+									function (series) {
+										return series.disp_data.indexOf(d) >= 0;
+									}
+								)[0];
+								if(series && series.categories[d[1]].tooltip_html)
+								  	output = series.categories[d[1]].tooltip_html;
+								else
+									output = '&nbsp;' + d[1] + '&nbsp;';
 							} else {
 								if (d[1] === 1) {
 									// checkmark icon
@@ -1316,8 +1323,8 @@
 										}
 									)[0];
 									if (series && series.categories) {
-										d3.select(this).attr('fill', series.categories[d[1]].color);
-										return '';
+										//d3.select(this).attr('fill', series.categories[d[1]].color);
+										return series.categories[d[1]].class;
 									}
 								} else {
 									if (d[1] === 1) {

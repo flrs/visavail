@@ -14,7 +14,7 @@ This library visualizes the availability of time-dependent data with a chart on 
       - [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
       - [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
       - [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
-      - [~~3.1.6. Measure Labels with HTML~~](#316-measure-labels-with-html)
+      - [~~3.1.6. Measure Labels with HTML~~](#s316-measure-labels-with-htmls)
     - [3.2. Display Style](#32-display-style)
       - [3.2.1. Type of Chart](#321-type-of-chart)
     - [3.3. Options](#33-options)
@@ -42,7 +42,7 @@ This library visualizes the availability of time-dependent data with a chart on 
   - [4. Download](#4-download)
   - [5. Dependencies](#5-dependencies)
   - [6. Contribution](#6-contribution)
-  - [## 7. License](#7-license)
+  - [## 7. License](#h2-id%227-license-88%227-licenseh2)
 
 
 ## 1. Description
@@ -120,16 +120,22 @@ var dataset = [{
 ```
 
 #### 3.1.4. Data With Custom Categories
-If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in custom categories. In this case, you have to assign all of your categories a name and a color that is used for displaying the category in the chart.
+If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in custom categories. In this case, you have to assign all of your categories a name and a `class` that is used for displaying the category in the chart.
 
-The chart legend will not appear on charts with data in custom categories. Instead, the category name will be shown in the tooltip that appears when you hover over the bars in the chart. See the code below for an example.
+The chart legend will not appear on charts with data in custom categories. 
+In adding you have a `tooltip_html` key that you can use to display some html code when you hover over the bars in the chart. 
+If `tooltip_html` is empty we display the name of value used on categories.
+
+See the code below for an example.
 ```javascript
 var dataset = [{
     "measure": "Fat Bike",
     "categories": { // category names and their colors defined here
-        "Kim": { "color": "#377eb8" },
-        "Bert": { "color": "#ff7f00" },
-        "Zoe": { "color": "purple" },
+        "categories": {
+            "Kim": {class: "rect_has_no_data" },
+            "Bert": {class: "rect_has_data"},
+            "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy></i>'},
+        }
         },
     "data": [
         ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
