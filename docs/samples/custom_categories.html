@@ -56,8 +56,8 @@
 		"interval_s": 60*60,
        
         "categories": {
-            "0": {class: "rect_has_no_data" },
-            "1": {class: "rect_has_data"},
+            "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
+            "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
             "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
         },
         "data": [
@@ -71,11 +71,6 @@
 	var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "visavail_graph",
-			
-			icon: {
-				class_has_data: 'fas fa-fw fa-check',
-				class_has_no_data: 'fas fa-fw fa-exclamation-circle'
-			},
 			custom_categories: true
 		};
 		

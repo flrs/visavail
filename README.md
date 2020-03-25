@@ -42,7 +42,7 @@ This library visualizes the availability of time-dependent data with a chart on 
   - [4. Download](#4-download)
   - [5. Dependencies](#5-dependencies)
   - [6. Contribution](#6-contribution)
-  - [## 7. License](#h2-id%227-license-88%227-licenseh2)
+  - [## 7. License](#h2-id%227-license-95%227-licenseh2)
 
 
 ## 1. Description
@@ -132,10 +132,10 @@ var dataset = [{
     "measure": "Fat Bike",
     "categories": { // category names and their colors defined here
         "categories": {
-            "Kim": {class: "rect_has_no_data" },
-            "Bert": {class: "rect_has_data"},
-            "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy></i>'},
-        }
+            "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
+            "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
+            "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
+        },
         },
     "data": [
         ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],

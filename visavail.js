@@ -972,7 +972,7 @@
 					div.html(function () {
 
 							var output = '';
-							if (options.custom_categories && typeof d[1] !== 'number') {
+							if (options.custom_categories) {
 								// custom categories: display category name
 								var series = dataset.filter(
 									function (series) {

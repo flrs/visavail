@@ -1,4 +1,4 @@
-# VISAVAIL V 1.4.0
+# VISAVAIL V 1.4.1
 
 * bug fix 
 * align new example for custom categories
