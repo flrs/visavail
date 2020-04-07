@@ -433,7 +433,7 @@ To use the chart in your project, follow these steps:
 
 You can use this library in your Anular 2+ project (tested from 2 to 8 version). Follow this step to integrate it:
 
-1. Add to your `package.json` d3, moment and visaval package with npm installation
+1. Add to your `package.json` d3, moment and visavail package with npm installation
 
 2. In your component in the import section insert this line
     ```javascript 
@@ -453,7 +453,7 @@ An example of implementation, you can found [HERE](https://codesandbox.io/s/angu
 
 You can use this library in your React project (not compleated tested). Follow this step to integrate it:
 
-1. Add to your `package.json` d3, moment and visaval package with npm installation
+1. Add to your `package.json` d3, moment and visavail package with npm installation
 
 2. In your component in the import section insert this line
     ```javascript 
