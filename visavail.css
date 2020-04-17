@@ -127,38 +127,12 @@ div.y-tooltip.bottom::after {
     fill: #07C;
 }
 
-.visavail .ytitle.some_unavailability {
-    /* y axis label with some unavailability */
-    fill: #cc0000;
-}
-.visavail .ytitle.total_unavailability {
-    /* y axis label with total unavailability */
-    fill: #cc0000;
-}
-.visavail .ytitle.total_availability {
-    /* y axis label with total availability */
-    fill: black;
-}
-
 .visavail .ypercentage {
     /* y axis percentage */
     font-family: "Muli", "Helvetica", Arial, sans-serif;
     -moz-osx-font-smoothing: grayscale;
     font-size: 12px;
 	overflow: hidden;
-}
-
-.visavail .ypercentage.some_unavailability {
-    /* y axis percentage with some unavailability */
-   fill: #cc0000;
-}
-.visavail .ypercentage.total_unavailability {
-    /* y axis percentage with total unavailability */
-   fill: #cc0000;
-}
-.visavail .ypercentage.total_availability {
-    /* y axis percentage with total availability */
-   fill: black;
 }
 
 .visavail .xAxis path,
