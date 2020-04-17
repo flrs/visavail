@@ -136,7 +136,7 @@ var dataset = [{
         "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
         "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
     },
-    "category_percentage": "Zoe", // if percentage enable, calculates de percentage of this category
+    "category_percentage": "Zoe", // if percentage enable, calculates the percentage of this category
     "data": [
         ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
         ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
