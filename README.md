@@ -246,7 +246,7 @@ You can pass the JSON Object to library with custom settings
 | ---- |------| ------- | ---------- |
 | *top* | `number` | -50 | Number express in px |
 | *bottom* | `number` | 10 | Number express in px (not used at the moment) |
-| *right* | `number` | 0 | Number express in px (not used at the moment) |
+| *right* | `number` | 0 | Number express in px, used for move the y percentage on the right |
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
 #### 3.3.3. Y Title Tooltip
