@@ -547,24 +547,25 @@
 				}
 
 				// define total percentage times
-				dataset.forEach(function (series, seriesI) {
-					dataset[seriesI].timeup_ms = 0;
-					dataset[seriesI].timedown_ms = 0;
-					if (!options.custom_categories)
-						series.disp_data.forEach(function (disp) {
-							if (disp[1])
-								dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
-							else
-								dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
-						});
-					else
-						series.disp_data.forEach(function (disp) {
-							if (disp[1] === series.category_percentage)
-								dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
-							else
-								dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
-						});
-				});
+				if (options.y_percentage.enabled)
+					dataset.forEach(function (series, seriesI) {
+						dataset[seriesI].timeup_ms = 0;
+						dataset[seriesI].timedown_ms = 0;
+						if (!options.custom_categories)
+							series.disp_data.forEach(function (disp) {
+								if (disp[1])
+									dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
+								else
+									dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
+							});
+						else
+							series.disp_data.forEach(function (disp) {
+								if (disp[1] === series.category_percentage)
+									dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
+								else
+									dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
+							});
+					});
 
 
 				// define scales
@@ -717,13 +718,14 @@
 							if (d.measure_url != null) {
 								returnCSSClass = returnCSSClass + ' link';
 							}
-							if (d.timedown_ms == 0)
-								returnCSSClass += ' ' + options.y_title_total_availability_class;
-							else
-								if (d.timeup_ms == 0)
-									returnCSSClass += ' ' + options.y_title_total_unavailability_class;
+							if (options.y_percentage.enabled)
+								if (d.timedown_ms == 0)
+									returnCSSClass += ' ' + options.y_title_total_availability_class;
 								else
-									returnCSSClass += ' ' + options.y_title_some_unavailability_class;
+									if (d.timeup_ms == 0)
+										returnCSSClass += ' ' + options.y_title_total_unavailability_class;
+									else
+										returnCSSClass += ' ' + options.y_title_some_unavailability_class;
 							return returnCSSClass;
 						})
 						.on('click', function (d) {
