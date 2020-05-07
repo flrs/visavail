@@ -488,7 +488,7 @@ You can associate `chart = visavail.generate(.....)` and call `chart.someFunctio
 ### 3.6 Public Projects With Visavail.js
 
 - [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
-- [GanttLab Live](https://gitlab.com/ganttlab/ganttlab-live) uses Visavail.js to present Gitlab and Github issues in a Gantt chart
+- [GanttLab](https://gitlab.com/ganttlab/ganttlab) uses Visavail.js to present Gitlab and Github issues in a Gantt chart
 
 ## 4. Download
 An archive with the library can be downloaded from the [releases page](https://github.com/flrs/visavail/releases).
