@@ -33,7 +33,8 @@ This library visualizes the availability of time-dependent data with a chart on 
       - [3.3.12. Sub Chart](#3312-sub-chart)
         - [3.3.12.1. Sub Chart Graph Option](#33121-sub-chart-graph-option)
       - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
-      - [3.3.14. Example Usage](#3314-example-usage)
+      - [3.3.14. Y Percentage](#3314-y-percentage)
+      - [3.3.15. Example Usage](#3315-example-usage)
     - [3.4. Implementation](#34-implementation)
       - [3.4.1 Integrate on Angular](#341-integrate-on-angular)
       - [3.4.2 Integrate on React.js](#342-integrate-on-reactjs)
@@ -131,12 +132,11 @@ See the code below for an example.
 var dataset = [{
     "measure": "Fat Bike",
     "categories": { // category names and their colors defined here
-        "categories": {
-            "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
-            "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
-            "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
-        },
-        },
+        "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
+        "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
+        "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
+    },
+    "category_percentage": "Zoe", // if percentage enable, calculates the percentage of this category
     "data": [
         ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
         ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
@@ -211,11 +211,15 @@ You can pass the JSON Object to library with custom settings
 | *custom_categories* | `boolean` | **false** | Set to true if you want to use custom category |
 | *is_date_only_format* | `boolean` | **false** | Check if the date is with date only ( will set Automatically) |
 | *show_y_title* | `boolean` | **true** | If you set to fale, reminder to set properly margin and padding left |
+| *y_title_some_unavailability_class* | `string` | some_unavailability | Set a additional custom class to y_title when some unavailability, if you want |
+| *y_title_total_unavailability_class* | `string` | total_unavailability | Set a additional custom class to y_title when total unavailability, if you want |
+| *y_title_total_availability_class* | `string` | total_availability | Set a additional custom class to y_title when total availability, if you want |
 | *date_in_utc* | `boolean` | **false** | Set true or false in base of your type of date. If true we use moment to set the date in the current user timezone or in the timezone set by script. For improve the speed of graph we suggest to you to set this parameter to false and convert your dataset with moment before send to graph |
 | *date_is_descending* | `boolean` | **false** | Set true if you want display your dataset is descending version (from now to old). If false the data was diplayed in standard view N.B.: the data in dataset is in ascending order |
 | *defined_blocks* | `boolean` | **false** | If set to true the we ignore interval_s options in datasets and we use a block defined. This option is set automatically if in there is a date/time defined |
 | *onClickBlock* | `function(d,i)` | null | return "d" an arry with date and value precessed and "i" value of block clicked item |
 | *y_title_tooltip* | `Object{}` | **[more info](#333-y-title-tooltip)** | Json Object that contain tooltip option for the graph. For the content of div we use  `"measure_description"` tag that can be contain also html tag|
+| *y_percentage* | `Object{}` | **[more info](#3314-y-percentage)** | Json Object that contain y_percentage option for the graph |
 | *tooltip* | `Object{}` | **[more info](#334-tooltip)** | Json Object that contain tooltip option for the graph |
 | *legend* | `Object{}` | **[more info](#335-legend)** | Json Object that contain legend option for the graph |
 | *title* | `Object{}` | **[more info](#336-title)** | Json Object that contain title option for the graph |
@@ -242,7 +246,7 @@ You can pass the JSON Object to library with custom settings
 | ---- |------| ------- | ---------- |
 | *top* | `number` | -50 | Number express in px |
 | *bottom* | `number` | 10 | Number express in px (not used at the moment) |
-| *right* | `number` | 0 | Number express in px (not used at the moment) |
+| *right* | `number` | 0 | Number express in px, used for move the y percentage on the right |
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
 #### 3.3.3. Y Title Tooltip
@@ -283,6 +287,7 @@ You can pass the JSON Object to library with custom settings
 | *enabled* | `boolean` | true | Enable the legend (If you use a custom categories the legend is hidden) |
 | *line_space* | `number` | 12 | height of legend font , correspond to line-height of class tooltip from css) |
 | *offset* | `number` | 5 | Distance from two data of legend |
+| *x_right_offset* | `number` | 150 | Legend position distance from right |
 | *has_no_data_text* | `string` | No Data available | String for no data available |
 | *has_data_text* | `string` | Data available | String for no data available |
 
@@ -375,7 +380,19 @@ With set this option you override the automatic tick format execute by library f
 | *format_year* | `string` | moment convertion | custom format for year |
 
 
-#### 3.3.14. Example Usage
+#### 3.3.14. Y Percentage
+
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *enabled* | `boolean` | false | enable percentage |
+| *some_unavailability_class* | `string` | some_unavailability | Set a additional custom class to y_percentage when some unavailability, if you want |
+| *total_unavailability_class* | `string` | total_unavailability | Set a additional custom class to y_percentage when total unavailability, if you want |
+| *total_availability_class* | `string` | total_availability | Set a additional custom class to y_percentage when total availability, if you want |
+| *percentageFormat* | `function` | See code | Set a custom percentage format function if you want |
+| *unavailabililty_percentage* | `boolean` | false | If true, calculates the percentage of unavailability instead of availability. Not valid if custom categories enabled |
+
+
+#### 3.3.15. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript

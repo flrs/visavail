@@ -127,6 +127,14 @@ div.y-tooltip.bottom::after {
     fill: #07C;
 }
 
+.visavail .ypercentage {
+    /* y axis percentage */
+    font-family: "Muli", "Helvetica", Arial, sans-serif;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 12px;
+	overflow: hidden;
+}
+
 .visavail .xAxis path,
 .visavail .xAxis line {
     display: none;

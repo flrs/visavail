@@ -37,8 +37,8 @@
 				// top margin includes title and legend
 				top: 65,
 
-				// right margin should provide space for last horz. axis title
-				right: 40,
+				// right margin should provide space for last horz. axis title and y percentage
+				right: 60,
 
 				bottom: 20,
 
@@ -52,7 +52,7 @@
 			padding:{
 				top: -49,
 				bottom: 0,
-				right: 0,
+				right: 60,
 				left: -100
 			},
 			// year ticks to be emphasized or not
@@ -78,6 +78,25 @@
 			date_is_descending: false,
 			// if false remeber to set the padding and margin
 			show_y_title: true,
+			// y_title additional class when some_unavailability
+			y_title_some_unavailability_class: 'some_unavailability',
+			// y_title additional class when total_unavailability
+			y_title_total_unavailability_class: 'total_unavailability',
+			// y_title additional class when total_availability
+			y_title_total_availability_class: 'total_availability',
+			y_percentage: {
+				enabled: false,
+				// percentage additional class when some_unavailability
+				some_unavailability_class: 'some_unavailability',
+				// percentage additional class when total_unavailability
+				total_unavailability_class: 'total_unavailability',
+				// percentage additional class when total availability
+				total_availability_class: 'total_availability',
+				// availability percentage format function
+				percentageFormat: d3.format('.2%'),
+				// percentage of unavailability if true
+				unavailability_percentage: false
+			},
 			defined_blocks: false,
 			y_title_tooltip: {
 				enabled: false,
@@ -106,6 +125,8 @@
 				enabled: true,
 				line_space: 12,
 				offset: 5,
+				// legend x position offset from right
+				x_right_offset: 150,
 				has_no_data_text: 'No Data available',
 				has_data_text: 'Data available'
 			},
@@ -524,7 +545,29 @@
 						
 					}
 				}
-				
+
+				// define total percentage times
+				if (options.y_percentage.enabled)
+					dataset.forEach(function (series, seriesI) {
+						dataset[seriesI].timeup_ms = 0;
+						dataset[seriesI].timedown_ms = 0;
+						if (!options.custom_categories)
+							series.disp_data.forEach(function (disp) {
+								if (disp[1])
+									dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
+								else
+									dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
+							});
+						else
+							series.disp_data.forEach(function (disp) {
+								if (disp[1] === series.category_percentage)
+									dataset[seriesI].timeup_ms += disp[2].getTime() - disp[0].getTime();
+								else
+									dataset[seriesI].timedown_ms += disp[2].getTime() - disp[0].getTime();
+							});
+					});
+
+
 				// define scales
 				var xScale = d3.scaleTime()
 					.domain([startDate, endDate])	
@@ -633,6 +676,18 @@
 					.call(options.zoomed)
 					.attr('cursor', "ew-resize")
 
+				function wrap() {
+					var self = d3.select(this),
+						textLength = self.node().getComputedTextLength(),
+						text = self.text();
+					
+						while (textLength > (-1 * options.padding.left + options.reduce_space_wrap) && text.length > 0) {
+						text = text.slice(0, -1);
+						self.text(text + '...');
+						textLength = self.node().getComputedTextLength();
+					}
+				}
+
 				if (options.show_y_title) {
 					// create y axis labels
 					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yAxis');
@@ -663,6 +718,14 @@
 							if (d.measure_url != null) {
 								returnCSSClass = returnCSSClass + ' link';
 							}
+							if (options.y_percentage.enabled)
+								if (d.timedown_ms == 0)
+									returnCSSClass += ' ' + options.y_title_total_availability_class;
+								else
+									if (d.timeup_ms == 0)
+										returnCSSClass += ' ' + options.y_title_total_unavailability_class;
+									else
+										returnCSSClass += ' ' + options.y_title_some_unavailability_class;
 							return returnCSSClass;
 						})
 						.on('click', function (d) {
@@ -672,18 +735,6 @@
 							return null;
 						})
 
-					function wrap() {
-						var self = d3.select(this),
-							textLength = self.node().getComputedTextLength(),
-							text = self.text();
-						
-							while (textLength > (-1 * options.padding.left + options.reduce_space_wrap) && text.length > 0) {
-							text = text.slice(0, -1);
-							self.text(text + '...');
-							textLength = self.node().getComputedTextLength();
-						}
-					}
-					
 					if(options.y_title_tooltip.enabled){	
 						y_axis_title.selectAll("g").selectAll('text')
 						.on('mouseover', function (d, i) {
@@ -768,7 +819,47 @@
 						*/
                     
 				}
-				
+
+				if (options.y_percentage.enabled) {
+					// create y axis labels
+					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yPercentage');
+					y_axis_title.selectAll('text')
+						.data(dataset.slice(startSet, endSet))
+						.enter()
+						.append('g')
+						.attr('id', function (d,i) {
+							return i;
+						});
+						
+					
+					y_axis_title.selectAll("g").append('text')
+						.attr('x', width)
+						.attr('dx', options.padding.right)
+						.attr('y', function (d,i){
+							return ((options.line_spacing + options.graph.height) * i) + options.line_spacing + (options.graph.height) / 2;
+						})
+						.attr('dy', "0.5ex")
+						.attr("text-anchor", "end")
+						.text(function (d) {
+							if (!options.custom_categories && options.y_percentage.unavailability_percentage)
+								return options.y_percentage.percentageFormat(d.timedown_ms/(d.timedown_ms+d.timeup_ms));
+							else
+								return options.y_percentage.percentageFormat(d.timeup_ms/(d.timeup_ms+d.timedown_ms));
+						})
+						.each(wrap)
+						.attr('class', function (d) {
+							var returnCSSClass = 'ypercentage';
+							if (d.timedown_ms == 0)
+								returnCSSClass += ' ' + options.y_percentage.total_availability_class;
+							else
+								if (d.timeup_ms == 0)
+									returnCSSClass += ' ' + options.y_percentage.total_unavailability_class;
+								else
+									returnCSSClass += ' ' + options.y_percentage.some_unavailability_class;
+							return returnCSSClass;
+						});
+				}
+
 				//xAxis
 				svg.select('#g_axis').append('g').attr('id', 'vGrid');
 
@@ -1178,28 +1269,28 @@
 						.attr('transform', 'translate(0,-12)');
 
 					legend.append('rect')
-						.attr('x', width + options.margin.right - 150)
+						.attr('x', width + options.margin.right - options.legend.x_right_offset)
 						.attr('y', options.padding.top)
 						.attr('height', 15)
 						.attr('width', 15)
 						.attr('class', 'rect_has_data');
 
 					legend.append('text')
-						.attr('x', width + options.margin.right - 150 + 20)
+						.attr('x', width + options.margin.right - options.legend.x_right_offset + 20)
 						.attr('y', options.padding.top + options.legend.line_space - options.legend.offset/2)
 						.text(options.legend.has_data_text)
 						.attr('dy', "0.5ex")
 						.attr('class', 'legend');
 
 					legend.append('rect')
-						.attr('x', width + options.margin.right - 150)
+						.attr('x', width + options.margin.right - options.legend.x_right_offset)
 						.attr('y', options.padding.top + options.legend.line_space + options.legend.offset)
 						.attr('height', 15)
 						.attr('width', 15)
 						.attr('class', 'rect_has_no_data');
 
 					legend.append('text')
-						.attr('x', width + options.margin.right - 150 + 20)
+						.attr('x', width + options.margin.right - options.legend.x_right_offset + 20)
 						.attr('y', options.padding.top + options.legend.line_space * 2 +  options.legend.offset/2)
 						.text(options.legend.has_no_data_text)
 						.attr('dy', "0.5ex")
