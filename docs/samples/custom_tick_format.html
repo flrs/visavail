@@ -19,6 +19,8 @@
 		body {
 			font-family: "Muli", "Helvetica", Arial, sans-serif;
 		}
+		.rect_purple{fill: purple}
+		.tooltip_purple{color: purple}
 	</style>
 
 </head>
@@ -50,9 +52,9 @@
 		var dataset = [{
 			"measure": "Fat Bike",
 			"categories": {
-				"0": { "color": "#377eb8" },
-				"1": { "color": "#ff7f00" },
-				"Zoe": { "color": "purple" },
+				"0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
+				"1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
+				"Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
 			},
 			"data": [
 				["2016-01-01 12:00:00", 0, "2016-01-01 13:00:00"],

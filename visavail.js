@@ -96,8 +96,7 @@
 				percentageFormat: d3.format('.2%'),
 				// percentage of unavailability if true
 				unavailability_percentage: false,
-				custom_percentage: false,
-				custom_class: ""
+				custom_percentage: false
 			},
 			defined_blocks: false,
 			y_title_tooltip: {
@@ -413,13 +412,14 @@
 				dataset.forEach(function (d) {
 					d.data.forEach(function (d1) {
 						if (!(d1[0] instanceof Date)) {
-							if (parseDateRegEx.test(d1[0])) {
-								// d1[0] is date without time data
-								d1[0] = parseDate(d1[0]);
-							} else if (parseDateTimeRegEx.test(d1[0])) {
+							if (parseDateTimeRegEx.test(d1[0])) {
 								// d1[0] is date with time data
 								d1[0] = parseDateTime(d1[0]);
 								options.is_date_only_format = false;
+								
+							} else if (parseDateRegEx.test(d1[0])) {
+								// d1[0] is date without time data
+								d1[0] = parseDate(d1[0]);
 							} else {
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
@@ -430,12 +430,12 @@
 								d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 							} else {
 								if(d1[2]){
-									if (parseDateRegEx.test(d1[2])) {
-										// d1[2] is date without time data
-										d1[2] = parseDate(d1[2]);
-									} else if (parseDateTimeRegEx.test(d1[2])) {
+									if (parseDateTimeRegEx.test(d1[2])) {
 										// d1[2] is date with time data
 										d1[2] = parseDateTime(d1[2]);
+									} else if (parseDateRegEx.test(d1[2])) {
+										// d1[2] is date without time data
+										d1[2] = parseDate(d1[2]);
 									} else {
 										d1[2] = d1[0];
 										if(options.graph.type != "rhombus")
@@ -474,9 +474,8 @@
 							endDate = d[2]
 						if(d[0] <= startDate)
 							startDate = d[0]
-						
+
 						if (i !== 0 && i < dataLength) {
-							
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
 								if (options.defined_blocks) {
@@ -488,7 +487,6 @@
 										tmpData.push(d);
 									}
 								} else {
-									
 									tmpData[tmpData.length - 1][2] = d[2];
 									tmpData[tmpData.length - 1][3] = d[1];
 								}
@@ -501,13 +499,13 @@
 								tmpData.push(d);
 							}
 						} else if (i === 0) {
-							console.log(d[0])
-							d[2] =  d[0];
+							if(d.length < 3)
+								d[2] =  d[0];
 							tmpData.push(d);
 						}
 					});
 					dataset[seriesI].disp_data = tmpData;
-						
+					// console.log(dataset[seriesI].disp_data)
 				});
 				// determine start and end dates among all nested datasets
 				if(options.display_date_range && (options.display_date_range[0] || options.display_date_range[1])){
@@ -811,7 +809,7 @@
 						});
 
 						function drawTitleTooltipWhenOver(obj, dataset, d, i){
-							if (y_title_tooltip.enabled){
+							if (options.y_title_tooltip.enabled){
 								var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
 								yTitlediv.transition()
 									.duration(options.y_title_tooltip.duration)

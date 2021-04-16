@@ -1,52 +1,60 @@
-# Visavail.js - A Time Data Availability Chart
+# Visavail.js - A Time Data Availability Chart <!-- omit in toc -->
 This library visualizes the availability of time-dependent data with a chart on a website.
 
-## Table of Contents
+<br>
 
-- [Visavail.js - A Time Data Availability Chart](#visavailjs---a-time-data-availability-chart)
-  - [Table of Contents](#table-of-contents)
-  - [1. Description](#1-description)
-  - [2. Demo](#2-demo)
-  - [3. Usage](#3-usage)
-    - [3.1. Input Data Format](#31-input-data-format)
-      - [3.1.1. Continuous Data](#311-continuous-data)
-      - [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
-      - [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
-      - [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
-      - [3.1.5. Linking Measure Labels](#315-linking-measure-labels)
-      - [~~3.1.6. Measure Labels with HTML~~](#s316-measure-labels-with-htmls)
-    - [3.2. Display Style](#32-display-style)
-      - [3.2.1. Type of Chart](#321-type-of-chart)
-    - [3.3. Options](#33-options)
-      - [3.3.1. Margin](#331-margin)
-      - [3.3.2. Padding](#332-padding)
-      - [3.3.3. Y Title Tooltip](#333-y-title-tooltip)
-      - [3.3.4. Tooltip](#334-tooltip)
-        - [3.3.4.1 Hover Zoom Option](#3341-hover-zoom-option)
-      - [3.3.5. Legend](#335-legend)
-      - [3.3.6. Title](#336-title)
-      - [3.3.7. Sub Title](#337-sub-title)
-      - [3.3.8. Icon](#338-icon)
-      - [3.3.9. Graph](#339-graph)
-      - [3.3.10. Responsive](#3310-responsive)
-      - [3.3.11. Zoom](#3311-zoom)
-      - [3.3.12. Sub Chart](#3312-sub-chart)
-        - [3.3.12.1. Sub Chart Graph Option](#33121-sub-chart-graph-option)
-      - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
-      - [3.3.14. Y Percentage](#3314-y-percentage)
-      - [3.3.15. Example Usage](#3315-example-usage)
-    - [3.4. Implementation](#34-implementation)
-      - [3.4.1 Integrate on Angular](#341-integrate-on-angular)
-      - [3.4.2 Integrate on React.js](#342-integrate-on-reactjs)
-    - [3.5 Visavail Function](#35-visavail-function)
-    - [3.6 Public Projects With Visavail.js](#36-public-projects-with-visavailjs)
-  - [4. Download](#4-download)
-  - [5. Dependencies](#5-dependencies)
-  - [6. Contribution](#6-contribution)
-  - [## 7. License](#h2-id%227-license-95%227-licenseh2)
+## Table of Contents <!-- omit in toc -->
+
+- [7.1. License](#-71-license)](#71-license-71-license)
+- [1. Description](#1-description)
+- [2. Demo](#2-demo)
+- [3. Usage](#3-usage)
+  - [3.1. Input Data Format](#31-input-data-format)
+    - [3.1.1. Continuous Data](#311-continuous-data)
+    - [3.1.2. Data With Time Gaps](#312-data-with-time-gaps)
+    - [3.1.3. Data With Dates and Times](#313-data-with-dates-and-times)
+    - [3.1.4. Data With Custom Categories](#314-data-with-custom-categories)
+    - [3.1.5. Display Style](#315-display-style)
+    - [3.1.6. Type of Chart](#316-type-of-chart)
+  - [3.2. Data Options](#32-data-options)
+    - [3.2.0.1. ~~Measure Labels with HTML~~](#3201-measure-labels-with-html)
+    - [3.2.1. Icon property](#321-icon-property)
+    - [3.2.2. Percentage property](#322-percentage-property)
+    - [3.2.3. Compeld data example](#323-compeld-data-example)
+  - [3.3. Chart Options](#33-chart-options)
+    - [3.3.1. Margin](#331-margin)
+    - [3.3.2. Padding](#332-padding)
+    - [3.3.3. Y Title Tooltip](#333-y-title-tooltip)
+    - [3.3.4. Tooltip](#334-tooltip)
+    - [3.3.4.1. 3.3.4.1 Hover Zoom Option](#3341-3341-hover-zoom-option)
+    - [3.3.5. Legend](#335-legend)
+    - [3.3.6. Title](#336-title)
+    - [3.3.7. Sub Title](#337-sub-title)
+    - [3.3.8. Icon](#338-icon)
+    - [3.3.9. Graph](#339-graph)
+    - [3.3.10. Responsive](#3310-responsive)
+    - [3.3.11. Zoom](#3311-zoom)
+    - [3.3.12. Sub Chart](#3312-sub-chart)
+    - [3.3.12.1. Sub Chart Graph Option](#33121-sub-chart-graph-option)
+    - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
+    - [3.3.14. Y Percentage](#3314-y-percentage)
+    - [3.3.15. Example Usage](#3315-example-usage)
+    - [3.3.16. Implementation](#3316-implementation)
+    - [3.3.17. Integrate on Angular](#3317-integrate-on-angular)
+    - [3.3.18. Integrate on React.js](#3318-integrate-on-reactjs)
+    - [3.3.19. 3.1.29.Visavail Function](#3319-3129visavail-function)
+- [4. Public Projects With Visavail.js](#4-public-projects-with-visavailjs)
+- [5. Download](#5-download)
+- [6. Dependencies](#6-dependencies)
+- [7. Contribution](#7-contribution)
+  - [# 7.1. License](#-71-license)
+
+# 7.1. License](#-71-license)
 
 
-## 1. Description
+<br>
+
+# 1. Description
 The Visavail.js chart allows a quick insight into which periods of time a time-dependent dataset covers. It is visually similar to a Gantt chart and allows easy identification of missing pieces and gaps in large datasets. Missing periods of data are marked in red while blocks of complete periods of data are marked in green. The user discovers dates that define start and end of such periods by tooltips, as shown in the picture below.
 
 ![Preview of Visavail.js chart](preview.jpg "Visavail.js Sample Chart")
@@ -57,17 +65,25 @@ An example use case is the visualization of a dataset that contains time-depende
 
 The Visavail.js library takes single data points with dates and information about data availability as inputs, combines them into time blocks, and visualizes these blocks.
 
-## 2. Demo
+<br>
+
+# 2. Demo
 Some example of Visavail.js in action is displayed at [Demo](https://flrs.github.io/visavail/docs/index.html). 
 The source code of the a basic demo is shown in the file [basic.html](https://github.com/flrs/visavail/blob/master/docs/samples/basic.html).
 
-## 3. Usage
+<br>
+
+# 3. Usage
 Input data format, display style and dependencies have to be considered for using the Visavail.js library successfully. The respective code snippets are explained below.
 
-### 3.1. Input Data Format
-The input to the Visavail.js library is a JSON-like structure. There are three formats that Visavail.js accepts. Which format is right for you depends on your use case.
+<br>
 
-#### 3.1.1. Continuous Data
+## 3.1. Input Data Format
+The input to the Visavail.js library is a JSON-like structure. There are four formats that Visavail.js accepts. Which format is right for you depends on your use case.
+
+<br>
+
+### 3.1.1. Continuous Data
 You should use the continuous data format if you want to display continuous recordings. Visavail.js assumes that information about the availability of some data is valid until the next data point shows up.
 Thus, the library will plot a continuous bar from the first to the last data point. The last data point will be assumed valid for a period of `"interval_s"`.
 The below code comments point out the elements that should be included in the input data.
@@ -88,7 +104,9 @@ var dataset = [{
 If you want to add some descpription regarding measure, you can add a `"measure_description"` key to single dataset.
 Without enable y_title_tooltip enablement you can see the description as a svg title (no html enablement), if you enable the tooltip funziton for y title you can use also html tag for tooltip.
 
-#### 3.1.2. Data With Time Gaps
+<br>
+
+### 3.1.2. Data With Time Gaps
 You should use the time gap data format if you want to display recordings that are not continuous. The availability data are valid for a specific period of time. This period is defined by a start and an end date, as shown in the code below. 
 In this case, no information about `"interval_s"` (as explained in the previous use case) is needed.
 ```javascript
@@ -105,7 +123,9 @@ var dataset = [{
 }];
 ```
 
-#### 3.1.3. Data With Dates and Times
+<br>
+
+### 3.1.3. Data With Dates and Times
 The library also supports the display of data in smaller units than days as in the previous examples. Visavail.js currently supports display of data in second intervals. The code below is based on the time gap data format outlined above.
 To display date and time data correctly, all data must be formatted in a 24-hour format.
 ```javascript
@@ -120,7 +140,9 @@ var dataset = [{
 }];
 ```
 
-#### 3.1.4. Data With Custom Categories
+<br>
+
+### 3.1.4. Data With Custom Categories
 If you want to show data in other categories than "data available" and "no data available", the following example is for you. Visavail.js also supports displaying data in custom categories. In this case, you have to assign all of your categories a name and a `class` that is used for displaying the category in the chart.
 
 The chart legend will not appear on charts with data in custom categories. 
@@ -146,34 +168,15 @@ var dataset = [{
 }];
 ```
 
-#### 3.1.5. Linking Measure Labels
-If you want to add a link to your measure label, you can do so by adding an URL through the `measure_url` property in the `dataset`. Here is an example:
-```javascript
-var dataset = [{
-    "measure": "Annual Report",
-    "measure_url": "http://www.github.com/flrs/visavail" // link definition
-    "interval_s": 365 * 24 * 60 * 60,
-    "data": [
-        ["2015-01-01", 0], 
-        ["2016-01-01", 1],
-        ["2017-01-01", 1],
-        ["2018-01-01", 1]
-    ]
-}];
-```
+<br>
 
-#### ~~3.1.6. Measure Labels with HTML~~
-~~Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:~~
-_At the moment this type of labels are suspended due to incompatibility with IE11 and wrapping text_
-
-**WE HAVE INTRODUCED `measure_description` that in combination with `y_title_tooltip` can support html tag**
-
-
-### 3.2. Display Style
+### 3.1.5. Display Style
 
 The display style of the chart is defined by a CSS style. The names of the different CSS classes in the [CSS style file](https://github.com/flrs/visavail/blob/master/visavail.css) are self-explanatory.
 
-#### 3.2.1. Type of Chart
+<br>
+
+### 3.1.6. Type of Chart
 
 The library support three type of chart for different type of visualization "bar" (default), "rhombus", "circle".
 If you want to change type of graph you can follow this code
@@ -187,8 +190,88 @@ var options = {
 };
 ```
 
+<br>
 
-### 3.3. Options
+## 3.2. Data Options
+
+The options of the data are in JSON format and you can customize everything.
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *measure* | `string` | Name of measure that will be displayed on left side |
+| *measure_url* | `string` | Url that you can set as a link of measure|
+| *measure_description* | `string` | Description of mesurament diplayed when `y_title_tooltip` is enabled|
+| *interval_s* | `number` | Used on dataset without defined block to define dimension of last block |
+| *data* | `[ [] ... []]` | Array of Array Object that contain data to be displayed |
+| *icon* | `Object{}` | **[more info](#321-icon-property)** | Json Object that contain icon setting that will be pre-append to y title |
+| *percentage* | `Object{}` | **[more info](#322-percentage-property)** | Json Object used in cans og char option: `y_percentage.enable` and `y_percentage.custom_percentage` is setted a true  |
+
+#<br>
+
+### 3.2.0.1. ~~Measure Labels with HTML~~
+~~Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:~~
+_At the moment this type of labels are suspended due to incompatibility with IE11 and wrapping text_
+
+**WE HAVE INTRODUCED `measure_description` that in combination with `y_title_tooltip` can support html tag**
+
+<br>
+
+### 3.2.1. Icon property
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *url* | `string` | Url of image|
+| *width* | `int` | Width of image to be used |
+| *height* | `int` | Width of image to be used |
+| *padding* | `Object{left: int, right: int }` | Object with 2 key, left, for add margin to left, right to add margin on right |
+| *background_class* | `string` | Class for customize the circle appended on the background of icon |
+
+<br>
+
+<br>
+
+### 3.2.2. Percentage property
+| Name | Type | Default | Description |
+| ---- |------| ------- | ---------- |
+| *measure* | `string` | Value to set on the right of the graph|
+| *class* | `string` | Class to be used for this custom param |  
+
+<br>
+
+### 3.2.3. Compeld data example
+This is a simple compelx example with all data features enabled:
+```javascript
+var dataset = [{
+    "measure": "Fat Bike",
+    "categories": { // category names and their colors defined here
+        "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
+        "1": {class: "rect_has_data", tooltip_html: '<i class="fas fa-fw fa-check tooltip_has_data"></i>'},
+        "Zoe": {class: "rect_purple" , tooltip_html: '<i class="fas fa-fw fa-trophy tooltip_purple"></i>'},
+    },
+    "category_percentage": "Zoe", // if percentage enable, calculates the percentage of this category
+    "data": [
+        ["2016-01-01 12:00:00", "Kim", "2016-01-01 13:00:00"],
+        ["2016-01-01 14:22:51", "Zoe", "2016-01-01 16:14:12"],
+        ["2016-01-01 16:14:12", "Bert", "2016-01-01 17:14:12"],
+        ["2016-01-01 19:20:05", "Zoe", "2016-01-01 20:30:00"]
+    ],
+    "icon": {
+      "url":"your_url_file",
+      "width": 24,
+      "height":24,
+      "padding": {
+          "left": 0,
+          "right": 5
+      },
+      "background_class": "icon_class"
+    },
+    "percentage": { //used for customize right text
+        "measure": "45 %",
+        class: "y_percentace_test"
+    }
+}];
+```
+<br>
+
+## 3.3. Chart Options
 
 The options of the chart are in JSON format and you can customize everything.
 You can pass the JSON Object to library with custom settings
@@ -231,7 +314,9 @@ You can pass the JSON Object to library with custom settings
 | *sub_chart* | `Object{}` | **[more info](#3312-sub-chart)** | Json Object that contain option for enable sub-chart in the graph |
 | *custom_time_format* | `Object{}` | **[more info](#3313-custom-tick-format)** | Json Object that contain option for customize the x-axes tick into graph |
 
-#### 3.3.1. Margin
+<br>
+
+### 3.3.1. Margin
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -240,7 +325,9 @@ You can pass the JSON Object to library with custom settings
 | *right* | `number` | 20 | Number express in px |
 | *left* | `number` | 100 | Number express in px |
 
-#### 3.3.2. Padding
+<br>
+
+### 3.3.2. Padding
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -249,7 +336,9 @@ You can pass the JSON Object to library with custom settings
 | *right* | `number` | 0 | Number express in px, used for move the y percentage on the right |
 | *left* | `number` | -100 | Number express in px, used for move the y title on the left |
 
-#### 3.3.3. Y Title Tooltip
+<br>
+
+### 3.3.3. Y Title Tooltip
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -260,7 +349,9 @@ You can pass the JSON Object to library with custom settings
 | *fixed* | `boolean` | false | Valid only on "left" tooltip type, if true fixed the tooltip all right of y lable |
 | *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
 
-#### 3.3.4. Tooltip
+<br>
+
+### 3.3.4. Tooltip
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -273,14 +364,18 @@ You can pass the JSON Object to library with custom settings
 | *duration* | `number` | 150 | Number in ms for the animation duration (all tooltip otpion) |
 | *hover_zoom* | `Object{}` |**[more info](#3341-hover-zoom-option)**|option for zoom block on hover |
 
-##### 3.3.4.1 Hover Zoom Option
+#<br>
+
+### 3.3.4.1. 3.3.4.1 Hover Zoom Option
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable block zoom whe mouse hover |
 | *ratio* | `number` | 0.4 | Number from 0 to 1 that incrase the block size. It will be multiplied with option line_spacing |
 
 
-#### 3.3.5. Legend
+<br>
+
+### 3.3.5. Legend
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -291,7 +386,9 @@ You can pass the JSON Object to library with custom settings
 | *has_no_data_text* | `string` | No Data available | String for no data available |
 | *has_data_text* | `string` | Data available | String for no data available |
 
-#### 3.3.6. Title
+<br>
+
+### 3.3.6. Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -299,7 +396,9 @@ You can pass the JSON Object to library with custom settings
 | *line_space* | `number` | 16 | height of legend font , correspond to line-height of class tooltip from css) |
 | *text* | `string` | Data Availability Plot | String Title |
 
-#### 3.3.7. Sub Title
+<br>
+
+### 3.3.7. Sub Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -308,14 +407,18 @@ You can pass the JSON Object to library with custom settings
 | *from_text* | `string` | from | String for from date |
 | *to_text* | `string` | to | String for to date  |
 
-#### 3.3.8. Icon
+<br>
+
+### 3.3.8. Icon
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *class_has_data* | `string` | fas fa-fw fa-check | custom icon call (for example font awesome) |
 | *class_has_no_data* | `string` | fas fa-fw fa-times | custom icon call (for example font awesome)  |
 
-#### 3.3.9. Graph
+<br>
+
+### 3.3.9. Graph
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -323,7 +426,9 @@ You can pass the JSON Object to library with custom settings
 | *height* | `number` | 20 | height of type of graph |
 | *width* | `number` | 20 | width of type of graph, used only for rhombus type and circle type|
 
-#### 3.3.10. Responsive
+<br>
+
+### 3.3.10. Responsive
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -331,7 +436,9 @@ You can pass the JSON Object to library with custom settings
 | *onresize* | `function` | null | at the moment not supported |
 
 
-#### 3.3.11. Zoom
+<br>
+
+### 3.3.11. Zoom
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -341,7 +448,9 @@ You can pass the JSON Object to library with custom settings
 | *onZoomEnd* | `function(e)` | null | return a array with current domain of current zoom in date format at the end of the zoom |
 
 
-#### 3.3.12. Sub Chart
+<br>
+
+### 3.3.12. Sub Chart
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -352,7 +461,9 @@ You can pass the JSON Object to library with custom settings
 | *graph* | `Object{}` |**[more info](#33121-sub-chart-graph-option)**|option for zoom block on hover |
 
 
-##### 3.3.12.1. Sub Chart Graph Option
+#<br>
+
+### 3.3.12.1. Sub Chart Graph Option
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -362,7 +473,9 @@ You can pass the JSON Object to library with custom settings
 | *line_spacing* | `number` | 7 | Space between two row of dataset into sub_chart |
 
 
-#### 3.3.13. Custom Tick Format
+<br>
+
+### 3.3.13. Custom Tick Format
 
 This library use moment.js to customize and convert the date format/language in base of moment.locale() function (we autodetect the browser language!). If you what change manually the tick format you can customize with this option.
 
@@ -380,7 +493,9 @@ With set this option you override the automatic tick format execute by library f
 | *format_year* | `string` | moment convertion | custom format for year |
 
 
-#### 3.3.14. Y Percentage
+<br>
+
+### 3.3.14. Y Percentage
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -390,9 +505,11 @@ With set this option you override the automatic tick format execute by library f
 | *total_availability_class* | `string` | total_availability | Set a additional custom class to y_percentage when total availability, if you want |
 | *percentageFormat* | `function` | See code | Set a custom percentage format function if you want |
 | *unavailabililty_percentage* | `boolean` | false | If true, calculates the percentage of unavailability instead of availability. Not valid if custom categories enabled |
+| *custom_percentage* | `boolean` | false | If true, append a custom text present in the measurment data under key: `percentage.measure` |
 
+<br>
 
-#### 3.3.15. Example Usage
+### 3.3.15. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
@@ -412,7 +529,9 @@ var options = {
 };
 ```
 
-### 3.4. Implementation
+<br>
+
+### 3.3.16. Implementation
 To use the chart in your project, follow these steps:
 
 1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project (for minify version).
@@ -446,7 +565,9 @@ To use the chart in your project, follow these steps:
 	```
 
   
-#### 3.4.1 Integrate on Angular
+<br>
+
+### 3.3.17. Integrate on Angular
 
 You can use this library in your Anular 2+ project (tested from 2 to 8 version). Follow this step to integrate it:
 
@@ -466,7 +587,9 @@ You can use this library in your Anular 2+ project (tested from 2 to 8 version).
 An example of implementation, you can found [HERE](https://codesandbox.io/s/angular-o8gxt)
 
 
-#### 3.4.2 Integrate on React.js
+<br>
+
+### 3.3.18. Integrate on React.js
 
 You can use this library in your React project (not compleated tested). Follow this step to integrate it:
 
@@ -488,7 +611,9 @@ You can use this library in your React project (not compleated tested). Follow t
 An example of implementation, you can found [HERE](https://codesandbox.io/s/crazy-surf-9hpmg)
 
 
-### 3.5 Visavail Function
+<br>
+
+### 3.3.19. 3.1.29.Visavail Function
 
 The Visavail library have inside a series of function for update, change and delete the graph without using manual funtion.
 Below you can find a table that explain thi function.
@@ -502,23 +627,33 @@ You can associate `chart = visavail.generate(.....)` and call `chart.someFunctio
 | *destroy()* | empty | With this function you can delete the graph and all div generate by library |
 
 
-### 3.6 Public Projects With Visavail.js
+<br>
+
+# 4. Public Projects With Visavail.js
 
 - [Jina Yoon](https://jinayoon.github.io/) of Brown University used Visavail.js in her [sleep tracker comparison](http://sleep.cs.brown.edu/comparison/)
 - [GanttLab](https://gitlab.com/ganttlab/ganttlab) uses Visavail.js to present Gitlab and Github issues in a Gantt chart
 
-## 4. Download
+<br>
+
+# 5. Download
 An archive with the library can be downloaded from the [releases page](https://github.com/flrs/visavail/releases).
 
-## 5. Dependencies
+<br>
+
+# 6. Dependencies
 Visavail.js depends on a couple of libraries:
 * [D3.js JavaScript library](https://d3js.org/) as a visualization framework,
 * [Moment.js](http://momentjs.com/) for formatting dates in tooltips and
 * [Font Awesome](http://fontawesome.io) for icons in the tooltips.
 
-## 6. Contribution
+<br>
+
+# 7. Contribution
 We are happy about any contribution or feedback. Please let us know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues).
 
-## 7. License
+<br>
+
+# 7.1. License
 -------
 The Visavail.js library is distributed under the [MIT License (MIT)](https://github.com/flrs/visavail/blob/master/LICENSE.md). Please also take note of the licenses of the dependencies.
