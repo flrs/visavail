@@ -1,4 +1,12 @@
-# VISAVAIL V 1.4.1
+# VISAVAIL V 1.5.0
+
+* bug fix on parsing data
+* adding new features for add precentage autocalculate or custom
+* move thext in front of graph
+* add support to icon before y title
+* Update readme
+  
+* # VISAVAIL V 1.4.1
 
 * bug fix 
 * align new example for custom categories

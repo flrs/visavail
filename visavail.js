@@ -1,8 +1,8 @@
-(function (global, factory) {
+;(function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-		typeof define === 'function' && define.amd ? define(factory) :
-		(global.visavail = factory());
-}(this, (function () {
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.visavail = factory());
+}(this, (function () { 'use strict';
 	var visavail = {};
 
 	//ie11 fixing 
@@ -95,7 +95,8 @@
 				// availability percentage format function
 				percentageFormat: d3.format('.2%'),
 				// percentage of unavailability if true
-				unavailability_percentage: false
+				unavailability_percentage: false,
+				custom_percentage: false
 			},
 			defined_blocks: false,
 			y_title_tooltip: {
@@ -411,13 +412,14 @@
 				dataset.forEach(function (d) {
 					d.data.forEach(function (d1) {
 						if (!(d1[0] instanceof Date)) {
-							if (parseDateRegEx.test(d1[0])) {
-								// d1[0] is date without time data
-								d1[0] = parseDate(d1[0]);
-							} else if (parseDateTimeRegEx.test(d1[0])) {
+							if (parseDateTimeRegEx.test(d1[0])) {
 								// d1[0] is date with time data
 								d1[0] = parseDateTime(d1[0]);
 								options.is_date_only_format = false;
+								
+							} else if (parseDateRegEx.test(d1[0])) {
+								// d1[0] is date without time data
+								d1[0] = parseDate(d1[0]);
 							} else {
 								throw new Error('Date/time format not recognized. Pick between \'YYYY-MM-DD\' or ' +
 									'\'YYYY-MM-DD HH:MM:SS\'.');
@@ -428,12 +430,12 @@
 								d1[2] = d3.timeSecond.offset(d1[0], d.interval_s);
 							} else {
 								if(d1[2]){
-									if (parseDateRegEx.test(d1[2])) {
-										// d1[2] is date without time data
-										d1[2] = parseDate(d1[2]);
-									} else if (parseDateTimeRegEx.test(d1[2])) {
+									if (parseDateTimeRegEx.test(d1[2])) {
 										// d1[2] is date with time data
 										d1[2] = parseDateTime(d1[2]);
+									} else if (parseDateRegEx.test(d1[2])) {
+										// d1[2] is date without time data
+										d1[2] = parseDate(d1[2]);
 									} else {
 										d1[2] = d1[0];
 										if(options.graph.type != "rhombus")
@@ -472,7 +474,7 @@
 							endDate = d[2]
 						if(d[0] <= startDate)
 							startDate = d[0]
-						
+
 						if (i !== 0 && i < dataLength) {
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
@@ -485,7 +487,6 @@
 										tmpData.push(d);
 									}
 								} else {
-									
 									tmpData[tmpData.length - 1][2] = d[2];
 									tmpData[tmpData.length - 1][3] = d[1];
 								}
@@ -498,12 +499,13 @@
 								tmpData.push(d);
 							}
 						} else if (i === 0) {
-							d[3] =  d[1];
+							if(d.length < 3)
+								d[2] =  d[0];
 							tmpData.push(d);
 						}
 					});
 					dataset[seriesI].disp_data = tmpData;
-						
+					// console.log(dataset[seriesI].disp_data)
 				});
 				// determine start and end dates among all nested datasets
 				if(options.display_date_range && (options.display_date_range[0] || options.display_date_range[1])){
@@ -547,7 +549,7 @@
 				}
 
 				// define total percentage times
-				if (options.y_percentage.enabled)
+				if (options.y_percentage.enabled && !options.y_percentage.custom_percentage)
 					dataset.forEach(function (series, seriesI) {
 						dataset[seriesI].timeup_ms = 0;
 						dataset[seriesI].timedown_ms = 0;
@@ -601,8 +603,19 @@
 					.attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')');
 
 				// create basic element groups
-				svg.append('g').attr('id', 'g_title');
+
 				svg.append('g').attr('id', 'g_axis');
+				svg.append('g')
+				.attr('id', 'g_data')
+				.append('rect')
+				.attr('id', 'zoom')
+				.attr('width', width)
+				.attr('height', height)
+				.attr('fill-opacity', 0)
+				.attr('x', 0)
+				.attr('y', 0)
+				svg.append('g').attr('id', 'g_axis_text');
+				svg.append('g').attr('id', 'g_title');
 
 				options.zoomed = d3.zoom()
 					.scaleExtent([1,Infinity])
@@ -660,16 +673,6 @@
 							options.zoom.onZoomEnd.call(this, options.xScale.domain());
 						}
 					});
-				
-				svg.append('g')
-				.attr('id', 'g_data')
-				.append('rect')
-				.attr('id', 'zoom')
-				.attr('width', width)
-				.attr('height', height)
-				.attr('fill-opacity', 0)
-				.attr('x', 0)
-				.attr('y', 0)
 
 				if (options.zoom.enabled)
 					svg.select("#g_data")
@@ -690,7 +693,7 @@
 
 				if (options.show_y_title) {
 					// create y axis labels
-					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yAxis');
+					var y_axis_title = svg.select('#g_axis_text').append('g').attr('id', 'yAxis');
 					y_axis_title.selectAll('text')
 						.data(dataset.slice(startSet, endSet))
 						.enter()
@@ -718,7 +721,7 @@
 							if (d.measure_url != null) {
 								returnCSSClass = returnCSSClass + ' link';
 							}
-							if (options.y_percentage.enabled)
+							if (options.y_percentage.enabled && !options.y_percentage.custom_percentage)
 								if (d.timedown_ms == 0)
 									returnCSSClass += ' ' + options.y_title_total_availability_class;
 								else
@@ -734,6 +737,58 @@
 							}
 							return null;
 						})
+						
+					y_axis_title.selectAll("g")
+						.append("circle")
+						.attr('class', function (d) {
+							return 'ytitle_icon_background ' + ((d.icon || "").background_class || "");
+						})
+						.attr('cx',  function (d) {
+							if (d.icon && d.icon.width)
+								return options.padding.left - d.icon.width/2 - ((d.icon.padding || 0).right || 0) - (d.icon.padding_right || 0);
+							return 0;
+						})
+						.attr('cy', function (d,i){
+							if (d.icon && d.icon.height)
+								return ((options.line_spacing + options.graph.height ) * i) + options.line_spacing + (options.graph.height) / 2;
+							return 0;
+						})
+						.attr("r", function (d) {
+							if (d.icon && d.icon.width)
+								return d.icon.width/2 ;
+							return 0;
+						});
+
+					y_axis_title.selectAll("g")
+						.append("image")
+						.attr('class', function (d) {
+							return 'ytitle_icon_image ' + ((d.icon || "").image_class || "");
+						})
+						.attr("xlink:href", function (d) {
+							if (d.icon && d.icon.url)
+								return d.icon.url ;
+							return "";
+						})
+						.attr('x',  function (d) {
+							if (d.icon && d.icon.width)
+								return options.padding.left - d.icon.width - ((d.icon.padding || 0).right || 0) - (d.icon.padding_right || 0);
+							return 0;
+						})
+						.attr('y', function (d,i){
+							if (d.icon && d.icon.height)
+								return ((options.line_spacing + options.graph.height ) * i) - d.icon.height/2 + options.line_spacing + (options.graph.height) / 2;
+							return 0;
+						})
+						.attr("width", function (d) {
+							if (d.icon && d.icon.width)
+								return d.icon.width ;
+							return 0;
+						})
+						.attr("height", function (d) {
+							if (d.icon && d.icon.height)
+								return d.icon.height ;
+							return 0;
+						});
 
 					if(options.y_title_tooltip.enabled){	
 						y_axis_title.selectAll("g").selectAll('text')
@@ -754,37 +809,38 @@
 						});
 
 						function drawTitleTooltipWhenOver(obj, dataset, d, i){
-						
-							var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
-							yTitlediv.transition()
-								.duration(options.y_title_tooltip.duration)
-								.style('opacity', 1);
+							if (options.y_title_tooltip.enabled){
+								var matrix = obj.getCTM().translate(obj.getAttribute('x'), obj.getAttribute('y'));
+								yTitlediv.transition()
+									.duration(options.y_title_tooltip.duration)
+									.style('opacity', 1);
 
-							yTitlediv.html(function () {
-									var output = d.measure_description  || "";
-									return output;
-								})
+								yTitlediv.html(function () {
+										var output = d.measure_description  || "";
+										return output;
+									})
 
-							if(options.y_title_tooltip.type == "right"){
-								yTitlediv.style('left', function(){
-									if(options.y_title_tooltip.fixed)
-										return -1 * options.padding.left + 'px';
-									return options.y_title_tooltip.spacing.right + d3.select(obj).node().getComputedTextLength() + 'px';
-								})
-								.classed(options.y_title_tooltip.type, true)
-								.style('top',  matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + ((options.line_spacing + options.graph.height) * i))/2 + 'px')
-							}
+								if(options.y_title_tooltip.type == "right"){
+									yTitlediv.style('left', function(){
+										if(options.y_title_tooltip.fixed)
+											return -1 * options.padding.left + 'px';
+										return options.y_title_tooltip.spacing.right + d3.select(obj).node().getComputedTextLength() + 'px';
+									})
+									.classed(options.y_title_tooltip.type, true)
+									.style('top',  matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + ((options.line_spacing + options.graph.height) * i))/2 + 'px')
+								}
 
-							if(options.y_title_tooltip.type == "top"){
-								yTitlediv.style('left', '0px')
-								.style("top", matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + options.y_title_tooltip.spacing.top)  + 'px')
-								.classed(options.y_title_tooltip.type, true)
-							}
-							
-							if(options.y_title_tooltip.type == "bottom"){
-								yTitlediv.style('left', '0px')
-								.style("top", matrix.f + options.y_title_tooltip.spacing.bottom  + 'px')
-								.classed(options.y_title_tooltip.type, true)
+								if(options.y_title_tooltip.type == "top"){
+									yTitlediv.style('left', '0px')
+									.style("top", matrix.f - (document.getElementsByClassName(options.y_title_tooltip.class)[0].offsetHeight + options.y_title_tooltip.spacing.top)  + 'px')
+									.classed(options.y_title_tooltip.type, true)
+								}
+								
+								if(options.y_title_tooltip.type == "bottom"){
+									yTitlediv.style('left', '0px')
+									.style("top", matrix.f + options.y_title_tooltip.spacing.bottom  + 'px')
+									.classed(options.y_title_tooltip.type, true)
+								}
 							}
 							
 						}
@@ -822,8 +878,8 @@
 
 				if (options.y_percentage.enabled) {
 					// create y axis labels
-					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yPercentage');
-					y_axis_title.selectAll('text')
+					var y_percentage_title = svg.select('#g_axis_text').append('g').attr('id', 'yPercentage');
+					y_percentage_title.selectAll('text')
 						.data(dataset.slice(startSet, endSet))
 						.enter()
 						.append('g')
@@ -832,7 +888,7 @@
 						});
 						
 					
-					y_axis_title.selectAll("g").append('text')
+					y_percentage_title.selectAll("g").append('text')
 						.attr('x', width)
 						.attr('dx', options.padding.right)
 						.attr('y', function (d,i){
@@ -843,19 +899,25 @@
 						.text(function (d) {
 							if (!options.custom_categories && options.y_percentage.unavailability_percentage)
 								return options.y_percentage.percentageFormat(d.timedown_ms/(d.timedown_ms+d.timeup_ms));
+							else if(options.y_percentage.custom_percentage )
+								return (d.percentage || "").measure || "";
 							else
 								return options.y_percentage.percentageFormat(d.timeup_ms/(d.timeup_ms+d.timedown_ms));
 						})
 						.each(wrap)
 						.attr('class', function (d) {
 							var returnCSSClass = 'ypercentage';
-							if (d.timedown_ms == 0)
-								returnCSSClass += ' ' + options.y_percentage.total_availability_class;
-							else
-								if (d.timeup_ms == 0)
-									returnCSSClass += ' ' + options.y_percentage.total_unavailability_class;
+							if (!options.y_percentage.custom_percentage)
+								if (d.timedown_ms == 0)
+									returnCSSClass += ' ' + options.y_percentage.total_availability_class;
 								else
-									returnCSSClass += ' ' + options.y_percentage.some_unavailability_class;
+									if (d.timeup_ms == 0)
+										returnCSSClass += ' ' + options.y_percentage.total_unavailability_class;
+									else
+										returnCSSClass += ' ' + options.y_percentage.some_unavailability_class;
+							else if(options.y_percentage.custom_percentage)
+								returnCSSClass += ' ' + (d.percentage || "").class || "";;
+							
 							return returnCSSClass;
 						});
 				}
@@ -918,6 +980,12 @@
 					.attr('class', 'dataset');
 				
 				
+				// g.selectAll('rect')
+				// 	.data(function (d) {
+				// 		return d.disp_data;
+				// 	})
+				// 	.enter()
+				// 	.append('rect')
 				// add data series
 				g.selectAll('rect')
 					.data(function (d) {

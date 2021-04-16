@@ -53,7 +53,7 @@
 	<script>
  	 var dataset = [{
 		"measure": "Fat Bike",
-		"interval_s": 60*60,
+		"interval_s": 60*60*60,
        
         "categories": {
             "0": {class: "rect_has_no_data", tooltip_html: '<i class="fas fa-fw fa-exclamation-circle tooltip_has_no_data"></i>' },
@@ -71,7 +71,8 @@
 	var options = {
 			id_div_container: "visavail_container",
 			id_div_graph: "visavail_graph",
-			custom_categories: true
+			custom_categories: true,
+			defined_blocks: true
 		};
 		
 		var chart = visavail.generate(options, dataset)
