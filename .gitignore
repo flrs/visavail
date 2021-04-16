@@ -3,3 +3,4 @@
 .eslintrc
 node_modules
 npm-debug.log
+docs/samples/test.html

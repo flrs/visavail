@@ -121,6 +121,13 @@ div.y-tooltip.bottom::after {
 	overflow: hidden;
 }
 
+.visavail .ytitle_icon_image {
+    display: none;
+}
+.visavail .ytitle_icon_background {
+    display: none;
+}
+
 .visavail .ytitle.link {
     /* y axis label with link */
     cursor: pointer;
