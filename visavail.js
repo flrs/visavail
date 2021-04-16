@@ -1,8 +1,8 @@
-(function (global, factory) {
+;(function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-		typeof define === 'function' && define.amd ? define(factory) :
-		(global.visavail = factory());
-}(this, (function () {
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.visavail = factory());
+}(this, (function () { 'use strict';
 	var visavail = {};
 
 	//ie11 fixing 
@@ -476,6 +476,7 @@
 							startDate = d[0]
 						
 						if (i !== 0 && i < dataLength) {
+							
 							if (d[1] === tmpData[tmpData.length - 1][1]) {
 								// the value has not changed since the last date
 								if (options.defined_blocks) {
@@ -500,7 +501,8 @@
 								tmpData.push(d);
 							}
 						} else if (i === 0) {
-							d[3] =  d[1];
+							console.log(d[0])
+							d[2] =  d[0];
 							tmpData.push(d);
 						}
 					});
@@ -603,6 +605,8 @@
 					.attr('transform', 'translate(' + options.margin.left + ',' + options.margin.top + ')');
 
 				// create basic element groups
+
+				svg.append('g').attr('id', 'g_axis');
 				svg.append('g')
 				.attr('id', 'g_data')
 				.append('rect')
@@ -612,8 +616,8 @@
 				.attr('fill-opacity', 0)
 				.attr('x', 0)
 				.attr('y', 0)
+				svg.append('g').attr('id', 'g_axis_text');
 				svg.append('g').attr('id', 'g_title');
-				svg.append('g').attr('id', 'g_axis');
 
 				options.zoomed = d3.zoom()
 					.scaleExtent([1,Infinity])
@@ -691,7 +695,7 @@
 
 				if (options.show_y_title) {
 					// create y axis labels
-					var y_axis_title = svg.select('#g_axis').append('g').attr('id', 'yAxis');
+					var y_axis_title = svg.select('#g_axis_text').append('g').attr('id', 'yAxis');
 					y_axis_title.selectAll('text')
 						.data(dataset.slice(startSet, endSet))
 						.enter()
@@ -876,7 +880,7 @@
 
 				if (options.y_percentage.enabled) {
 					// create y axis labels
-					var y_percentage_title = svg.select('#g_axis').append('g').attr('id', 'yPercentage');
+					var y_percentage_title = svg.select('#g_axis_text').append('g').attr('id', 'yPercentage');
 					y_percentage_title.selectAll('text')
 						.data(dataset.slice(startSet, endSet))
 						.enter()
