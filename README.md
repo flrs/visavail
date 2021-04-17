@@ -218,11 +218,11 @@ _At the moment this type of labels are suspended due to incompatibility with IE1
 ### 3.2.1. Icon property
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
-| *url* | `string` | Url of image|
-| *width* | `int` | Width of image to be used |
-| *height* | `int` | Width of image to be used |
-| *padding* | `Object{left: int, right: int }` | Object with 2 key, left, for add margin to left, right to add margin on right |
-| *background_class* | `string` | Class for customize the circle appended on the background of icon |
+| *url* | `string` | | Url of image|
+| *width* | `int` |  | Width of image to be used |
+| *height* | `int` |  | Width of image to be used |
+| *padding* | `Object{left: int, right: int }` |  | Object with 2 key, left, for add margin to left, right to add margin on right |
+| *background_class* | `string` |  | Class for customize the circle appended on the background of icon |
 
 <br>
 
@@ -231,13 +231,13 @@ _At the moment this type of labels are suspended due to incompatibility with IE1
 ### 3.2.2. Percentage property
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
-| *measure* | `string` | Value to set on the right of the graph|
-| *class* | `string` | Class to be used for this custom param |  
+| *measure* | `string` |  | Value to set on the right of the graph|
+| *class* | `string` |  | Class to be used for this custom param |  
 
 <br>
 
-### 3.2.3. Compeld data example
-This is a simple compelx example with all data features enabled:
+### 3.2.3. Complex data example
+This is a simple complex example with all data features enabled:
 ```javascript
 var dataset = [{
     "measure": "Fat Bike",
@@ -567,9 +567,9 @@ To use the chart in your project, follow these steps:
   
 <br>
 
-### 3.3.17. Integrate on Angular
+### 3.3.17. Integrate into Angular
 
-You can use this library in your Anular 2+ project (tested from 2 to 8 version). Follow this step to integrate it:
+You can use this library in your Anular 2+ project (tested in versions 2 to 8). Follow these steps to integrate it:
 
 1. Add to your `package.json` d3, moment and visavail package with npm installation
 
@@ -578,20 +578,20 @@ You can use this library in your Anular 2+ project (tested from 2 to 8 version).
     import * as visavail from "visavail";
     ```
 
-3.  Create JSON an object in your component class that can be contain the dataset, options and chart
+3.  Create a JSON object in your component class that can be contain the dataset, options and chart
 
 4.  Add the div in your html where you want to put the graph
 
 5.  Call visavail.generate(...) funtion to generate the graph
 
-An example of implementation, you can found [HERE](https://codesandbox.io/s/angular-o8gxt)
+You can find an example implementation [HERE](https://codesandbox.io/s/angular-o8gxt)
 
 
 <br>
 
-### 3.3.18. Integrate on React.js
+### 3.3.18. Integrate into React.js
 
-You can use this library in your React project (not compleated tested). Follow this step to integrate it:
+You can use this library in your React project (not completely tested). Follow these steps to integrate it:
 
 1. Add to your `package.json` d3, moment and visavail package with npm installation
 
@@ -600,7 +600,7 @@ You can use this library in your React project (not compleated tested). Follow t
     import * as visavail from "visavail";
     ```
 
-3.  Create JSON an object in your component class that can be contain the dataset, options and chart
+3.  Create a JSON object in your component class that can be contain the dataset, options and chart
 
 4.  Add the div in your render() function 
 
@@ -608,15 +608,15 @@ You can use this library in your React project (not compleated tested). Follow t
 
 6.  If you want update the chart with new data, you can call the updateGraph(dataset) function into componentDidUpdate() react function
 
-An example of implementation, you can found [HERE](https://codesandbox.io/s/crazy-surf-9hpmg)
+You can find an example of implementation [HERE](https://codesandbox.io/s/crazy-surf-9hpmg)
 
 
 <br>
 
 ### 3.3.19. 3.1.29.Visavail Function
 
-The Visavail library have inside a series of function for update, change and delete the graph without using manual funtion.
-Below you can find a table that explain thi function.
+The Visavail library contains functions to update, change and delete the graph without using manual functions, explained in the table below.
+
 You can associate `chart = visavail.generate(.....)` and call `chart.someFunctio()` to change the graph
 
 | Name | Argument | Description |
@@ -642,7 +642,7 @@ An archive with the library can be downloaded from the [releases page](https://g
 <br>
 
 # 6. Dependencies
-Visavail.js depends on a couple of libraries:
+Visavail.js depends on these libraries:
 * [D3.js JavaScript library](https://d3js.org/) as a visualization framework,
 * [Moment.js](http://momentjs.com/) for formatting dates in tooltips and
 * [Font Awesome](http://fontawesome.io) for icons in the tooltips.
@@ -650,7 +650,7 @@ Visavail.js depends on a couple of libraries:
 <br>
 
 # 7. Contribution
-We are happy about any contribution or feedback. Please let us know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues).
+We welcome any contribution or feedback. Please let us know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues).
 
 <br>
 
