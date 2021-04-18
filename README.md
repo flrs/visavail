@@ -5,7 +5,6 @@ This library visualizes the availability of time-dependent data with a chart on 
 
 ## Table of Contents <!-- omit in toc -->
 
-- [7.1. License](#-71-license)](#71-license-71-license)
 - [1. Description](#1-description)
 - [2. Demo](#2-demo)
 - [3. Usage](#3-usage)
@@ -17,39 +16,37 @@ This library visualizes the availability of time-dependent data with a chart on 
     - [3.1.5. Display Style](#315-display-style)
     - [3.1.6. Type of Chart](#316-type-of-chart)
   - [3.2. Data Options](#32-data-options)
-    - [3.2.0.1. ~~Measure Labels with HTML~~](#3201-measure-labels-with-html)
-    - [3.2.1. Icon property](#321-icon-property)
-    - [3.2.2. Percentage property](#322-percentage-property)
-    - [3.2.3. Compeld data example](#323-compeld-data-example)
+    - [3.2.1. ~~Measure Labels with HTML~~](#321-measure-labels-with-html)
+    - [3.2.2. Icon property](#322-icon-property)
+    - [3.2.3. Percentage property](#323-percentage-property)
+    - [3.2.4. Complex data example](#324-complex-data-example)
   - [3.3. Chart Options](#33-chart-options)
     - [3.3.1. Margin](#331-margin)
     - [3.3.2. Padding](#332-padding)
     - [3.3.3. Y Title Tooltip](#333-y-title-tooltip)
     - [3.3.4. Tooltip](#334-tooltip)
-    - [3.3.4.1. 3.3.4.1 Hover Zoom Option](#3341-3341-hover-zoom-option)
-    - [3.3.5. Legend](#335-legend)
-    - [3.3.6. Title](#336-title)
-    - [3.3.7. Sub Title](#337-sub-title)
-    - [3.3.8. Icon](#338-icon)
-    - [3.3.9. Graph](#339-graph)
-    - [3.3.10. Responsive](#3310-responsive)
-    - [3.3.11. Zoom](#3311-zoom)
-    - [3.3.12. Sub Chart](#3312-sub-chart)
-    - [3.3.12.1. Sub Chart Graph Option](#33121-sub-chart-graph-option)
-    - [3.3.13. Custom Tick Format](#3313-custom-tick-format)
-    - [3.3.14. Y Percentage](#3314-y-percentage)
-    - [3.3.15. Example Usage](#3315-example-usage)
-    - [3.3.16. Implementation](#3316-implementation)
-    - [3.3.17. Integrate on Angular](#3317-integrate-on-angular)
-    - [3.3.18. Integrate on React.js](#3318-integrate-on-reactjs)
-    - [3.3.19. 3.1.29.Visavail Function](#3319-3129visavail-function)
+    - [3.3.5. 3.3.4.1 Hover Zoom Option](#335-3341-hover-zoom-option)
+    - [3.3.6. Legend](#336-legend)
+    - [3.3.7. Title](#337-title)
+    - [3.3.8. Sub Title](#338-sub-title)
+    - [3.3.9. Icon](#339-icon)
+    - [3.3.10. Graph](#3310-graph)
+    - [3.3.11. Responsive](#3311-responsive)
+    - [3.3.12. Zoom](#3312-zoom)
+    - [3.3.13. Sub Chart](#3313-sub-chart)
+    - [3.3.14. Sub Chart Graph Option](#3314-sub-chart-graph-option)
+    - [3.3.15. Custom Tick Format](#3315-custom-tick-format)
+    - [3.3.16. Y Percentage](#3316-y-percentage)
+    - [3.3.17. Example Usage](#3317-example-usage)
+    - [3.3.18. Implementation](#3318-implementation)
+    - [3.3.19. Integrate into Angular](#3319-integrate-into-angular)
+    - [3.3.20. Integrate into React.js](#3320-integrate-into-reactjs)
+    - [3.3.21. 3.1.29.Visavail Function](#3321-3129visavail-function)
 - [4. Public Projects With Visavail.js](#4-public-projects-with-visavailjs)
 - [5. Download](#5-download)
 - [6. Dependencies](#6-dependencies)
 - [7. Contribution](#7-contribution)
-  - [# 7.1. License](#-71-license)
-
-# 7.1. License](#-71-license)
+- [8. License](#8-license)
 
 
 <br>
@@ -207,7 +204,7 @@ The options of the data are in JSON format and you can customize everything.
 
 #<br>
 
-### 3.2.0.1. ~~Measure Labels with HTML~~
+### 3.2.1. ~~Measure Labels with HTML~~
 ~~Measure labels can be expressed in full HTML via the `measure_html` property in the `dataset`. Here is an example:~~
 _At the moment this type of labels are suspended due to incompatibility with IE11 and wrapping text_
 
@@ -215,7 +212,7 @@ _At the moment this type of labels are suspended due to incompatibility with IE1
 
 <br>
 
-### 3.2.1. Icon property
+### 3.2.2. Icon property
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *url* | `string` | | Url of image|
@@ -228,7 +225,7 @@ _At the moment this type of labels are suspended due to incompatibility with IE1
 
 <br>
 
-### 3.2.2. Percentage property
+### 3.2.3. Percentage property
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *measure* | `string` |  | Value to set on the right of the graph|
@@ -236,7 +233,7 @@ _At the moment this type of labels are suspended due to incompatibility with IE1
 
 <br>
 
-### 3.2.3. Complex data example
+### 3.2.4. Complex data example
 This is a simple complex example with all data features enabled:
 ```javascript
 var dataset = [{
@@ -366,7 +363,7 @@ You can pass the JSON Object to library with custom settings
 
 #<br>
 
-### 3.3.4.1. 3.3.4.1 Hover Zoom Option
+### 3.3.5. 3.3.4.1 Hover Zoom Option
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
 | *enabled* | `boolean` | false | Enable block zoom whe mouse hover |
@@ -375,7 +372,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.5. Legend
+### 3.3.6. Legend
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -388,7 +385,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.6. Title
+### 3.3.7. Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -398,7 +395,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.7. Sub Title
+### 3.3.8. Sub Title
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -409,7 +406,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.8. Icon
+### 3.3.9. Icon
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -418,7 +415,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.9. Graph
+### 3.3.10. Graph
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -428,7 +425,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.10. Responsive
+### 3.3.11. Responsive
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -438,7 +435,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.11. Zoom
+### 3.3.12. Zoom
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -450,7 +447,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.12. Sub Chart
+### 3.3.13. Sub Chart
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -463,7 +460,7 @@ You can pass the JSON Object to library with custom settings
 
 #<br>
 
-### 3.3.12.1. Sub Chart Graph Option
+### 3.3.14. Sub Chart Graph Option
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -475,7 +472,7 @@ You can pass the JSON Object to library with custom settings
 
 <br>
 
-### 3.3.13. Custom Tick Format
+### 3.3.15. Custom Tick Format
 
 This library use moment.js to customize and convert the date format/language in base of moment.locale() function (we autodetect the browser language!). If you what change manually the tick format you can customize with this option.
 
@@ -495,7 +492,7 @@ With set this option you override the automatic tick format execute by library f
 
 <br>
 
-### 3.3.14. Y Percentage
+### 3.3.16. Y Percentage
 
 | Name | Type | Default | Description |
 | ---- |------| ------- | ---------- |
@@ -509,7 +506,7 @@ With set this option you override the automatic tick format execute by library f
 
 <br>
 
-### 3.3.15. Example Usage
+### 3.3.17. Example Usage
 
 In this example we use a custom id for a div container and div graph, custom icon for tooltip, enabled zoom and resposive layout
 ```javascript
@@ -531,7 +528,7 @@ var options = {
 
 <br>
 
-### 3.3.16. Implementation
+### 3.3.18. Implementation
 To use the chart in your project, follow these steps:
 
 1. Copy the `visavail.js` and `visavail.css` into your *css and js* forder project (for minify version).
@@ -567,7 +564,7 @@ To use the chart in your project, follow these steps:
   
 <br>
 
-### 3.3.17. Integrate into Angular
+### 3.3.19. Integrate into Angular
 
 You can use this library in your Anular 2+ project (tested in versions 2 to 8). Follow these steps to integrate it:
 
@@ -589,7 +586,7 @@ You can find an example implementation [HERE](https://codesandbox.io/s/angular-o
 
 <br>
 
-### 3.3.18. Integrate into React.js
+### 3.3.20. Integrate into React.js
 
 You can use this library in your React project (not completely tested). Follow these steps to integrate it:
 
@@ -613,7 +610,7 @@ You can find an example of implementation [HERE](https://codesandbox.io/s/crazy-
 
 <br>
 
-### 3.3.19. 3.1.29.Visavail Function
+### 3.3.21. 3.1.29.Visavail Function
 
 The Visavail library contains functions to update, change and delete the graph without using manual functions, explained in the table below.
 
@@ -650,10 +647,10 @@ Visavail.js depends on these libraries:
 <br>
 
 # 7. Contribution
-We welcome any contribution or feedback. Please let us know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues).
+We welcome any contribution or feedback. Please let us know about your comments via the Issues tab on [GitHub](https://github.com/flrs/visavail/issues)
+
 
 <br>
 
-# 7.1. License
--------
+# 8. License
 The Visavail.js library is distributed under the [MIT License (MIT)](https://github.com/flrs/visavail/blob/master/LICENSE.md). Please also take note of the licenses of the dependencies.
