@@ -23,7 +23,7 @@
 		var d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
 		var moment = window.moment ? window.moment : typeof require !== 'undefined' ? require("moment") : undefined;
 
-		var t0;
+		var t0, start_event;
 			
 		if(!d3)
 			throw new Error('Require D3.js before visavail script');
