@@ -1481,8 +1481,10 @@
 											return series.disp_data.indexOf(d) >= 0;
 										}
 									)[0];
-									if (series && series.categories) {
-										//d3.select(this).attr('fill', series.categories[d[1]].color);
+									if (series && series.categories && series.categories[d[1]].color) {
+										d3.select(this).attr('fill', series.categories[d[1]].color);
+										return '';
+									} else if (series && series.categories) {
 										return series.categories[d[1]].class;
 									}
 								} else {
