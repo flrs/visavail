@@ -41,7 +41,7 @@ This library visualizes the availability of time-dependent data with a chart on 
     - [3.3.18. Implementation](#3318-implementation)
     - [3.3.19. Integrate into Angular](#3319-integrate-into-angular)
     - [3.3.20. Integrate into React.js](#3320-integrate-into-reactjs)
-    - [3.3.21. 3.1.29.Visavail Function](#3321-3129visavail-function)
+    - [3.3.21. Visavail Function](#3321-3129visavail-function)
 - [4. Public Projects With Visavail.js](#4-public-projects-with-visavailjs)
 - [5. Download](#5-download)
 - [6. Dependencies](#6-dependencies)
@@ -610,7 +610,7 @@ You can find an example of implementation [HERE](https://codesandbox.io/s/crazy-
 
 <br>
 
-### 3.3.21. 3.1.29.Visavail Function
+### 3.3.21. Visavail Function
 
 The Visavail library contains functions to update, change and delete the graph without using manual functions, explained in the table below.
 

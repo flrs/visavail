@@ -1,3 +1,8 @@
+# VISAVAIL V 1.5.1
+
+* bug fix on parsing
+* Update readme
+  
 # VISAVAIL V 1.5.0
 
 * bug fix on parsing data
